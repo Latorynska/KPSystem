@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\KpController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,12 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('admin.mahasiswa')
         ->group(function(){
             Route::get('/', [MahasiswaController::class, 'index']);
+        }
+    );
+    Route::prefix('admin/kp')
+        ->name('admin.kp')
+        ->group(function(){
+            Route::get('/', [KpController::class, 'index']);
         }
     );
 });
