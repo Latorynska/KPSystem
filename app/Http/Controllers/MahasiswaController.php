@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class MahasiswaController extends Controller
@@ -33,6 +35,39 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    // import data using api from existing system
+    public function synchronizeMahasiswaData()
+    {
+        try {
+            // Fetch JSON data from the API
+            $response = Http::get('https://65b8cab8b71048505a897656.mockapi.io/MahasiswaList');
+            $mahasiswaList = $response->json();
+            foreach ($mahasiswaList as $mahasiswa) {
+                // dd($mahasiswa);
+                $existingUser = User::where('nomor_induk', $mahasiswa['NIM'])->first();
+                // dd($existingUser);
+                if (!$existingUser) {
+                    // dd($mahasiswa);
+                    $newUser = User::create([
+                        'name' => $mahasiswa['nama'],
+                        'email' => $mahasiswa['email'],
+                        'nomor_induk' => $mahasiswa['NIM'],
+                        'password' => Hash::make('Password123'),
+                    ]);
+                    // dd($newUser);
+                    
+                    $newUser->assignRole('mahasiswa');
+                    // dd('assigned');
+                }
+            }
+            // return response()->json($response->json(), 200);
+
+            return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
     }
 
     /**

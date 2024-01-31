@@ -35,6 +35,7 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('admin.mahasiswa')
         ->group(function(){
             Route::get('/', [MahasiswaController::class, 'index']);
+            Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
         }
     );
     Route::prefix('admin/kp')
