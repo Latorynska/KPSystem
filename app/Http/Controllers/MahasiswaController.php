@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\KP;
 
 class MahasiswaController extends Controller
 {
@@ -60,6 +61,10 @@ class MahasiswaController extends Controller
                     
                     $newUser->assignRole('mahasiswa');
                     // dd('assigned');
+                    
+                    $kpData = new KP();
+                    $kpData->mahasiswa_id = $newUser->id;
+                    $kpData->save();
                 }
             }
             // return response()->json($response->json(), 200);

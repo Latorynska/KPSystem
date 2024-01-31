@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('kps', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('mahasiswa_id')->unique();
-            $table->unsignedBigInteger('pembimbing_id');
+            $table->unsignedBigInteger('mahasiswa_id');
+            $table->unsignedBigInteger('pembimbing_id')->nullable();
             $table->timestamps();
 
             $table->foreign('mahasiswa_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');

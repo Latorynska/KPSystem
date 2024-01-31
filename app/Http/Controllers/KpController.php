@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\KP;
 
 class KpController extends Controller
 {
@@ -13,6 +14,13 @@ class KpController extends Controller
     {
         //
         return view('kp.index');
+    }
+
+    public function lists(){
+        $kps = KP::with('mahasiswa', 'pembimbing', 'metadata')->get();
+        $data['kps'] = $kps;
+        // dd($kps);
+        return view('kp.list',$data);
     }
 
     /**

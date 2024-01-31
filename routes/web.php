@@ -42,6 +42,7 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('admin.kp')
         ->group(function(){
             Route::get('/', [KpController::class, 'index']);
+            Route::get('/lists', [KpController::class, 'lists'])->name('.lists');
         }
     );
 });
