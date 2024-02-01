@@ -66,7 +66,14 @@
     <script>
         function fetchData() {
             this.syncing = true; // Set syncing state to true
-
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                Swal.showLoading();
+                }
+            });
             // Your fetch logic goes here
             fetch('{{ route('admin.mahasiswa.sync') }}')
                 .then(response => {
@@ -88,7 +95,7 @@
                     console.error('Terdapat galat pada server, silahkan cek informasi lebih lanjut : ', error);
                 })
                 .finally(() => {
-                    this.syncing = false; // Set syncing state back to false
+                    this.syncing = false;
                 });
         }
     </script>
