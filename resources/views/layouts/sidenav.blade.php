@@ -1,7 +1,7 @@
 <!-- Sidenav -->
 <div id="docs-sidenav" class="w-64 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="p-6">
-        <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">KelontongSystem</a>
+        <a class="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">KPSystem</a>
     </div>
     <nav class="hs-accordion-group p-2 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
         <ul class="space-y-2.5">

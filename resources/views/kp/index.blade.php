@@ -1,16 +1,19 @@
 <x-app-layout>
-    <div class="py-5">
+    <div class="py-5 flex">
+        {{-- stepper --}}
         <div class="w-full mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                <ol class="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4 ms-4">                  
-                    <li class="mb-10 ms-6">            
+            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
+                <ol class="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4 ms-4">
+                    <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
                             <svg class="w-3.5 h-3.5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                             </svg>
                         </span>
-                        <h3 class="font-medium leading-tight">Registrasi</h3>
-                        <p class="text-sm">Anda sukses registrasi akun</p>
+                        <div class="">
+                            <h3 class="font-medium leading-tight">Registrasi</h3>
+                            <p class="text-sm">Anda sukses registrasi akun</p>
+                        </div>
                     </li>
                     {{-- <li class="mb-10 ms-6">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
@@ -31,11 +34,7 @@
                             <h3 class="font-medium leading-tight">Surat Izin KP</h3>
                             <p class="text-sm">Anda belum menyerahkan file surat izin kp anda</p>
                         </div>
-                        <x-button tag="a" color="success" class="text-sm ml-4">
-                            Kumpulkan Surat Izin
-                        </x-button>
                     </li>
-                    
                     <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -46,36 +45,39 @@
                             <h3 class="font-medium leading-tight">Proposal</h3>
                             <p class="text-sm">Anda belum menyerahkan file proposal anda</p>
                         </div>
-                        <x-button tag="a" color="success" class="text-sm ml-9">
-                            Kumpulkan Proposal
-                        </x-button>
                     </li>
-                    <li class="mb-10 ms-6">
+                    <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                                 <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
                             </svg>
                         </span>
-                        <h3 class="font-medium leading-tight">Diulas</h3>
-                        <p class="text-sm">Proposal Anda sedang diulas</p>
+                        <div class="">
+                            <h3 class="font-medium leading-tight">Diulas</h3>
+                            <p class="text-sm">Proposal Anda sedang diulas</p>
+                        </div>
                     </li>
-                    <li class="mb-10 ms-6">
+                    <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
                             </svg>
                         </span>
-                        <h3 class="font-medium leading-tight">Pelaksanaan KP</h3>
-                        <p class="text-sm">Jadwal Pelaksanaan KP</p>
+                        <div class="">
+                            <h3 class="font-medium leading-tight">Pelaksanaan KP</h3>
+                            <p class="text-sm">Jadwal Pelaksanaan KP</p>
+                        </div>
                     </li>
-                    <li class="mb-10 ms-6">
+                    <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg> 
                         </span>
-                        <h3 class="font-medium leading-tight">Laporan</h3>
-                        <p class="text-sm">Anda belum menyerahkan file Laporan anda</p>
+                        <div class="">
+                            <h3 class="font-medium leading-tight">Laporan</h3>
+                            <p class="text-sm">Anda belum menyerahkan file Laporan anda</p>
+                        </div>
                     </li>
                     {{-- <li class="ms-6">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
@@ -87,6 +89,73 @@
                         <p class="text-sm">Step details here</p>
                     </li> --}}
                 </ol>
+            </div>
+        </div>
+        {{-- form upload file --}}
+        <div class="w-full mx-auto my-auto sm:px-6 lg:px-8">
+            {{-- input surat izin card --}}
+            <div x-data="{ suratIzinFile: '' }">
+                {{-- input surat izin card --}}
+                <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                    <p class="text-white pb-2">Surat Izin</p>
+                    <div class="flex items-center justify-center w-full">
+                        <label for="suratIzinFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                </svg>
+                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 1MB)</p>
+                            </div>
+                            <input id="suratIzinFile" name="surat_izin" type="file" class="hidden" accept=".pdf" @change="suratIzinFile = $event.target.files[0].name" />
+                        </label>
+                    </div>
+                    <!-- Display file name -->
+                    <div class="flex items-center" x-show="suratIzinFile">
+                        <x-button tag="a" href="#">
+                            <span x-text="suratIzinFile">
+
+                            </span>
+                        </x-button>
+                        <x-button tag="a" href="#" color="danger" class="ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </x-button>
+                    </div>
+                </div>
+            </div>
+            {{-- input proposal card --}}
+            <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                <p class="text-white pb-2">Proposal</p>
+                <div class="flex items-center justify-center w-full">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 1MB)</p>
+                        </div>
+                        <input id="dropzone-file" name="proposal" type="file" class="hidden" accept=".pdf"/>
+                    </label>
+                </div> 
+            </div>
+            {{-- input laporan card --}}
+            <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                <p class="text-white pb-2">Laporan</p>
+                <div class="flex items-center justify-center w-full">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 1MB)</p>
+                        </div>
+                        <input id="dropzone-file" name="laporan" type="file" class="hidden" accept=".pdf"/>
+                    </label>
+                </div> 
             </div>
         </div>
     </div>
