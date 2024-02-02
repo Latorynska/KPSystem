@@ -53,6 +53,8 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::patch('/metadata', [KpController::class, 'patchMetaData'])->name('.metadata');
             Route::post('/suratIzin', [KpController::class, 'storeSuratIzin'])->name('.suratIzinPost');
             Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
+            Route::post('/proposal', [KpController::class, 'storeProposal'])->name('.proposalPost');
+            Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
         }
     );
 });

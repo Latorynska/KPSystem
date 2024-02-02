@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\KP;
 use App\Models\KPMetadata;
 use App\Models\SuratIzin;
+use App\Models\Proposal;
 
 class KpController extends Controller
 {
@@ -21,10 +22,15 @@ class KpController extends Controller
         $mahasiswa_id = Auth()->id();
         $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->where('mahasiswa_id',$mahasiswa_id)->firstOrFail();
         $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
+        $proposal = Proposal::where('kp_id',$kp->id)->first();
         $data['kp'] = $kp;
         $data['suratIzin'] = $suratIzin;
+        $data['proposal'] = $proposal;
         if ($suratIzin) {
             $data['suratIzinFile'] = $suratIzin->file_name;
+        }
+        if ($proposal) {
+            $data['proposalFile'] = $proposal->file_name;
         }
         return view('kp.index',$data);
     }
@@ -84,6 +90,38 @@ class KpController extends Controller
             return response()->json(['message' => 'Failed to store file'], 500);
         }
     }
+    public function storeProposal(Request $request){
+        $request->validate([
+            'proposal' => 'required|file|mimes:pdf|max:1024',
+        ]);
+        try{
+            $nim = User::findOrFail(Auth()->id())->nomor_induk;
+        
+            $kp = KP::where('mahasiswa_id', Auth()->id())->firstOrFail();
+            if ($request->hasFile('proposal')) {
+                $file_name = $nim . '_proposal.pdf';
+                $path = $request->file('proposal')->storeAs('Proposal', $file_name);
+                Proposal::create([
+                    'kp_id' => $kp->id,
+                    'file_name' => $file_name,
+                    'status' => 'awaited',
+                ]);
+        
+                $notification = [
+                    'message' => 'Proposal uploaded successfully',
+                    'alert-type' => 'success'
+                ];
+            } else {
+                $notification = [
+                    'message' => 'Failed to upload proposal',
+                    'alert-type' => 'error'
+                ];
+            }
+            return redirect()->route('mahasiswa.kp')->with($notification);
+        } catch(\Exception $e){
+            return response()->json(['message' => 'Failed to store file'], 500);
+        }
+    }
 
     /**
      * Display the specified resource.
@@ -93,15 +131,35 @@ class KpController extends Controller
         //
     }
     
-    
     public function viewSuratIzin(string $id)
     {
         $suratIzin = SuratIzin::findOrFail($id);
         $filePath = 'SuratIzin/' . $suratIzin->file_name;
         if (Storage::exists($filePath)) {
             $fileContents = Storage::get($filePath);
-            return response($fileContents, 200)
-                ->header('Content-Type', 'application/pdf');
+            $headers = [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $suratIzin->file_name . '"',
+            ];
+            return response($fileContents, 200)->withHeaders($headers);
+                
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+
+    public function viewProposal(string $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        $filePath = 'Proposal/' . $proposal->file_name;
+        if (Storage::exists($filePath)) {
+            $fileContents = Storage::get($filePath);
+            $headers = [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $proposal->file_name . '"',
+            ];
+            return response($fileContents, 200)->withHeaders($headers);
+                
         } else {
             abort(404, 'File not found');
         }
