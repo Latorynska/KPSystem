@@ -91,13 +91,13 @@
                 </ol>
             </div>
         </div>
-        {{-- form upload file --}}
+        {{-- KP data input section --}}
         <div class="w-full mx-auto my-auto sm:px-6 lg:px-8">
             {{-- form metadata --}}
             <div class="w-full mx-auto">
                 <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
                     Form Data KP
-                    <form action="{{ route('mahasiswa.kp.metadata') }}" method="POST" >
+                    <form action="{{ route('mahasiswa.kp.metadata') }}" method="POST" @submit.prevent="submitForm">
                         @csrf
                         @method('PATCH')
                         <!-- input Judul KP -->
@@ -144,40 +144,56 @@
                 </div>
             </div>
             {{-- input surat izin card --}}
-            <div x-data="{ suratIzinFile: '' }">
-                <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                    <p class="text-white pb-2">Surat Izin</p>
-                    <div class="flex items-center justify-center w-full" x-show="!suratIzinFile">
-                        <label for="suratIzinFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            <div  x-data="{ suratIzinFile: '{{ $suratIzinFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="suratIzinFile = $event.dataTransfer.files[0].name">
+                <form action="{{ route('mahasiswa.kp.suratIzinPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadSuratIzin($event)">
+                    @csrf
+                    @method('POST')
+                    <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                        <p class="text-white pb-2">Surat Izin</p>
+                        <div class="flex items-center justify-center w-full" x-show="!suratIzinFile">
+                            <label for="suratIzinFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                    </svg>
+                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 1MB)</p>
+                                </div>
+                                <input id="suratIzinFile" name="surat_izin" type="file" class="hidden" accept=".pdf" @change="suratIzinFile = $event.target.files[0].name" />
+                            </label>
+                        </div>
+                        <!-- Display file name -->
+                        <div class="flex items-center" x-show="suratIzinFile">
+                            <x-button tag="a" href="{{ route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id]) }}" target="_blank">
+                                <span x-text="suratIzinFile"></span>
+                            </x-button>
+                            <div class="relative group ml-2">
+                                <!-- Tooltip -->
+                                <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
+                                    click the file name button to view the file
+                                </span>
+                                <!-- Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
-                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 1MB)</p>
                             </div>
-                            <input id="suratIzinFile" name="surat_izin" type="file" class="hidden" accept=".pdf" @change="suratIzinFile = $event.target.files[0].name" />
-                        </label>
+                        </div>
+                        {{-- end display file name --}}
+                        <div class="flex justify-between mt-2" x-show="suratIzinFile">
+                            <x-button tag="button" color="danger" type="button" @click.prevent="suratIzinFile = ''">
+                                {{ isset($suratIzinFile) ? 'replace' : 'Camcel'}}
+                            </x-button>
+                            <x-button tag="button" type="submit" color="success">
+                                {{ isset($suratIzinFile) ? 'ReUpload' : 'Upload'}}
+                            </x-button>
+                        </div>
                     </div>
-                    <!-- Display file name -->
-                    <div class="flex items-center" x-show="suratIzinFile">
-                        <x-button tag="a" href="#">
-                            <span x-text="suratIzinFile">
-
-                            </span>
-                        </x-button>
-                        <x-button tag="a" href="#" color="danger" class="ms-2" @click="suratIzinFile = ''">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
-                        </x-button>
-                    </div>
-                </div>
+                </form>
             </div>
             {{-- end input surat izin --}}
             {{-- input proposal card --}}
-            <div x-data="{ proposalFile: '' }">
-                <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+            <div x-data="{ proposalFile: '' }" @dragover.prevent @dragenter.prevent @drop.prevent="proposalFile = $event.dataTransfer.files[0].name">
+                    <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
                     <p class="text-white pb-2">Proposal</p>
                     <div class="flex items-center justify-center w-full" x-show="!proposalFile">
                         <label for="proposalFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -208,7 +224,7 @@
             </div>
             {{-- end input proposal --}}
             {{-- input laporan card --}}
-            <div x-data="{ laporanAkhirFile: '' }">
+            <div x-data="{ laporanAkhirFile: '' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanAkhirFile = $event.dataTransfer.files[0].name">
                 <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
                     <p class="text-white pb-2">Laporan Akhir</p>
                     <div class="flex items-center justify-center w-full" x-show="!laporanAkhirFile">
@@ -236,13 +252,85 @@
                             </svg>
                         </x-button>
                     </div>
+                    {{-- end display file name --}}
+
                 </div>
             </div>
             {{-- end laporan --}}
         </div>
     </div>
-    
-    <div class="py-5 flex">
-        
-    </div>
+    <script>
+        function submitForm(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            const formData = new FormData(e.target);
+            fetch('{{ route("mahasiswa.kp.metadata") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData,
+            })
+            .catch(error => {
+                console.error('There was an error : ', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Galat terjadi, silahkan hubungi pengembang atau cek di konsol'
+                });
+            })
+            .finally(() => {
+                Swal.close();
+            });
+        }
+        function uploadSuratIzin(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                Swal.close();
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'File Berhasil diunggah.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location.href = "{{ route('mahasiswa.kp') }}";
+                    }, 1500);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'galat terjadi!',
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </x-app-layout>

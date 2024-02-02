@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kp_metadatas', function (Blueprint $table) {
-            $table->foreignId('kp_id')->constrained('kps')->primary();
+            $table->foreignId('kp_id')->constrained('kps');
             $table->string('judul', 255);
             $table->string('instansi', 255);
             $table->string('nama_pembimbing_lapangan', 100);
             $table->string('nomor_pembimbing_lapangan', 15);
             $table->timestamps();
+            
+            $table->primary('kp_id');
         });
     }
 

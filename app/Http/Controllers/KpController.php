@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\User;
 use App\Models\KP;
 use App\Models\KPMetadata;
+use App\Models\SuratIzin;
 
 class KpController extends Controller
 {
@@ -16,7 +20,12 @@ class KpController extends Controller
         //
         $mahasiswa_id = Auth()->id();
         $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->where('mahasiswa_id',$mahasiswa_id)->firstOrFail();
+        $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
         $data['kp'] = $kp;
+        $data['suratIzin'] = $suratIzin;
+        if ($suratIzin) {
+            $data['suratIzinFile'] = $suratIzin->file_name;
+        }
         return view('kp.index',$data);
     }
 
@@ -43,12 +52,59 @@ class KpController extends Controller
         //
     }
 
+    public function storeSuratIzin(Request $request){
+        $request->validate([
+            'surat_izin' => 'required|file|mimes:pdf|max:1024',
+        ]);
+        try{
+            $nim = User::findOrFail(Auth()->id())->nomor_induk;
+        
+            $kp = KP::where('mahasiswa_id', Auth()->id())->firstOrFail();
+            if ($request->hasFile('surat_izin')) {
+                $file_name = $nim . '_surat_izin.pdf';
+                $path = $request->file('surat_izin')->storeAs('SuratIzin', $file_name);
+                SuratIzin::create([
+                    'kp_id' => $kp->id,
+                    'file_name' => $file_name,
+                    'file_path' => $path,
+                ]);
+        
+                $notification = [
+                    'message' => 'Surat izin uploaded successfully',
+                    'alert-type' => 'success'
+                ];
+            } else {
+                $notification = [
+                    'message' => 'Failed to upload surat izin',
+                    'alert-type' => 'error'
+                ];
+            }
+            return redirect()->route('mahasiswa.kp')->with($notification);
+        } catch(\Exception $e){
+            return response()->json(['message' => 'Failed to store file'], 500);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         //
+    }
+    
+    
+    public function viewSuratIzin(string $id)
+    {
+        $suratIzin = SuratIzin::findOrFail($id);
+        $filePath = 'SuratIzin/' . $suratIzin->file_name;
+        if (Storage::exists($filePath)) {
+            $fileContents = Storage::get($filePath);
+            return response($fileContents, 200)
+                ->header('Content-Type', 'application/pdf');
+        } else {
+            abort(404, 'File not found');
+        }
     }
 
     /**
@@ -66,6 +122,7 @@ class KpController extends Controller
     {
         //
     }
+
     public function patchMetaData(Request $request)
     {
         $validatedData = $request->validate([
@@ -95,8 +152,14 @@ class KpController extends Controller
                 ]);
                 $kp->metadata()->save($metadata);
             }
+            
+            $notification = [
+                'message' => 'Data KP berhasil diperbarui',
+                'alert-type' => 'success'
+            ];
             return redirect()->route('mahasiswa.kp')->with($notification);
         } catch (\Exception $e) {
+            // dd($e);
             return response()->json(['message' => 'Failed to update KP metadata'], 500);
         }
     }
