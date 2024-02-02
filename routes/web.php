@@ -41,10 +41,21 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::prefix('admin/kp')
         ->name('admin.kp')
         ->group(function(){
-            Route::get('/', [KpController::class, 'index']);
             Route::get('/lists', [KpController::class, 'lists'])->name('.lists');
         }
     );
 });
+Route::group(['middleware' => ['role:mahasiswa']], function () {
+    Route::prefix('mahasiswa/kp')
+        ->name('mahasiswa.kp')
+        ->group(function(){
+            Route::get('/', [KpController::class, 'index']);
+            Route::patch('/', [KpController::class, 'patchMetaData'])->name('.metadata');
+
+        }
+    );
+});
+
+
 
 require __DIR__.'/auth.php';

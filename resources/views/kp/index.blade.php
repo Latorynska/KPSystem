@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="py-5 flex">
+    <div class="py-5 flex items-center">
         {{-- stepper --}}
         <div class="w-full mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
+            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
                 <ol class="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400 mt-4 ms-4">
                     <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
@@ -97,107 +97,50 @@
             <div class="w-full mx-auto">
                 <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
                     Form Data KP
-                    <form action="#">
+                    <form action="{{ route('mahasiswa.kp.metadata') }}" method="POST" >
+                        @csrf
+                        @method('PATCH')
                         <!-- input Judul KP -->
-                        <div class="relative my-2">
-                            <input 
-                                type="text" 
-                                id="hs-floating-input-judul"
-                                name="Judul KP"
-                                class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600
-                                focus:pt-6
-                                focus:pb-2
-                                [&:not(:placeholder-shown)]:pt-6
-                                [&:not(:placeholder-shown)]:pb-2
-                                autofill:pt-6
-                                autofill:pb-2" 
-                                placeholder="Isi dengan judul KP anda"
-                            >
-                            <label for="hs-floating-input-judul" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-                            peer-focus:text-xs
-                            peer-focus:-translate-y-1.5
-                            peer-focus:text-gray-500
-                            peer-[:not(:placeholder-shown)]:text-xs
-                            peer-[:not(:placeholder-shown)]:-translate-y-1.5
-                            peer-[:not(:placeholder-shown)]:text-gray-500">Judul KP</label>
-                        </div>
-                        <!-- End Floating Input -->
+                        <x-form-text
+                            label="Judul KP" 
+                            name="judul" 
+                            :value="$kp->metadata ? $kp->metadata->judul : ''" 
+                            id="judul" 
+                            :error="$errors->first('judul')"
+                        />
+                        <!-- End input judul kp-->
                         <!-- input nama instansi -->
-                        <div class="relative my-2">
-                            <input 
-                                type="text" 
-                                id="hs-floating-input-instansi" 
-                                name="Judul KP"
-                                class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600
-                                focus:pt-6
-                                focus:pb-2
-                                [&:not(:placeholder-shown)]:pt-6
-                                [&:not(:placeholder-shown)]:pb-2
-                                autofill:pt-6
-                                autofill:pb-2" 
-                                placeholder="Isi dengan nama instansi kerja praktik anda"
-                            >
-                            <label for="hs-floating-input-instansi" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-                            peer-focus:text-xs
-                            peer-focus:-translate-y-1.5
-                            peer-focus:text-gray-500
-                            peer-[:not(:placeholder-shown)]:text-xs
-                            peer-[:not(:placeholder-shown)]:-translate-y-1.5
-                            peer-[:not(:placeholder-shown)]:text-gray-500">Nama Instansi</label>
-                        </div>
+                        <x-form-text
+                            label="Nama Instansi" 
+                            name="instansi" 
+                            :value="$kp->metadata ? $kp->metadata->instansi : ''" 
+                            id="instansi" 
+                            :error="$errors->first('instansi')"
+                        />
                         <!-- End input nama instansi -->
                         <!-- input nama pembimbing lapangan -->
-                        <div class="relative my-2">
-                            <input 
-                                type="text" 
-                                id="hs-floating-input-pembimbing-lapangan"
-                                name="Judul KP"
-                                class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600
-                                focus:pt-6
-                                focus:pb-2
-                                [&:not(:placeholder-shown)]:pt-6
-                                [&:not(:placeholder-shown)]:pb-2
-                                autofill:pt-6
-                                autofill:pb-2" 
-                                placeholder="Isi dengan nama pembimbing lapangan anda di instansi"
-                            >
-                            <label for="hs-floating-input-pembimbing-lapangan" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-                            peer-focus:text-xs
-                            peer-focus:-translate-y-1.5
-                            peer-focus:text-gray-500
-                            peer-[:not(:placeholder-shown)]:text-xs
-                            peer-[:not(:placeholder-shown)]:-translate-y-1.5
-                            peer-[:not(:placeholder-shown)]:text-gray-500">Nama Pembimbing Lapangan</label>
-                        </div>
+                        <x-form-text
+                            label="Nama Pembimbing Lapangan" 
+                            name="nama_pembimbing_lapangan" 
+                            :value="$kp->metadata ? $kp->metadata->nama_pembimbing_lapangan : ''" 
+                            id="nama_pembimbing_lapangan"
+                            :error="$errors->first('nama_pembimbing_lapangan')"
+                        />
                         <!-- End input nama pembimbing lapangan -->
                         <!-- input nomor pembimbing lapangan -->
-                        <div class="relative my-2">
-                            <input 
-                                type="text" 
-                                id="hs-floating-input-nomor-pembimbing-lapangan"
-                                name="Judul KP"
-                                class="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600
-                                focus:pt-6
-                                focus:pb-2
-                                [&:not(:placeholder-shown)]:pt-6
-                                [&:not(:placeholder-shown)]:pb-2
-                                autofill:pt-6
-                                autofill:pb-2" 
-                                placeholder="Isi dengan nama pembimbing lapangan anda di instansi"
-                            >
-                            <label for="hs-floating-input-nomor-pembimbing-lapangan" class="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-                            peer-focus:text-xs
-                            peer-focus:-translate-y-1.5
-                            peer-focus:text-gray-500
-                            peer-[:not(:placeholder-shown)]:text-xs
-                            peer-[:not(:placeholder-shown)]:-translate-y-1.5
-                            peer-[:not(:placeholder-shown)]:text-gray-500">Nomor Telepon Pembimbing Lapangan</label>
-                        </div>
+                        <x-form-text
+                            label="Nomor Telepon Pembimbing Lapangan" 
+                            name="nomor_pembimbing_lapangan" 
+                            :value="$kp->metadata ? $kp->metadata->nomor_pembimbing_lapangan : ''" 
+                            id="nomor_pembimbing_lapangan"
+                            :error="$errors->first('nomor_pembimbing_lapangan')"
+                        />
+                        
                         <!-- End input nomor pembimbing lapangan -->
+                        <x-button type="submit" color="success" class="float-end">
+                            Submit
+                        </x-button>
                     </form>
-                    <x-button tag="" type="submit" color="success" class="float-end">
-                        Submit
-                    </x-button>
                 </div>
             </div>
             {{-- input surat izin card --}}
