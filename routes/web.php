@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\KpController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,13 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
         ->group(function(){
             Route::get('/', [MahasiswaController::class, 'index']);
             Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
+        }
+    );
+    Route::prefix('admin/dosen')
+        ->name('admin.dosen')
+        ->group(function(){
+            Route::get('/', [DosenController::class, 'index']);
+            Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
         }
     );
 });
