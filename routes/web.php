@@ -55,6 +55,8 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
             Route::post('/proposal', [KpController::class, 'storeProposal'])->name('.proposalPost');
             Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
+            Route::post('/laporan', [KpController::class, 'storeLaporan'])->name('.laporanPost');
+            Route::get('/laporan/{id}', [KpController::class, 'viewLaporan'])->name('.laporanView');
         }
     );
 });
