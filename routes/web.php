@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(['middleware' => ['role:admin']], function () {
+Route::group(['middleware' => ['role:admin|kordinator']], function () {
     Route::prefix('admin/mahasiswa')
         ->name('admin.mahasiswa')
         ->group(function(){
@@ -38,9 +38,14 @@ Route::group(['middleware' => ['role:admin']], function () {
             Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
         }
     );
-    Route::prefix('admin/kp')
-        ->name('admin.kp')
+});
+Route::group(['middleware' => ['role:kordinator']], function () {
+    Route::prefix('kordinator/kp')
+        ->name('kordinator.kp')
         ->group(function(){
+            Route::get('/proposals', [KpController::class, 'proposals'])->name('.proposals');
+            Route::get('/proposal/{id}', [KpController::class, 'proposalDetail'])->name('.proposal');
+            Route::post('/proposal/{id}/revisi', [KpController::class, 'revisiProposal'])->name('.revisiProposal');
             Route::get('/lists', [KpController::class, 'lists'])->name('.lists');
         }
     );
@@ -54,13 +59,19 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::post('/suratIzin', [KpController::class, 'storeSuratIzin'])->name('.suratIzinPost');
             Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
             Route::post('/proposal', [KpController::class, 'storeProposal'])->name('.proposalPost');
-            Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
             Route::post('/laporan', [KpController::class, 'storeLaporan'])->name('.laporanPost');
             Route::get('/laporan/{id}', [KpController::class, 'viewLaporan'])->name('.laporanView');
         }
     );
 });
-
+Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
+    Route::prefix('mahasiswa/kp')
+        ->name('mahasiswa.kp')
+        ->group(function(){
+            Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
+        }
+    );
+});
 
 
 require __DIR__.'/auth.php';

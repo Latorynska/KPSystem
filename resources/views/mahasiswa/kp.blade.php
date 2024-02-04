@@ -178,6 +178,7 @@
                     </form>
                 </div>
             </div>
+            {{-- end form metadata --}}
             {{-- input surat izin card --}}
             <div x-data="{ suratIzinFile: '{{ $suratIzinFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="suratIzinFile = $event.dataTransfer.files[0].name">
                 <form action="{{ route('mahasiswa.kp.suratIzinPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadSuratIzin($event)">

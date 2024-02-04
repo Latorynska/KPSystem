@@ -10,6 +10,7 @@ use App\Models\KP;
 use App\Models\KPMetadata;
 use App\Models\SuratIzin;
 use App\Models\Proposal;
+use App\Models\RevisiProposal;
 use App\Models\Laporan;
 
 class KpController extends Controller
@@ -38,7 +39,7 @@ class KpController extends Controller
         if ($laporan) {
             $data['laporanFile'] = $laporan->file_name;
         }
-        return view('kp.index',$data);
+        return view('mahasiswa.kp',$data);
     }
 
     public function lists(){
@@ -48,12 +49,36 @@ class KpController extends Controller
         return view('kp.list',$data);
     }
 
+    public function proposals(){
+        $proposals = Proposal::with([
+            'kp.mahasiswa',
+            'kp.metadata',
+        ])->get();
+        $data['proposals'] = $proposals;
+        return view('kp.proposal', $data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         //
+    }
+
+    public function proposalDetail(string $id)
+    {
+        $proposal = Proposal::with([
+            'kp.mahasiswa',
+            'kp.metadata',
+        ])->findOrFail($id);
+        $filePath = 'Proposal/' . $proposal->file_name;
+        $fileUrl = Storage::get($filePath);
+
+        $data['proposal'] = $proposal;
+        $data['fileUrl'] = $fileUrl;
+
+        return view('kp.proposalDetail', $data);
     }
 
     /**
@@ -147,7 +172,6 @@ class KpController extends Controller
             return response()->json(['message' => 'Failed to store file'], 500);
         }
     }
-
     public function storeLaporan(Request $request){
         $request->validate([
             'laporan' => 'required|file|mimes:pdf|max:1024',
@@ -178,6 +202,34 @@ class KpController extends Controller
             return redirect()->route('mahasiswa.kp')->with($notification);
         } catch(\Exception $e){
             return response()->json(['message' => 'Failed to store file'], 500);
+        }
+    }
+
+    public function revisiProposal(Request $request, string $id){
+        $proposal = Proposal::findOrFail($id);
+        try{
+            $revisi = RevisiProposal::create([
+                'proposal_id' => $proposal->id,
+                'latar_belakang' => $request->latar_belakang,
+                'identifikasi_masalah' => $request->identifikasi_masalah,
+                'rencana_solusi' => $request->rencana_solusi,
+                'ruang_lingkup' => $request->ruang_lingkup,
+                'output_kp' => $request->output_kp,
+                'metode_kp' => $request->metode_kp,
+                'jadwal_pelaksanaan' => $request->jadwal_pelaksanaan,
+                'daftar_pustaka' => $request->daftar_pustaka,
+            ]);
+            $proposal->update([
+                'status' => 'reviewed',
+            ]);
+            $notification = [
+                'message' => 'Revisi Proposal Berhasil ditambahkan',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('kordinator.kp.proposals')->with($notification);
+        } catch (\Exception $e) {
+            // dd($e);
+            return response()->json(['message' => 'Failed to update KP metadata', 'error : ' => $e], 500);
         }
     }
 
