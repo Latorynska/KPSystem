@@ -37,8 +37,8 @@
                                         tag="a"
                                         href="#"
                                         color="success"
-                                        {{-- x-data="{ editRoute: '{{ route('warehouse.item.edit', ['id' => ':id']) }}' }"
-                                        x-bind:href="editRoute.replace(':id', item.id)" --}}
+                                        x-data="{ detailRoute: '{{ route('kordinator.kp.details', ['id' => ':id']) }}' }"
+                                        x-bind:href="detailRoute.replace(':id', kp.id)"
                                     >
                                         Kelola Data KP
                                     </x-button>

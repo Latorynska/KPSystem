@@ -31,6 +31,7 @@
                                     <x-button tag="a" href="#" color="success"
                                         x-data="{ detailRoute: '{{ route('kordinator.kp.proposal', ['id' => ':id']) }}' }"
                                         x-bind:href="detailRoute.replace(':id', proposal.id)"
+                                        x-show="proposal.status =='awaited'"
                                     >
                                         Kelola Proposal
                                     </x-button>

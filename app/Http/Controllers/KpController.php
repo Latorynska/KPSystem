@@ -236,9 +236,21 @@ class KpController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function details(string $id)
     {
-        //
+        $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->findOrFail($id);
+        $pembimbings = User::whereHas('roles', function($query){
+            $query->where('name','pembimbing');
+        })->get();
+        $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
+        $proposal = Proposal::where('kp_id',$kp->id)->first();
+        $laporan = Laporan::where('kp_id',$kp->id)->first();
+        $data['suratIzin'] = $suratIzin;
+        $data['proposal'] = $proposal;
+        $data['laporan'] = $laporan;
+        $data['kp'] = $kp;
+        $data['pembimbings'] = $pembimbings;
+        return view('kp.index',$data);
     }
     
     public function viewSuratIzin(string $id)
@@ -303,9 +315,26 @@ class KpController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function assignPembimbing(Request $request, string $id)
     {
-        //
+        $kp = KP::findOrFail($id);
+        $request->validate([
+            'pembimbing_id' => 'required'
+        ]);
+        try{
+            $kp->update([
+                'pembimbing_id' => $request->id,
+            ]);
+            
+            $notification = [
+                'message' => 'Data KP berhasil diperbarui',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('kordinator.kp.details',['id'=>$id])->with($notification);
+        } catch (\Exception $e) {
+            // dd($e);
+            return response()->json(['message' => 'Failed to update KP data','error : ' => $e], 500);
+        }
     }
 
     public function patchMetaData(Request $request)

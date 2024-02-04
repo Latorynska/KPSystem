@@ -10,6 +10,7 @@ class KP extends Model
     use HasFactory;
     
     protected $table = 'kps';
+    protected $fillable = ['pembimbing_id','mahasiswa_id'];
 
     public function mahasiswa()
     {
