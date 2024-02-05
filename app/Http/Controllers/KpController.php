@@ -337,6 +337,26 @@ class KpController extends Controller
         }
     }
 
+    public function proposalApprove(string $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        try{
+            $proposal->update([
+                'status' => 'done',
+            ]);
+            
+            $notification = [
+                'message' => 'Proposal berhasil disetujui',
+                'alert-type' => 'success'
+            ];
+            // dd($proposal);
+            return redirect()->route('kordinator.kp.proposals')->with($notification);
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['message' => 'Failed to update proposal data','error : ' => $e], 500);
+        }
+    }
+
     public function patchMetaData(Request $request)
     {
         $validatedData = $request->validate([

@@ -10,6 +10,13 @@
                 {{-- <iframe src="{{$fileUrl}}" width="100%" height="800px"></iframe> --}}
                 {{-- <iframe src="data:application/pdf;base64,{{ base64_encode($fileUrl) }}" width="100%" height="800px"></iframe> --}}
                 <iframe src="{{route('mahasiswa.kp.proposalView',['id' => $proposal->id])}}" width="100%" height="800px"></iframe>
+                <x-button type="submit" color="success" class="float-end mt-2"
+                    x-data="{ route: '{{ route('kordinator.kp.proposal.approve', ['id' => $proposal->id]) }}'}"
+                    x-on:click.prevent="$dispatch('open-modal', 'confirm-approve')"
+                    x-on:click="$dispatch('set-action', route)"
+                >
+                    Approve Proposal
+                </x-button>
             </div>
         </div>
         {{-- detail view --}}
@@ -88,6 +95,24 @@
             </div>
         </div>
     </div>
+    {{-- modal konfirmasi --}}
+    <x-modal name="confirm-approve" focusable>
+        <form method="POST" x-bind:action="action" class="p-6">
+            @csrf
+            @method('PATCH')
+            <p class="text-center text-white">
+                Konfirmasi Approve proposal
+            </p>
+            <div class="mt-6 flex justify-center">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+                <x-button type="submit" tag="button" color="success">
+                    Confirm
+                </x-button>
+            </div>
+        </form>
+    </x-modal>
     <script>
         function submitForm(e) {
             Swal.fire({

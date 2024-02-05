@@ -55,6 +55,7 @@ Route::group(['middleware' => ['role:kordinator']], function () {
             Route::patch('/details/{id}', [KpController::class, 'assignPembimbing'])->name('.assign');
             Route::get('/proposals', [KpController::class, 'proposals'])->name('.proposals');
             Route::get('/proposal/{id}', [KpController::class, 'proposalDetail'])->name('.proposal');
+            Route::patch('/proposal/{id}', [KpController::class, 'proposalApprove'])->name('.proposal.approve');
             Route::post('/proposal/{id}/revisi', [KpController::class, 'revisiProposal'])->name('.revisiProposal');
             Route::get('/lists', [KpController::class, 'lists'])->name('.lists');
         }
