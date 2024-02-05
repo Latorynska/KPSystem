@@ -181,7 +181,7 @@
             {{-- end form metadata --}}
             {{-- input surat izin card --}}
             <div x-data="{ suratIzinFile: '{{ $suratIzinFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="suratIzinFile = $event.dataTransfer.files[0].name">
-                <form action="{{ route('mahasiswa.kp.suratIzinPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadSuratIzin($event)">
+                <form action="{{ route('mahasiswa.kp.suratIzinPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
                     @csrf
                     @method('POST')
                     <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
@@ -230,7 +230,7 @@
             @if($suratIzin && $suratIzinFile)
             {{-- input proposal card --}}
             <div x-data="{ proposalFile: '{{ $proposalFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="proposalFile = $event.dataTransfer.files[0].name">
-                <form action="{{ route('mahasiswa.kp.proposalPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadProposal($event)">
+                <form action="{{ route('mahasiswa.kp.proposalPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
                     @csrf
                     @method('POST')
                     <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
@@ -246,13 +246,11 @@
                                 </div>
                                 <input id="proposalFile" name="proposal" type="file" class="hidden" accept=".pdf" @change="proposalFile = $event.target.files[0].name" />
                             </label>
-                        </div>
-                        <!-- Display file name -->
+                        </div><!-- Display file name -->
                         <div class="flex items-center" x-show="proposalFile">
                             <x-button tag="a" href="{{ $proposal ? route('mahasiswa.kp.proposalView',['id' => $proposal->id]) : '#' }}" target="_blank">
                                 <span x-text="proposalFile"></span>
                             </x-button>
-                            @if($proposal)
                             <div class="relative group ml-2">
                                 <!-- Tooltip -->
                                 <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
@@ -263,11 +261,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
                             </div>
-                            @endif
                         </div>
                         {{-- end display file name --}}
                         <div class="flex justify-between mt-2" x-show="proposalFile">
-                            <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''" x-show="proposalFile && '{{$proposal->status}}' == 'reviewed'">
+                            <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''">
                                 {{ isset($proposalFile) ? 'replace' : 'Cancel'}}
                             </x-button>
                             <x-button tag="button" type="submit" color="success" x-show="proposalFile && proposalFile !== '{{ $proposalFile ?? '' }}'">
@@ -282,7 +279,7 @@
             @if($proposal && $proposal->status =="done")
             {{-- input laporan card --}}
             <div x-data="{ laporanFile: '{{ $laporanFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanFile = $event.dataTransfer.files[0].name">
-                <form action="{{ route('mahasiswa.kp.laporanPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadLaporan($event)">
+                <form action="{{ route('mahasiswa.kp.laporanPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
                     @csrf
                     @method('POST')
                     <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
@@ -361,7 +358,7 @@
                 Swal.close();
             });
         }
-        function uploadSuratIzin(e) {
+        function uploadFile(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',
                 allowOutsideClick: false,
@@ -379,8 +376,7 @@
                 body: formData
             })
             .then(response => {
-                Swal.close();
-                if (response.ok) {
+                if (response.redirected) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -389,21 +385,33 @@
                         showConfirmButton: false
                     });
                     setTimeout(() => {
-                        window.location.href = "{{ route('mahasiswa.kp') }}";
+                        window.location.href = response.url;
                     }, 1500);
                 } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'galat terjadi!',
+                        title: 'Validation Error',
+                        text: errorMessages
                     });
                 }
             })
             .catch(error => {
                 Swal.close();
-                console.error('Error:', error);
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
             });
         }
+
         function uploadProposal(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',
@@ -421,9 +429,17 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
+            .then(response => response.json())
+            .then(data => {
                 Swal.close();
-                if (response.ok) {
+                if (data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                } else if (data.ok) { // Check if response indicates success
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -431,20 +447,24 @@
                         timer: 1500,
                         showConfirmButton: false
                     });
-                    setTimeout(() => {
-                        window.location.href = "{{ route('mahasiswa.kp') }}";
-                    }, 1500);
+                    // Redirect or perform other actions upon success
+                    // window.location.href = "{{ route('mahasiswa.kp') }}";
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'galat terjadi!',
+                        text: data.message || 'An error occurred!',
                     });
                 }
             })
             .catch(error => {
                 Swal.close();
                 console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
             });
         }
         function uploadLaporan(e) {

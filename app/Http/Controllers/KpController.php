@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 use App\Models\KP;
@@ -91,9 +92,12 @@ class KpController extends Controller
 
     public function storeSuratIzin(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'surat_izin' => 'required|file|mimes:pdf|max:1024',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         try {
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
             $kp = KP::where('mahasiswa_id', Auth()->id())->firstOrFail();
@@ -123,7 +127,6 @@ class KpController extends Controller
                     'alert-type' => 'error'
                 ];
             }
-
             return redirect()->route('mahasiswa.kp')->with($notification);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to store file'], 500);
@@ -131,9 +134,13 @@ class KpController extends Controller
     }
     public function storeProposal(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'proposal' => 'required|file|mimes:pdf|max:1024',
         ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         try {
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
