@@ -323,14 +323,14 @@ class KpController extends Controller
         ]);
         try{
             $kp->update([
-                'pembimbing_id' => $request->id,
+                'pembimbing_id' => $request->pembimbing_id,
             ]);
             
             $notification = [
                 'message' => 'Data KP berhasil diperbarui',
                 'alert-type' => 'success'
             ];
-            return redirect()->route('kordinator.kp.details',['id'=>$id])->with($notification);
+            return redirect()->route('kordinator.kp.lists')->with($notification);
         } catch (\Exception $e) {
             // dd($e);
             return response()->json(['message' => 'Failed to update KP data','error : ' => $e], 500);

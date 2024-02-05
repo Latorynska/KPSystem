@@ -52,7 +52,9 @@
                             >
                                 <option value="">choose</option>
                                 @foreach ($pembimbings as $pembimbing)  
-                                    <option value="{{ $pembimbing->id }}" {{ old('pembimbing_id') == $pembimbing->id ? 'selected' : '' }}>{{ $pembimbing->nomor_induk.' - '.$pembimbing->name }}</option>
+                                    <option value="{{ $pembimbing->id }}" {{ (old('pembimbing_id') == $pembimbing->id || $kp->pembimbing_id == $pembimbing->id) ? 'selected' : '' }}>
+                                        {{ $pembimbing->nomor_induk.' - '.$pembimbing->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             <div class="absolute top-1/2 end-2.5 -translate-y-1/2">
