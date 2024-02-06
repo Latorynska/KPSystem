@@ -25,7 +25,7 @@ class KpController extends Controller
         $mahasiswa_id = Auth()->id();
         $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->where('mahasiswa_id',$mahasiswa_id)->firstOrFail();
         $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
-        $proposal = Proposal::where('kp_id',$kp->id)->first();
+        $proposal = Proposal::where('kp_id',$kp->id)->with('revisi')->first();
         $laporan = Laporan::where('kp_id',$kp->id)->first();
         $data['kp'] = $kp;
         $data['suratIzin'] = $suratIzin;
@@ -220,31 +220,55 @@ class KpController extends Controller
         }
     }
 
-    public function revisiProposal(Request $request, string $id){
+    public function revisiProposal(Request $request, string $id)
+    {
         $proposal = Proposal::findOrFail($id);
-        try{
-            $revisi = RevisiProposal::create([
-                'proposal_id' => $proposal->id,
-                'latar_belakang' => $request->latar_belakang,
-                'identifikasi_masalah' => $request->identifikasi_masalah,
-                'rencana_solusi' => $request->rencana_solusi,
-                'ruang_lingkup' => $request->ruang_lingkup,
-                'output_kp' => $request->output_kp,
-                'metode_kp' => $request->metode_kp,
-                'jadwal_pelaksanaan' => $request->jadwal_pelaksanaan,
-                'daftar_pustaka' => $request->daftar_pustaka,
-            ]);
+
+        try {
+            // Check if a revisi proposal already exists for the current proposal
+            $revisi = RevisiProposal::where('proposal_id', $proposal->id)->first();
+
+            if ($revisi) {
+                // Update the existing revisi proposal
+                $revisi->update([
+                    'latar_belakang' => $request->latar_belakang,
+                    'identifikasi_masalah' => $request->identifikasi_masalah,
+                    'rencana_solusi' => $request->rencana_solusi,
+                    'ruang_lingkup' => $request->ruang_lingkup,
+                    'output_kp' => $request->output_kp,
+                    'metode_kp' => $request->metode_kp,
+                    'jadwal_pelaksanaan' => $request->jadwal_pelaksanaan,
+                    'daftar_pustaka' => $request->daftar_pustaka,
+                ]);
+            } else {
+                // Create a new revisi proposal
+                $revisi = RevisiProposal::create([
+                    'proposal_id' => $proposal->id,
+                    'latar_belakang' => $request->latar_belakang,
+                    'identifikasi_masalah' => $request->identifikasi_masalah,
+                    'rencana_solusi' => $request->rencana_solusi,
+                    'ruang_lingkup' => $request->ruang_lingkup,
+                    'output_kp' => $request->output_kp,
+                    'metode_kp' => $request->metode_kp,
+                    'jadwal_pelaksanaan' => $request->jadwal_pelaksanaan,
+                    'daftar_pustaka' => $request->daftar_pustaka,
+                ]);
+            }
+
+            // Update the status of the proposal
             $proposal->update([
                 'status' => 'reviewed',
             ]);
+
             $notification = [
                 'message' => 'Revisi Proposal Berhasil ditambahkan',
                 'alert-type' => 'success'
             ];
+
             return redirect()->route('kordinator.kp.proposals')->with($notification);
         } catch (\Exception $e) {
-            // dd($e);
-            return response()->json(['message' => 'Failed to update KP metadata', 'error : ' => $e], 500);
+            // Handle exception
+            return response()->json(['message' => 'Failed to update KP metadata', 'error' => $e->getMessage()], 500);
         }
     }
 

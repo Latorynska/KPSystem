@@ -267,6 +267,11 @@
                             <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''" x-show="proposalFile != '{{$proposal ? $proposal->file_name : ''}}' || '{{ $proposal ? $proposal->status : '' }}' == 'reviewed'">
                                 {{ isset($proposalFile) ? 'replace' : 'Cancel'}}
                             </x-button>
+                            @if($proposal->revisi)
+                            <x-button tag="button" type="button" color="warning">
+                                Lihat Pesan Revisi
+                            </x-button>
+                            @endif
                             <x-button tag="button" type="submit" color="success" x-show="proposalFile && proposalFile !== '{{ $proposalFile ?? '' }}'">
                                 {{ isset($proposalFile) ? 'ReUpload' : 'Upload'}}
                             </x-button>

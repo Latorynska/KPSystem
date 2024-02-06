@@ -187,6 +187,32 @@
                 },
                 body: formData,
             })
+            .then(response => {
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Proposal berhasil disetujui',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location = "{{route('kordinator.kp.proposals')}}";
+                    }, 1500);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                }
+            })
             .catch(error => {
                 console.error('There was an error : ', error);
                 Swal.fire({
@@ -230,7 +256,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: 'File Berhasil diunggah.',
+                                text: 'Proposal berhasil disetujui',
                                 timer: 1500,
                                 showConfirmButton: false
                             });
