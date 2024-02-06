@@ -147,10 +147,24 @@
                 <p class="text-white">
                     Pembimbing Dipilih : <span x-text="selectedPembimbing?.name"></span>
                 </p>
-                <div class="mt-6 flex justify-end">
+                @error('pembimbing_id')
+                    <p class="text-red-500 text-xs mt-1 ms-1">Silahkan Pilih pembimbing terlebih dahulu</p>
+                @enderror
+                <div class="mt-6 flex justify-between">
                     <x-secondary-button x-on:click="$dispatch('close')">
                         {{ __('Cancel') }}
                     </x-secondary-button>
+                    <form @submit.prevent="submitPembimbing">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="pembimbing_id" 
+                            x-bind:value="selectedPembimbing ? selectedPembimbing.id : ''" 
+                            value="{{ old('manager_id', $branch->manager->id ?? '')}}"
+                        >
+                        <x-button type="submit" tag="button" color="success" x-bind:disabled="!selectedPembimbing.id">
+                            Pilih pembimbing dan setujui
+                        </x-button>
+                    </form>
                 </div>
             </div>
         </x-modal>
@@ -184,6 +198,73 @@
             .finally(() => {
                 Swal.close();
             });
+        }
+        function submitPembimbing(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            const formData = new FormData(e.target);
+            fetch("{{ route('kordinator.kp.assign',['id'=>$proposal->kp_id]) }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData,
+            })
+            .then(response => {
+                if (response.redirected) {
+                    fetch("{{route('kordinator.kp.proposal.approve',['id'=>$proposal->id])}}",{
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (response.redirected) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'File Berhasil diunggah.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => {
+                                window.location = "{{route('kordinator.kp.proposals')}}";
+                            }, 1500);
+                        } else {
+                            return response.json();
+                        }
+                    });
+                    
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('There was an error : ', error);
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Galat terjadi, silahkan hubungi pengembang atau cek di konsol'
+                });
+            })
         }
     </script>
 </x-app-layout>

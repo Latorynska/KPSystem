@@ -3,6 +3,7 @@
     'tag' => '',
     'href' => '#',
     'color' => 'gray',
+    'disabled' => false,
 ])
 
 @php
@@ -30,6 +31,7 @@
     <button {{ 
             $attributes->merge([
                 'class' => "py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold hover:text-white focus:outline-none focus:ring-2 ring-offset-white focus:ring-offset-2 transition-all text-sm dark:text-white dark:focus:ring-offset-gray-800 $colorClass",
+                'disabled' => $disabled,
             ])
         }}
     >

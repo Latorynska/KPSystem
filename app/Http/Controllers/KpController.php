@@ -251,8 +251,7 @@ class KpController extends Controller
     /**
      * Display the specified resource.
      */
-    public function details(string $id)
-    {
+    public function details(string $id){
         $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->findOrFail($id);
         $pembimbings = User::whereHas('roles', function($query){
             $query->where('name','pembimbing');
@@ -268,8 +267,7 @@ class KpController extends Controller
         return view('kp.index',$data);
     }
     
-    public function viewSuratIzin(string $id)
-    {
+    public function viewSuratIzin(string $id){
         $suratIzin = SuratIzin::findOrFail($id);
         $filePath = 'SuratIzin/' . $suratIzin->file_name;
         if (Storage::exists($filePath)) {
@@ -284,9 +282,7 @@ class KpController extends Controller
             abort(404, 'File not found');
         }
     }
-
-    public function viewProposal(string $id)
-    {
+    public function viewProposal(string $id){
         $proposal = Proposal::findOrFail($id);
         $filePath = 'Proposal/' . $proposal->file_name;
         if (Storage::exists($filePath)) {
@@ -301,9 +297,7 @@ class KpController extends Controller
             abort(404, 'File not found');
         }
     }
-
-    public function viewLaporan(string $id)
-    {
+    public function viewLaporan(string $id){
         $laporan = Laporan::findOrFail($id);
         $filePath = 'Laporan/' . $laporan->file_name;
         if (Storage::exists($filePath)) {
@@ -340,7 +334,6 @@ class KpController extends Controller
             $kp->update([
                 'pembimbing_id' => $request->pembimbing_id,
             ]);
-            
             $notification = [
                 'message' => 'Data KP berhasil diperbarui',
                 'alert-type' => 'success'
