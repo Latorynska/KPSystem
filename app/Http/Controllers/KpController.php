@@ -73,11 +73,21 @@ class KpController extends Controller
             'kp.mahasiswa',
             'kp.metadata',
         ])->findOrFail($id);
+
+        $pembimbings = User::whereHas('roles', function($query){
+            $query->where('name','pembimbing');
+        })->get();
+        
+        foreach ($pembimbings as $pembimbing) {
+            $pembimbing->kpCount = KP::where('pembimbing_id', $pembimbing->id)->count();
+        }
+        
         $filePath = 'Proposal/' . $proposal->file_name;
         $fileUrl = Storage::get($filePath);
 
         $data['proposal'] = $proposal;
         $data['fileUrl'] = $fileUrl;
+        $data['pembimbings'] = $pembimbings;
 
         return view('kp.proposalDetail', $data);
     }
@@ -90,8 +100,7 @@ class KpController extends Controller
         //
     }
 
-    public function storeSuratIzin(Request $request)
-    {
+    public function storeSuratIzin(Request $request){
         $validator = Validator::make($request->all(), [
             'surat_izin' => 'required|file|mimes:pdf|max:1024',
         ]);
@@ -132,8 +141,7 @@ class KpController extends Controller
             return response()->json(['message' => 'Failed to store file'], 500);
         }
     }
-    public function storeProposal(Request $request)
-    {
+    public function storeProposal(Request $request){
         $validator = Validator::make($request->all(), [
             'proposal' => 'required|file|mimes:pdf|max:1024',
         ]);

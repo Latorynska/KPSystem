@@ -264,7 +264,7 @@
                         </div>
                         {{-- end display file name --}}
                         <div class="flex justify-between mt-2" x-show="proposalFile">
-                            <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''">
+                            <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''" x-show="proposalFile != '{{$proposal ? $proposal->file_name : ''}}' || '{{ $proposal ? $proposal->status : '' }}' == 'reviewed'">
                                 {{ isset($proposalFile) ? 'replace' : 'Cancel'}}
                             </x-button>
                             <x-button tag="button" type="submit" color="success" x-show="proposalFile && proposalFile !== '{{ $proposalFile ?? '' }}'">
@@ -409,105 +409,6 @@
                     title: 'Oops...',
                     text: 'An error occurred!',
                 });
-            });
-        }
-
-        function uploadProposal(e) {
-            Swal.fire({
-                title: 'Permintaan sedang diproses, mohon tunggu',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            let form = e.target;
-            let formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                Swal.close();
-                if (data.hasOwnProperty('errors')) {
-                    let errorMessages = Object.values(data.errors).join('\n');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: errorMessages
-                    });
-                } else if (data.ok) { // Check if response indicates success
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'File Berhasil diunggah.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    // Redirect or perform other actions upon success
-                    // window.location.href = "{{ route('mahasiswa.kp') }}";
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: data.message || 'An error occurred!',
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.close();
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'An error occurred!',
-                });
-            });
-        }
-        function uploadLaporan(e) {
-            Swal.fire({
-                title: 'Permintaan sedang diproses, mohon tunggu',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            let form = e.target;
-            let formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                Swal.close();
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'File Berhasil diunggah.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    setTimeout(() => {
-                        window.location.href = "{{ route('mahasiswa.kp') }}";
-                    }, 1500);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'galat terjadi!',
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.close();
-                console.error('Error:', error);
             });
         }
     </script>
