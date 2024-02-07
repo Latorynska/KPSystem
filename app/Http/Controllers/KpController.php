@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PDF;
+use Carbon\Carbon;
+
 
 use App\Models\User;
 use App\Models\KP;
@@ -337,8 +339,16 @@ class KpController extends Controller
         }
     }
 
-    public function downloadLembarPengesahanProposal(){
-        $pdf = PDF::loadview('kp.lembarPengesahan');
+    public function downloadLembarPengesahanProposal(string $id)
+    {
+        $user = User::findOrFail($id);
+        $kp = KP::where('mahasiswa_id', $id)->with(['mahasiswa', 'pembimbing', 'metadata'])->firstOrFail();
+        $proposal = Proposal::where('kp_id', $kp->id)->firstOrFail();
+        $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
+        if ($proposal->status != 'done') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+        $pdf = PDF::loadview('kp.lembarPengesahan', compact('kp', 'proposal', 'user','approvalDate'));
         return $pdf->stream('lembar_pengesahan.pdf');
     }
 

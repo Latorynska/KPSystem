@@ -275,7 +275,7 @@
                             </x-button>
                             @endif
                             @if($proposal->status == 'done')
-                                <x-button tag="a" :href="route('mahasiswa.kp.proposal.lembarPengesahan')" target="_blank" color="success">
+                                <x-button tag="a" :href="route('mahasiswa.kp.proposal.lembarPengesahan',['id'=>Auth()->id()])" target="_blank" color="success">
                                     Download Lembar Pengesahan
                                 </x-button>
                             @endif

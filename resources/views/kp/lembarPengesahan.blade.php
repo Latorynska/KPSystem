@@ -64,12 +64,12 @@
             <tr>
                 <td width="150px">Nama</td>
                 <td>:</td>
-                <td>Ujang Ujang</td>
+                <td>{{$user->name}}</td>
             </tr>
             <tr>
                 <td width="150px">NPM</td>
                 <td>:</td>
-                <td>55201000069</td>
+                <td>{{$user->nomor_induk}}</td>
             </tr>
             <tr>
                 <td width="150px">Program Studi</td>
@@ -79,7 +79,7 @@
             <tr>
                 <td width="150px" style="vertical-align: top;">Judul</td>
                 <td style="vertical-align: top;">:</td>
-                <td style="text-align: justify;">Pembuatan web profil dan pendaftaran online di rumah sakit umum daerah (RSUD) pagelaran kabupaten cianjur</td>
+                <td style="text-align: justify;">{{$kp->metadata->judul}}</td>
             </tr>
         </table>
     </div>
@@ -90,7 +90,7 @@
         <table class="informasi">
             <tr>
                 <td width="50%" style="line-height: 2; vertical-align: top; text-align:center;">pembimbing akademik yang disetujui</td>
-                <td style="line-height: 2; vertical-align: top; text-align:center; text-align:justify;">Pembuatan web profil dan pendaftaran online di rumah sakit umum daerah (RSUD) pagelaran kabupaten cianjur</td>
+                <td style="line-height: 2; vertical-align: top; text-align:center; text-align:justify;">{{$kp->metadata->judul}}</td>
             </tr>
         </table>
     </div>
@@ -98,7 +98,7 @@
         <table>
             <tr>
                 <td width="60%"></td>
-                <td width="50%">Cianjur, 01 April 2023</td>
+                <td width="50%">Cianjur, {{ $approvalDate }}</td>
             </tr>
             <tr style="padding-top:10px;">
                 <td width="50%"></td>
