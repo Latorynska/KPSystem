@@ -267,14 +267,14 @@
                             <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''" x-show="proposalFile != '{{$proposal ? $proposal->file_name : ''}}' || '{{ $proposal ? $proposal->status : '' }}' == 'reviewed'">
                                 {{ isset($proposalFile) ? 'replace' : 'Cancel'}}
                             </x-button>
-                            @if($proposal->revisi && $proposal->status == 'reviewed')
+                            @if($proposal?->revisi && $proposal->status == 'reviewed')
                             <x-button tag="button" type="button" color="warning"
                                 x-on:click.prevent="$dispatch('open-modal', 'reviewDetail')"
                             >
                                 Lihat Pesan Revisi
                             </x-button>
                             @endif
-                            @if($proposal->status == 'done')
+                            @if($proposal?->status == 'done')
                                 <x-button tag="a" :href="route('mahasiswa.kp.proposal.lembarPengesahan',['id'=>Auth()->id()])" target="_blank" color="success">
                                     Download Lembar Pengesahan
                                 </x-button>
