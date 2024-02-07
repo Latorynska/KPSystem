@@ -267,10 +267,17 @@
                             <x-button tag="button" color="danger" type="button" @click.prevent="proposalFile = ''" x-show="proposalFile != '{{$proposal ? $proposal->file_name : ''}}' || '{{ $proposal ? $proposal->status : '' }}' == 'reviewed'">
                                 {{ isset($proposalFile) ? 'replace' : 'Cancel'}}
                             </x-button>
-                            @if($proposal->revisi)
-                            <x-button tag="button" type="button" color="warning">
+                            @if($proposal->revisi && $proposal->status == 'reviewed')
+                            <x-button tag="button" type="button" color="warning"
+                                x-on:click.prevent="$dispatch('open-modal', 'reviewDetail')"
+                            >
                                 Lihat Pesan Revisi
                             </x-button>
+                            @endif
+                            @if($proposal->status == 'done')
+                                <x-button tag="a" :href="route('mahasiswa.kp.proposal.lembarPengesahan')" target="_blank" color="success">
+                                    Download Lembar Pengesahan
+                                </x-button>
                             @endif
                             <x-button tag="button" type="submit" color="success" x-show="proposalFile && proposalFile !== '{{ $proposalFile ?? '' }}'">
                                 {{ isset($proposalFile) ? 'ReUpload' : 'Upload'}}
@@ -333,6 +340,67 @@
             @endif
         </div>
     </div>
+    {{-- modal pesan revisi --}}
+    <x-modal name="reviewDetail" focusable>
+        <div class="p-6">
+            <div class="flex items-center justify-between p-2 text-lg font-bold dark:text-white">
+                <span>
+                    Pesan dari kordinator untuk perbaikan proposal 
+                </span>
+            </div>
+            <div class="flex flex-col">
+                <div class="-m-1.5 overflow-x-auto">
+                  <div class="p-1.5 min-w-full inline-block align-middle">
+                    <div class="overflow-hidden">
+                      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Bagian</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
+                    </tr>
+                </thead>
+                <tbody class="px-5">
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Latar belakang</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->latar_belakang ? $proposal?->revisi?->latar_belakang : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Identifikasi masalah</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->identifikasi_masalah ? $proposal?->revisi?->identifikasi_masalah : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Rencana - Solusi</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->rencana_solusi ? $proposal?->revisi?->rencana_solusi : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Ruang lingkup</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->ruang_lingkup ? $proposal?->revisi?->ruang_lingkup : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Output KP</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->output_kp ? $proposal?->revisi?->output_kp : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Metode KP</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->metode_kp ? $proposal?->revisi?->metode_kp : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Jadwal pelaksanaan</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->jadwal_pelaksanaan ? $proposal?->revisi?->jadwal_pelaksanaan : 'Tidak ada revisi'}}</td>
+                    </tr>
+                    <tr class="odd:bg-white even:bg-gray-100 dark:odd:bg-slate-900 dark:even:bg-slate-800">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Daftar pustaka</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{$proposal?->revisi?->daftar_pustaka ? $proposal?->revisi?->daftar_pustaka : 'Tidak ada revisi'}}</td>
+                    </tr>
+                </tbody>
+            </table>            
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    Close
+                </x-secondary-button>
+            </div>
+        </div>
+    </x-modal>
     <script>
         function submitForm(e) {
             Swal.fire({

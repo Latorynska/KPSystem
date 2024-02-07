@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 use App\Models\User;
 use App\Models\KP;
@@ -67,11 +68,11 @@ class KpController extends Controller
         //
     }
 
-    public function proposalDetail(string $id)
-    {
+    public function proposalDetail(string $id){
         $proposal = Proposal::with([
             'kp.mahasiswa',
             'kp.metadata',
+            'revisi',
         ])->findOrFail($id);
 
         $pembimbings = User::whereHas('roles', function($query){
@@ -220,8 +221,7 @@ class KpController extends Controller
         }
     }
 
-    public function revisiProposal(Request $request, string $id)
-    {
+    public function revisiProposal(Request $request, string $id){
         $proposal = Proposal::findOrFail($id);
 
         try {
@@ -337,6 +337,11 @@ class KpController extends Controller
         }
     }
 
+    public function downloadLembarPengesahanProposal(){
+        $pdf = PDF::loadview('kp.lembarPengesahan');
+        return $pdf->stream('lembar_pengesahan.pdf');
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -348,8 +353,7 @@ class KpController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function assignPembimbing(Request $request, string $id)
-    {
+    public function assignPembimbing(Request $request, string $id){
         $kp = KP::findOrFail($id);
         $request->validate([
             'pembimbing_id' => 'required'
@@ -369,8 +373,7 @@ class KpController extends Controller
         }
     }
 
-    public function proposalApprove(string $id)
-    {
+    public function proposalApprove(string $id){
         $proposal = Proposal::findOrFail($id);
         try{
             $proposal->update([
@@ -389,8 +392,7 @@ class KpController extends Controller
         }
     }
 
-    public function patchMetaData(Request $request)
-    {
+    public function patchMetaData(Request $request){
         $validatedData = $request->validate([
             'judul' => 'required|string',
             'instansi' => 'required|string',

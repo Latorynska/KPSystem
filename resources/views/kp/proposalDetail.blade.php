@@ -32,56 +32,56 @@
                                 label="Latar Belakang" 
                                 name="latar_belakang" 
                                 id="latar_belakang"
-                                value=""
+                                :value="$proposal->revisi?->latar_belakang ? $proposal->revisi->latar_belakang : ''" 
                                 :error="$errors->first('latar_belakang')"
                             />
                             <x-textarea
                                 label="Identifikasi Masalah" 
                                 name="identifikasi_masalah" 
                                 id="identifikasi_masalah"
-                                value=""
+                                :value="$proposal->revisi?->identifikasi_masalah ? $proposal->revisi->identifikasi_masalah : ''" 
                                 :error="$errors->first('identifikasi_masalah')"
                             />
                             <x-textarea
                                 label="Rencana - Solusi" 
                                 name="rencana_solusi" 
                                 id="rencana_solusi"
-                                value=""
+                                :value="$proposal->revisi?->rencana_solusi ? $proposal->revisi->rencana_solusi : ''" 
                                 :error="$errors->first('rencana_solusi')"
                             />
                             <x-textarea
                                 label="Ruang Lingkup" 
                                 name="ruang_lingkup" 
                                 id="ruang_lingkup"
-                                value=""
+                                :value="$proposal->revisi?->ruang_lingkup ? $proposal->revisi->ruang_lingkup : ''" 
                                 :error="$errors->first('ruang_lingkup')"
                             />
                             <x-textarea
                                 label="Output KP" 
                                 name="output_kp" 
                                 id="output_kp"
-                                value=""
+                                :value="$proposal->revisi?->output_kp ? $proposal->revisi->output_kp : ''" 
                                 :error="$errors->first('output_kp')"
                             />
                             <x-textarea
                                 label="Metode KP" 
                                 name="metode_kp" 
                                 id="metode_kp"
-                                value=""
+                                :value="$proposal->revisi?->metode_kp ? $proposal->revisi->metode_kp : ''" 
                                 :error="$errors->first('metode_kp')"
                             />
                             <x-textarea
                                 label="Jadwal Pelaksanaan" 
                                 name="jadwal_pelaksanaan" 
                                 id="jadwal_pelaksanaan"
-                                value=""
+                                :value="$proposal->revisi?->jadwal_pelaksanaan ? $proposal->revisi->jadwal_pelaksanaan : ''" 
                                 :error="$errors->first('jadwal_pelaksanaan')"
                             />
                             <x-textarea
                                 label="Daftar Pustaka" 
                                 name="daftar_pustaka" 
                                 id="daftar_pustaka"
-                                value=""
+                                :value="$proposal->revisi?->daftar_pustaka ? $proposal->revisi->daftar_pustaka : ''" 
                                 :error="$errors->first('daftar_pustaka')"
                             />
                             <x-button type="submit" color="success" class="float-end">
@@ -188,11 +188,12 @@
                 body: formData,
             })
             .then(response => {
+                Swal.close();
                 if (response.redirected) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Proposal berhasil disetujui',
+                        text: 'Pesan Perbaikan Proposal Berhasil Dikirim',
                         timer: 1500,
                         showConfirmButton: false
                     });
@@ -205,6 +206,7 @@
             })
             .then(data => {
                 if (data && data.hasOwnProperty('errors')) {
+                    Swal.close()
                     let errorMessages = Object.values(data.errors).join('\n');
                     Swal.fire({
                         icon: 'error',
@@ -214,15 +216,13 @@
                 }
             })
             .catch(error => {
+                Swal.close();
                 console.error('There was an error : ', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Galat terjadi, silahkan hubungi pengembang atau cek di konsol'
                 });
-            })
-            .finally(() => {
-                Swal.close();
             });
         }
         function submitPembimbing(e) {
