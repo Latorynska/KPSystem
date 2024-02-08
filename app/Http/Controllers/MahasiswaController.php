@@ -13,6 +13,9 @@ class MahasiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function dashboard(){
+        return view('mahasiswa.dashboard');
+    }
     public function index()
     {
         $mahasiswa = User::whereHas('roles', function($query){

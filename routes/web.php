@@ -51,6 +51,7 @@ Route::group(['middleware' => ['role:kordinator']], function () {
     Route::prefix('kordinator/kp')
         ->name('kordinator.kp')
         ->group(function(){
+            Route::patch('/{id}', [KpController::class, 'judulKpApprove'])->name('.judul.approve');
             Route::get('/details/{id}', [KpController::class, 'details'])->name('.details');
             Route::patch('/details/{id}', [KpController::class, 'assignPembimbing'])->name('.assign');
             Route::get('/proposals', [KpController::class, 'proposals'])->name('.proposals');
@@ -68,7 +69,6 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::get('/', [KpController::class, 'index']);
             Route::patch('/metadata', [KpController::class, 'patchMetaData'])->name('.metadata');
             Route::post('/suratIzin', [KpController::class, 'storeSuratIzin'])->name('.suratIzinPost');
-            Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
             Route::post('/proposal', [KpController::class, 'storeProposal'])->name('.proposalPost');
             Route::get('/lembarpengesahan/{id}', [KpController::class, 'downloadLembarPengesahanProposal'])->name('.proposal.lembarPengesahan');
             Route::post('/laporan', [KpController::class, 'storeLaporan'])->name('.laporanPost');
@@ -81,6 +81,7 @@ Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
         ->name('mahasiswa.kp')
         ->group(function(){
             Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
+            Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
         }
     );
 });

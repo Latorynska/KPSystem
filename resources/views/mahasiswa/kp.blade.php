@@ -15,35 +15,58 @@
                             <p class="text-sm">Anda sukses registrasi akun</p>
                         </div>
                     </li>
-                    {{-- <li class="mb-10 ms-6">
-                        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
-                            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2ZM6.5 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3.014 13.021l.157-.625A3.427 3.427 0 0 1 6.5 9.571a3.426 3.426 0 0 1 3.322 2.805l.159.622-6.967.023ZM16 12h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Z"/>
-                            </svg>
-                        </span>
-                        <h3 class="font-medium leading-tight">Surat Izin KP</h3>
-                        <p class="text-sm">Anda belum menyerahkan file surat izin kp anda</p>
-                    </li> --}}
                     <li class="mb-10 ms-6 flex items-center">
-                        @if($suratIzin)
-                            <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
-                                <svg class="w-3.5 h-3.5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                                </svg>
-                            </span>
-                            <div class="">
-                                <h3 class="font-medium leading-tight">Surat Izin KP</h3>
-                                <p class="text-sm">Anda sudah mengumpulkan surat izin</p>
-                            </div>
-                        @else
+                        @if($kp->metadata)
+                            @if(!isset($suratIzin))
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                    </svg>                  
+                                </span>
+                                <div class="">
+                                    <h3 class="font-medium leading-tight">Surat Izin</h3>
+                                    <p class="text-sm">Anda belum menyerahkan surat izin kp dari instansi anda</p>
+                                </div>
+                            @elseif($kp->metadata->status == 'awaited')
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-yellow-500 dark:text-yellow-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>                                      
+                                </span>
+                                <div class="">
+                                    <h3 class="font-medium leading-tight">Surat Izin</h3>
+                                    <p class="text-sm">Judul KP anda sedang diulas</p>
+                                </div>
+                            @elseif($kp->metadata->status == 'reviewed')
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-yellow-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-green-500 dark:text-yellow-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                    </svg>
+                                </span>
+                                <div class="">
+                                    <h3 class="font-medium leading-tight">Surat Izin</h3>
+                                    <p class="text-sm">Judul KP anda ditolak dan perlu diperbaiki</p>
+                                </div>
+                            @elseif($kp->metadata->status == 'done')
+                                <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
+                                    <svg class="w-3.5 h-3.5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                    </svg>
+                                </span>
+                                <div class="">
+                                    <h3 class="font-medium leading-tight">Surat Izin</h3>
+                                    <p class="text-sm">Judul KP anda sudah disetujui</p>
+                                </div>
+                            @endif
+                        @elseif(!isset($kp->metadata))
                             <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                 </svg>                  
                             </span>
                             <div class="">
-                                <h3 class="font-medium leading-tight">Surat Izin KP</h3>
-                                <p class="text-sm">Anda belum menyerahkan file surat izin kp anda</p>
+                                <h3 class="font-medium leading-tight">Judul KP</h3>
+                                <p class="text-sm">Anda belum memenuhi data KP anda</p>
                             </div>
                         @endif
                     </li>
@@ -170,15 +193,17 @@
                             id="nomor_pembimbing_lapangan"
                             :error="$errors->first('nomor_pembimbing_lapangan')"
                         />
-                        
                         <!-- End input nomor pembimbing lapangan -->
+                        @if($kp->metadata?->status == 'awaited' || $kp->metadata?->status == 'reviewed' || !isset($kp->metadata))
                         <x-button type="submit" color="success" class="float-end">
                             Submit
                         </x-button>
+                        @endif
                     </form>
                 </div>
             </div>
             {{-- end form metadata --}}
+            @if($kp->metadata)
             {{-- input surat izin card --}}
             <div x-data="{ suratIzinFile: '{{ $suratIzinFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="suratIzinFile = $event.dataTransfer.files[0].name">
                 <form action="{{ route('mahasiswa.kp.suratIzinPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
@@ -215,6 +240,7 @@
                             </div>
                         </div>
                         {{-- end display file name --}}
+                        @if($kp->metadata?->status == 'awaited' || $kp->metadata?->status == 'reviewed')
                         <div class="flex justify-between mt-2" x-show="suratIzinFile">
                             <x-button tag="button" color="danger" type="button" @click.prevent="suratIzinFile = ''">
                                 {{ isset($suratIzinFile) ? 'replace' : 'Cancel'}}
@@ -223,11 +249,13 @@
                                 {{ isset($suratIzinFile) ? 'ReUpload' : 'Upload'}}
                             </x-button>
                         </div>
+                        @endif
                     </div>
                 </form>
             </div>
             {{-- end input surat izin --}}
-            @if($suratIzin && $suratIzinFile)
+            @endif
+            @if($kp->metadata?->status == "done")
             {{-- input proposal card --}}
             <div x-data="{ proposalFile: '{{ $proposalFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="proposalFile = $event.dataTransfer.files[0].name">
                 <form action="{{ route('mahasiswa.kp.proposalPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">

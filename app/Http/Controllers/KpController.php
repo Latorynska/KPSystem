@@ -165,12 +165,14 @@ class KpController extends Controller
                     $proposal->update([
                         'file_name' => $file_name,
                         'status' => 'awaited',
+                        'revisi_count' => $proposal->revisi_count+1,
                     ]);
                 } else {
                     Proposal::create([
                         'kp_id' => $kp->id,
                         'file_name' => $file_name,
                         'status' => 'awaited',
+                        'revisi_count' => '0',
                     ]);
                 }
 
@@ -187,6 +189,7 @@ class KpController extends Controller
 
             return redirect()->route('mahasiswa.kp')->with($notification);
         } catch (\Exception $e) {
+            dd($e);
             return response()->json(['message' => 'Failed to store file'], 500);
         }
     }
@@ -282,6 +285,9 @@ class KpController extends Controller
         $pembimbings = User::whereHas('roles', function($query){
             $query->where('name','pembimbing');
         })->get();
+        foreach ($pembimbings as $pembimbing) {
+            $pembimbing->kpCount = KP::where('pembimbing_id', $pembimbing->id)->count();
+        }
         $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
         $proposal = Proposal::where('kp_id',$kp->id)->first();
         $laporan = Laporan::where('kp_id',$kp->id)->first();
@@ -383,6 +389,22 @@ class KpController extends Controller
         }
     }
 
+    public function judulKpApprove(string $id){
+        $kp = KP::findOrFail($id); // Find KP record by ID
+        try{
+            $kp->metadata()->update(['status' => 'done']); 
+            
+            $notification = [
+                'message' => 'Proposal berhasil disetujui',
+                'alert-type' => 'success'
+            ];
+            // dd($proposal);
+            return redirect()->route('kordinator.kp.lists')->with($notification);
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['message' => 'Failed to update proposal data','error : ' => $e], 500);
+        }
+    }
     public function proposalApprove(string $id){
         $proposal = Proposal::findOrFail($id);
         try{
@@ -419,6 +441,7 @@ class KpController extends Controller
                     'instansi' => $request->instansi,
                     'nama_pembimbing_lapangan' => $request->nama_pembimbing_lapangan,
                     'nomor_pembimbing_lapangan' => $request->nomor_pembimbing_lapangan,
+                    'status' => 'awaited',
                 ]);
             } else {
                 $metadata = new KPMetadata([
@@ -427,6 +450,7 @@ class KpController extends Controller
                     'instansi' => $request->instansi,
                     'nama_pembimbing_lapangan' => $request->nama_pembimbing_lapangan,
                     'nomor_pembimbing_lapangan' => $request->nomor_pembimbing_lapangan,
+                    'status' => 'awaited',
                 ]);
                 $kp->metadata()->save($metadata);
             }
