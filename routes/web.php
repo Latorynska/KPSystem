@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\KpController;
 use Illuminate\Support\Facades\Route;
@@ -51,7 +52,10 @@ Route::group(['middleware' => ['role:kordinator']], function () {
     Route::prefix('kordinator/kp')
         ->name('kordinator.kp')
         ->group(function(){
-            Route::patch('/{id}', [KpController::class, 'judulKpApprove'])->name('.judul.approve');
+            Route::get('/juduls', [KpController::class, 'juduls'])->name('.juduls');
+            Route::get('/judul/{id}', [KpController::class, 'judulDetail'])->name('.judul');
+            Route::patch('/judul/{id}/revisi', [KpController::class, 'revisiJudul'])->name('.revisiJudul');
+            Route::patch('/judul/{id}', [KpController::class, 'judulKpApprove'])->name('.judul.approve');
             Route::get('/details/{id}', [KpController::class, 'details'])->name('.details');
             Route::patch('/details/{id}', [KpController::class, 'assignPembimbing'])->name('.assign');
             Route::get('/proposals', [KpController::class, 'proposals'])->name('.proposals');
@@ -73,6 +77,12 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::get('/lembarpengesahan/{id}', [KpController::class, 'downloadLembarPengesahanProposal'])->name('.proposal.lembarPengesahan');
             Route::post('/laporan', [KpController::class, 'storeLaporan'])->name('.laporanPost');
             Route::get('/laporan/{id}', [KpController::class, 'viewLaporan'])->name('.laporanView');
+        }
+    );
+    Route::prefix('mahasiswa/bimbingan')
+        ->name('mahasiswa.bimbingan')
+        ->group(function(){
+            Route::get('/', [BimbinganController::class, 'index']);
         }
     );
 });

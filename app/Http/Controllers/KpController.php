@@ -53,6 +53,14 @@ class KpController extends Controller
         return view('kp.list',$data);
     }
 
+    public function juduls(){
+        $kps = KP::with('mahasiswa', 'metadata')
+            ->whereHas('metadata')
+            ->get();
+        $data['kps'] = $kps;
+        return view('kp.judul', $data);
+    }
+
     public function proposals(){
         $proposals = Proposal::with([
             'kp.mahasiswa',
@@ -70,6 +78,13 @@ class KpController extends Controller
         //
     }
 
+    public function judulDetail(string $id){
+        $kp = KP::with('mahasiswa', 'metadata')->findOrFail($id);
+        $data['kp'] = $kp;
+        $suratIzin = SuratIzin::where('kp_id',$kp->id)->first();
+        $data['suratIzin'] = $suratIzin;
+        return view('kp.judulDetail',$data);
+    }
     public function proposalDetail(string $id){
         $proposal = Proposal::with([
             'kp.mahasiswa',
@@ -112,8 +127,11 @@ class KpController extends Controller
         }
         try {
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
-            $kp = KP::where('mahasiswa_id', Auth()->id())->firstOrFail();
+            $kp = KP::where('mahasiswa_id', Auth()->id())->with('metadata')->firstOrFail();
             $suratIzin = SuratIzin::where('kp_id', $kp->id)->first();
+            $kp->metadata->update([
+                'status' => 'awaited',
+            ]);
             if ($request->hasFile('surat_izin')) {
                 $file_name = $nim . '_surat_izin.pdf';
                 $path = $request->file('surat_izin')->storeAs('SuratIzin', $file_name);
@@ -226,15 +244,37 @@ class KpController extends Controller
         }
     }
 
+    public function revisiJudul(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'pesan_revisi' => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('mahasiswa', 'metadata')->findOrFail($id);
+        try{
+            $kp->metadata->update([
+                'status' => 'reviewed',
+                'pesan_revisi' => $request->pesan_revisi,
+            ]);
+            $notification = [
+                'message' => 'Revisi Proposal Berhasil ditambahkan',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('kordinator.kp.juduls')->with($notification);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update KP metadata', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function revisiProposal(Request $request, string $id){
         $proposal = Proposal::findOrFail($id);
 
         try {
-            // Check if a revisi proposal already exists for the current proposal
             $revisi = RevisiProposal::where('proposal_id', $proposal->id)->first();
 
             if ($revisi) {
-                // Update the existing revisi proposal
                 $revisi->update([
                     'latar_belakang' => $request->latar_belakang,
                     'identifikasi_masalah' => $request->identifikasi_masalah,
@@ -345,8 +385,7 @@ class KpController extends Controller
         }
     }
 
-    public function downloadLembarPengesahanProposal(string $id)
-    {
+    public function downloadLembarPengesahanProposal(string $id){
         $user = User::findOrFail($id);
         $kp = KP::where('mahasiswa_id', $id)->with(['mahasiswa', 'pembimbing', 'metadata'])->firstOrFail();
         $proposal = Proposal::where('kp_id', $kp->id)->firstOrFail();
@@ -462,7 +501,7 @@ class KpController extends Controller
             return redirect()->route('mahasiswa.kp')->with($notification);
         } catch (\Exception $e) {
             // dd($e);
-            return response()->json(['message' => 'Failed to update KP metadata'], 500);
+            return response()->json(['message' => 'Failed to update KP metadata', 'error' => $e], 500);
         }
     }
 

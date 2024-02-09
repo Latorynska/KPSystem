@@ -9,5 +9,11 @@ class KPMetadata extends Model
 {
     use HasFactory;
     protected $table = "kp_metadatas";
-    protected $fillable = ['kp_id','judul','instansi','nama_pembimbing_lapangan','nomor_pembimbing_lapangan','status'];
+    protected $primaryKey = 'kp_id';
+    protected $fillable = ['kp_id','judul','instansi','nama_pembimbing_lapangan','nomor_pembimbing_lapangan','status','pesan_revisi'];
+
+    public function kp()
+    {
+        return $this->belongsTo(KP::class, 'kp_id', 'id');
+    }
 }

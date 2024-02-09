@@ -90,7 +90,7 @@
         <table class="informasi">
             <tr>
                 <td width="50%" style="line-height: 2; vertical-align: top; text-align:center;">pembimbing akademik yang disetujui</td>
-                <td style="line-height: 2; vertical-align: top; text-align:center; text-align:justify;">{{$kp->metadata->judul}}</td>
+                <td style="line-height: 2; vertical-align: top; text-align:center; text-align:justify;"></td>
             </tr>
         </table>
     </div>

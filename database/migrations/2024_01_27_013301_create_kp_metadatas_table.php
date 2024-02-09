@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nama_pembimbing_lapangan', 100);
             $table->string('nomor_pembimbing_lapangan', 15);
             $table->enum('status', ['done', 'awaited', 'reviewed']);
+            $table->text('pesan_revisi')->nullable();
             $table->timestamps();
             
             $table->primary('kp_id');

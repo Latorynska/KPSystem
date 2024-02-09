@@ -74,11 +74,18 @@
                                     Surat Izin Instansi peserta
                                 </p>
                                 <iframe src="{{route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id])}}" width="100%" height="800px"></iframe>
-                                <x-button type="submit" color="success" class="float-end mt-2"
-                                    x-on:click.prevent="$dispatch('open-modal', 'confirm')"
-                                >
-                                    Approve Judul KP
-                                </x-button>
+                                <div class="flex justify-between">
+                                    <x-button tag="a" class="float-end mt-2"
+                                        href="{{ $suratIzin ? route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id]) : '#' }}" target="_blank"
+                                    >
+                                        Lihat di tab baru
+                                    </x-button>
+                                    <x-button type="submit" color="success" class="float-end mt-2"
+                                        x-on:click.prevent="$dispatch('open-modal', 'confirm')"
+                                    >
+                                        Setujui Judul KP
+                                    </x-button>
+                                </div>
                             @else
                                 <p class="text-center dark:text-white">
                                     Peserta belum mengumpulkan surat izin kp
