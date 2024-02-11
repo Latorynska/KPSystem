@@ -18,7 +18,6 @@ class DashboardController extends Controller
         if ($user->hasRole('mahasiswa')) {
             return $this->mahasiswaDashboard();
         } else {
-            dd('go to dash mahasiswa');
             return $this->defaultDashboard();
         }
     }

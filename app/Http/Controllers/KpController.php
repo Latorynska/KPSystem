@@ -269,11 +269,43 @@ class KpController extends Controller
     }
 
     public function revisiProposal(Request $request, string $id){
-        $proposal = Proposal::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'latar_belakang' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'identifikasi_masalah' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'rencana_solusi' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'ruang_lingkup' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'output_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'metode_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'jadwal_pelaksanaan' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'daftar_pustaka' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        
+        // $request->validate([
+        //     'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'latar_belakang' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'identifikasi_masalah' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'rencana_solusi' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'ruang_lingkup' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'output_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'metode_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'jadwal_pelaksanaan' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        //     'daftar_pustaka' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
+        // ]);
 
+        $proposal = Proposal::findOrFail($id);
+        $kp = KP::findOrFail($proposal->kp_id);
+        // dump($proposal);
+        // dd($kp);
         try {
             $revisi = RevisiProposal::where('proposal_id', $proposal->id)->first();
-
+            if($request->judul){
+                $kp->update(['judul'=>$request->judul]);
+            }
             if ($revisi) {
                 $revisi->update([
                     'latar_belakang' => $request->latar_belakang,
@@ -313,6 +345,7 @@ class KpController extends Controller
             return redirect()->route('kordinator.kp.proposals')->with($notification);
         } catch (\Exception $e) {
             // Handle exception
+            dd($e);
             return response()->json(['message' => 'Failed to update KP metadata', 'error' => $e->getMessage()], 500);
         }
     }

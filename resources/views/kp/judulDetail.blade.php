@@ -240,7 +240,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
-                            text: 'File Berhasil diunggah.',
+                            text: 'Judul Kp telah ditolak.',
                             timer: 1500,
                             showConfirmButton: false
                         });

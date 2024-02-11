@@ -31,7 +31,7 @@
                                 <td x-text="kp.mahasiswa.nomor_induk" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.pembimbing ? kp.pembimbing.name : 'belum dipilih'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.metadata ? kp.metadata.judul : 'belum diisi'" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="kp.metadata ? kp.metadata.judul : 'belum diisi'" class="px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
                                     <x-button
                                         tag="a"

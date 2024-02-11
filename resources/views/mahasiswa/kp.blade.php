@@ -1,4 +1,22 @@
 <x-app-layout>
+    @if($proposal?->status == 'done')
+    <div class="py-5 flex items-center">
+        <div class="w-full mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                <p class="text-2xl">Pemberitahuan</p>
+                <p>
+                    Pengajuan KP anda sudah disetujui
+                </p>
+                <p>
+                    Silahkan kumpulkan print out proposal beserta lembar pengesahan ke prodi untuk
+                </p>
+                <p>
+                    Kemudian dapatkan dan submit surat bimbingan untuk melanjutkan ke tahap berikutnya
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="py-5 flex items-center">
         {{-- stepper --}}
         <div class="w-full mx-auto sm:px-6 lg:px-8">
@@ -115,7 +133,7 @@
                         </div>
                         @endif
                     </li>
-                    <li class="mb-10 ms-6 flex items-center">
+                    {{-- <li class="mb-10 ms-6 flex items-center">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
@@ -136,7 +154,7 @@
                             <h3 class="font-medium leading-tight">Laporan</h3>
                             <p class="text-sm">Anda belum menyerahkan file Laporan anda</p>
                         </div>
-                    </li>
+                    </li> --}}
                     {{-- <li class="ms-6">
                         <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
                             <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
@@ -325,7 +343,7 @@
             @endif
             @if($proposal && $proposal->status =="done")
             {{-- input laporan card --}}
-            <div x-data="{ laporanFile: '{{ $laporanFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanFile = $event.dataTransfer.files[0].name">
+            {{-- <div x-data="{ laporanFile: '{{ $laporanFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanFile = $event.dataTransfer.files[0].name">
                 <form action="{{ route('mahasiswa.kp.laporanPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
                     @csrf
                     @method('POST')
@@ -343,23 +361,19 @@
                                 <input id="laporanFile" name="laporan" type="file" class="hidden" accept=".pdf" @change="laporanFile = $event.target.files[0].name" />
                             </label>
                         </div>
-                        <!-- Display file name -->
                         <div class="flex items-center" x-show="laporanFile">
                             <x-button tag="a" href="{{ $laporan ? route('mahasiswa.kp.laporanView',['id' => $laporan->id]) : '#' }}" target="_blank">
                                 <span x-text="laporanFile"></span>
                             </x-button>
                             <div class="relative group ml-2">
-                                <!-- Tooltip -->
                                 <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
                                     click the file name button to view the file
                                 </span>
-                                <!-- Icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
                             </div>
                         </div>
-                        {{-- end display file name --}}
                         <div class="flex justify-between mt-2" x-show="laporanFile">
                             <x-button tag="button" color="danger" type="button" @click.prevent="laporanFile = ''">
                                 {{ isset($laporanFile) ? 'replace' : 'Cancel'}}
@@ -370,7 +384,7 @@
                         </div>
                     </div>
                 </form>
-            </div>
+            </div> --}}
             {{-- end laporan --}}
             @endif
         </div>

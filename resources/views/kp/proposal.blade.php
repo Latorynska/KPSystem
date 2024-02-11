@@ -11,6 +11,7 @@
                             <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">NIM</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nama</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Judul KP</th>
+                            <th scope="col" class="px-0 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Jumlah Revisi</th>
                             <th scope="col" class="px-0 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Status Proposal</th>
                             <th scope="col" class="px-0 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
                         </tr>
@@ -25,8 +26,9 @@
                                 <td x-text="proposal.number" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="proposal.kp.mahasiswa.nomor_induk" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="proposal.kp.mahasiswa.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="proposal.kp.metadata ? proposal.kp.metadata.judul : 'Belum diisi'" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="proposal.status ? proposal.status : 'Belum mengumpulkan proposal'" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="proposal.kp.metadata ? proposal.kp.metadata.judul : 'Belum diisi'" class="px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="proposal.revisi_count" class="px-0 py-4 text-center text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="proposal.status ? proposal.status : 'Belum mengumpulkan proposal'" class="px-0 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
                                     <x-button tag="a" href="#" color="success"
                                         x-data="{ detailRoute: '{{ route('kordinator.kp.proposal', ['id' => ':id']) }}' }"
