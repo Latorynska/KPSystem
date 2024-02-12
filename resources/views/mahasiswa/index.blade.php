@@ -2,7 +2,7 @@
     <div class="py-5">
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                <x-table :data="$mahasiswas" :filterFields="'[\'nomor_induk\',\'name\', \'email\']'">
+                <x-table :data="$mahasiswas" :filterFields="'[\'nomor_induk\',\'name\', \'email\']'" itemperpage="10">
                     <x-slot name="newData">
                         <x-button tag="a" color="" class="text-sm ml-4" x-data="{ syncing: false }" x-on:click.prevent="fetchData">
                             <span x-show="syncing">Menyinkronkan...</span>

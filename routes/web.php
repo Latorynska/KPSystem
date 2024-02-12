@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\BimbinganController;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -31,6 +32,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::group(['middleware' => ['role:admin']], function () {
+    Route::prefix('admin/suratbimbingan')
+        ->name('admin.suratBimbingan')
+        ->group(function(){
+            Route::get('/', [AdminController::class, 'suratBimbinganIndex']);
+            Route::patch('/{id}', [AdminController::class, 'suratBimbinganPengambilan'])->name('.pengambilan');
+        }
+    );
 });
 
 Route::group(['middleware' => ['role:admin|kordinator']], function () {

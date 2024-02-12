@@ -1,4 +1,4 @@
-<div x-data="initPagination({!! htmlspecialchars(json_encode($data)) !!}, {!! htmlspecialchars($filterFields) !!})" {{ $attributes }}>
+<div x-data="initPagination({!! htmlspecialchars(json_encode($data)) !!}, {!! htmlspecialchars($filterFields) !!},{{ isset($itemperpage) ? $itemperpage : 5 }} )" {{ $attributes }}>
     <div class="py-3 px-4 flex items-center justify-between">
         <!-- Search input -->
         <div class="relative max-w-xs">
@@ -63,13 +63,13 @@
         return data.slice(startIndex, Math.min(endIndex, data.length));
     }
 
-    function initPagination(data, filterFields) {
+    function initPagination(data, filterFields, itemPerPage) {
         console.log(data);
         data = data.map((row, index) => ({ ...row, number: index + 1 }));
         console.log(data);
         return {
             currentPage: 1,
-            itemsPerPage: 5,
+            itemsPerPage: itemPerPage,
             searchQuery: '',
             rows: data,
             get filteredRows() {

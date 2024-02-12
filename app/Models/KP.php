@@ -26,4 +26,19 @@ class KP extends Model
     {
         return $this->hasOne(KPMetadata::class, 'kp_id');
     }
+
+    public function proposal()
+    {
+        return $this->hasOne(Proposal::class, 'kp_id');   
+    }
+
+    public function surat_izin()
+    {
+        return $this->hasOne(SuratIzin::class, 'kp_id');   
+    }
+
+    public function surat_bimbingan()
+    {
+        return $this->hasOne(SuratBimbingan::class, 'kp_id');
+    }
 }

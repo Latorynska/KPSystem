@@ -72,9 +72,6 @@ class KpController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(){
-        //
-    }
 
     public function judulDetail(string $id){
         $kp = KP::with('mahasiswa', 'metadata')->findOrFail($id);
@@ -533,8 +530,4 @@ class KpController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
