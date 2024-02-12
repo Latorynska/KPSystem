@@ -22,8 +22,7 @@ class KpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index(){
         //
         $mahasiswa_id = Auth()->id();
         $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->where('mahasiswa_id',$mahasiswa_id)->firstOrFail();
@@ -73,8 +72,7 @@ class KpController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
+    public function create(){
         //
     }
 
@@ -113,10 +111,6 @@ class KpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
 
     public function storeSuratIzin(Request $request){
         $validator = Validator::make($request->all(), [
@@ -270,20 +264,20 @@ class KpController extends Controller
 
     public function revisiProposal(Request $request, string $id){
         $validator = Validator::make($request->all(), [
-            'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'latar_belakang' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'identifikasi_masalah' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'rencana_solusi' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'ruang_lingkup' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'output_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'metode_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'jadwal_pelaksanaan' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
-            'daftar_pustaka' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.()]+$/',
+            'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'latar_belakang' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'identifikasi_masalah' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'rencana_solusi' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'ruang_lingkup' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'output_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'metode_kp' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'jadwal_pelaksanaan' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            // 'daftar_pustaka' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
         ]);
         
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
-        }
+        }    
         
         // $request->validate([
         //     'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'"\-]+$/',
@@ -298,13 +292,13 @@ class KpController extends Controller
         // ]);
 
         $proposal = Proposal::findOrFail($id);
-        $kp = KP::findOrFail($proposal->kp_id);
+        $kp = KP::with('metadata')->findOrFail($proposal->kp_id);
         // dump($proposal);
         // dd($kp);
         try {
             $revisi = RevisiProposal::where('proposal_id', $proposal->id)->first();
             if($request->judul){
-                $kp->update(['judul'=>$request->judul]);
+                $kp->metadata->update(['judul'=>$request->judul]);
             }
             if ($revisi) {
                 $revisi->update([
@@ -433,10 +427,7 @@ class KpController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

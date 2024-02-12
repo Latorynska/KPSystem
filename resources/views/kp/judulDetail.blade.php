@@ -1,6 +1,46 @@
 <x-app-layout>
     <div class="" x-data="">
         <div class="py-5 flex items-center">
+            {{-- surat izin --}}
+            <div class="w-full mx-auto sm:px-6 lg:px-8">
+                {{-- view surat izin --}}
+                <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-3">
+                    <div class="w-full mx-auto">
+                        <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
+                            @if($suratIzin)
+                                <p class="text-center dark:text-white">
+                                    Surat Izin Instansi peserta
+                                </p>
+                                <iframe src="{{route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id])}}" width="100%" height="800px"></iframe>
+                                <div class="flex justify-between">
+                                    <x-button tag="a" class="float-end mt-2"
+                                        href="{{ $suratIzin ? route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id]) : '#' }}" target="_blank"
+                                    >
+                                        Lihat di tab baru
+                                    </x-button>
+                                    <div class="">
+                                        <x-button type="submit" color="danger" class="mt-2"
+                                            x-on:click.prevent="$dispatch('open-modal', 'reject')"
+                                        >
+                                            Tolak Judul KP
+                                        </x-button>
+                                        <x-button type="submit" color="success" class="mt-2"
+                                            x-on:click.prevent="$dispatch('open-modal', 'confirm')"
+                                        >
+                                            Setujui Judul KP
+                                        </x-button>
+                                    </div>
+                                </div>
+                            @else
+                                <p class="text-center dark:text-white">
+                                    Peserta belum mengumpulkan surat izin kp
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                {{-- end surat izin --}}
+            </div>
             {{-- metadata --}}
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
@@ -42,46 +82,6 @@
                 </div>
             </div>
             {{-- end metadata --}}
-            {{-- stepper --}}
-            <div class="w-full mx-auto sm:px-6 lg:px-8">
-                {{-- view surat izin --}}
-                <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-3">
-                    <div class="w-full mx-auto">
-                        <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
-                            @if($suratIzin)
-                                <p class="text-center dark:text-white">
-                                    Surat Izin Instansi peserta
-                                </p>
-                                <iframe src="{{route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id])}}" width="100%" height="800px"></iframe>
-                                <div class="flex justify-between">
-                                    <x-button tag="a" class="float-end mt-2"
-                                        href="{{ $suratIzin ? route('mahasiswa.kp.suratIzinView',['id' => $suratIzin->id]) : '#' }}" target="_blank"
-                                    >
-                                        Lihat di tab baru
-                                    </x-button>
-                                    <div class="">
-                                        <x-button type="submit" color="danger" class="mt-2"
-                                            x-on:click.prevent="$dispatch('open-modal', 'reject')"
-                                        >
-                                            Tolak Judul KP
-                                        </x-button>
-                                        <x-button type="submit" color="success" class="mt-2"
-                                            x-on:click.prevent="$dispatch('open-modal', 'confirm')"
-                                        >
-                                            Setujui Judul KP
-                                        </x-button>
-                                    </div>
-                                </div>
-                            @else
-                                <p class="text-center dark:text-white">
-                                    Peserta belum mengumpulkan surat izin kp
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                {{-- end surat izin --}}
-            </div>
         </div>
         {{-- modal konfirmasi approve judul kp --}}
         <x-modal name="confirm" focusable maxWidth="xl">

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 use App\Models\KP;
 use App\Models\KPMetadata;
+use App\Models\Proposal;
 
 class DashboardController extends Controller
 {
@@ -17,6 +18,9 @@ class DashboardController extends Controller
         $user = Auth::user();
         if ($user->hasRole('mahasiswa')) {
             return $this->mahasiswaDashboard();
+        }
+        else if ($user->hasRole('kordinator')) {
+            return $this->kordinatorDashboard();
         } else {
             return $this->defaultDashboard();
         }
@@ -39,6 +43,16 @@ class DashboardController extends Controller
 
         $data['kps'] = $kps;
         return view('mahasiswa.dashboard', $data);
+    }
+
+    protected function kordinatorDashboard(){
+        $kp_awaited_count = KPMetadata::where('status','awaited')->count();
+        $proposal_awaited_count = Proposal::where('status','awaited')->count();
+        $data = [
+            'kp_awaited_count' => $kp_awaited_count,
+            'proposal_awaited_count' => $proposal_awaited_count,
+        ];
+        return view('kordinator.dashboard',$data);
     }
 
     protected function defaultDashboard(){
