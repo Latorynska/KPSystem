@@ -95,6 +95,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
             Route::get('/', [KpController::class, 'index']);
             Route::patch('/metadata', [KpController::class, 'patchMetaData'])->name('.metadata');
             Route::post('/suratIzin', [KpController::class, 'storeSuratIzin'])->name('.suratIzinPost');
+            Route::get('/proposal/format', [KpController::class, 'downloadFormatProposal'])->name('.proposal.format');
             Route::post('/proposal', [KpController::class, 'storeProposal'])->name('.proposalPost');
             Route::get('/lembarpengesahan/{id}', [KpController::class, 'downloadLembarPengesahanProposal'])->name('.proposal.lembarPengesahan');
             Route::post('/laporan', [KpController::class, 'storeLaporan'])->name('.laporanPost');

@@ -281,6 +281,26 @@
             {{-- end input surat izin --}}
             @endif
             @if($kp->metadata?->status == "done")
+            {{-- format proposal download --}}
+            <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                <p class="text-white pb-2">Contoh Format Proposal</p>
+                <div class="flex items-center" x-show="proposalFile">
+                    <x-button tag="a" href="{{ route('mahasiswa.kp.proposal.format') }}" target="_blank">
+                        <span>Unduh Format Proposal</span>
+                    </x-button>
+                    <div class="relative group ml-2">
+                        <!-- Tooltip -->
+                        <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
+                            klik tombol di samping untuk mengunduh format proposal
+                        </span>
+                        <!-- Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            {{-- end format proposal download --}}
             {{-- input proposal card --}}
             <div x-data="{ proposalFile: '{{ $proposalFile ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="proposalFile = $event.dataTransfer.files[0].name">
                 <form action="{{ route('mahasiswa.kp.proposalPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">

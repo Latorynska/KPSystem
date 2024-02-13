@@ -421,6 +421,15 @@ class KpController extends Controller
         return $pdf->stream('lembar_pengesahan.pdf');
     }
 
+    public function downloadFormatProposal(){
+        $filePath = public_path('storage/ContohFormatProposal.docx');
+        if (file_exists($filePath)) {
+            return response()->download($filePath, "Format Proposal KP");
+        } else {
+            return response()->json(['message' => 'File not found.'], 404);
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
