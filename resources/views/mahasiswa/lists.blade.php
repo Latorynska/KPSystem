@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="py-5">
+    <div class="py-5" x-data="{selectedMahasiswa : ''}">
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
                 <x-table :data="$mahasiswas" :filterFields="'[\'nomor_induk\',\'name\', \'email\']'" itemperpage="10">
@@ -31,30 +31,11 @@
                                 <td x-text="mahasiswa.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="mahasiswa.email" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
-                                    <div class="hs-dropdown inline-flex">
-                                        <button id="hs-dropdown-basic" type="button" class="hs-dropdown-toggle py-2.5 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-                                            Actions
-                                            <svg class="hs-dropdown-open:rotate-180 w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="m6 9 6 6 6-6"/>
-                                            </svg>
-                                        </button>
-                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-min hidden z-10 mt-2 min-w-[15rem] bg-white shadow-md rounded-lg p-2 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700" aria-labelledby="hs-dropdown-basic">
-                                            <x-dropdown-button
-                                                tag="a"
-                                                href="#"
-                                                {{-- x-data="{ editRoute: '{{ route('warehouse.item.edit', ['id' => ':id']) }}' }"
-                                                x-bind:href="editRoute.replace(':id', item.id)" --}}
-                                            >
-                                                Kelola Data KP
-                                            </x-dropdown-button>
-                                            <x-dropdown-button 
-                                                tag=""
-                                                href="#"
-                                            >
-                                                Kelola Akun Mahasiswa
-                                            </x-dropdown-button>
-                                        </div>
-                                    </div>
+                                    <x-button type="button" color="warning" class="mt-2"
+                                        x-on:click.prevent="$dispatch('open-modal', 'resetPassword'); selectedMahasiswa = mahasiswa;"
+                                    >
+                                        Reset Password
+                                    </x-button>
                                 </td>
                             </tr>
                         </template>
@@ -62,6 +43,40 @@
                 </x-table>
             </div>
         </div>
+        
+        {{-- modal konfirmasi reset password --}}
+        <x-modal name="resetPassword" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Reset password akun mahasiswa?
+                </div>
+                <form 
+                    {{-- x-bind:action="{{ route('admin.mahasiswa.password.reset',['id' => "selectedMahasiswa.id"]) }}"  --}}
+                    x-data="{ resetRoute: '{{ route('admin.mahasiswa.password.reset', ['id' => ':id']) }}' }"
+                    x-bind:action="resetRoute.replace(':id', selectedMahasiswa.id)"
+                    method="POST" 
+                    @submit.prevent="submitResetPassword"
+                >
+                    @csrf
+                    @method('PATCH') 
+                    <x-form-text
+                        label="Masukkan Password Anda Sebagai Admin" 
+                        name="admin_password" 
+                        id="admin_password" 
+                        type="password"
+                        :error="$errors->first('admin_password')"
+                    />
+                    <div class="mt-6 flex justify-between">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                            Konfirmasi
+                        </x-button>
+                    </div>
+                </form>
+            </div>
+        </x-modal>
     </div>
     <script>
         function fetchData() {
@@ -98,5 +113,58 @@
                     this.syncing = false;
                 });
         }
+        function submitResetPassword(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Password mahasiswa berhasil diatur ulang',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else if (response.status === 422) {
+                    return response.json();
+                } else {
+                    throw new Error('Unexpected server response');
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
+            });
+        }
+
     </script>
 </x-app-layout>

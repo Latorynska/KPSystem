@@ -16,13 +16,13 @@ class MahasiswaController extends Controller
     public function dashboard(){
         return view('mahasiswa.dashboard');
     }
-    public function index()
+    public function lists()
     {
         $mahasiswa = User::whereHas('roles', function($query){
             $query->where('name','mahasiswa');
         })->get();
         $data['mahasiswas'] = $mahasiswa;
-        return view('mahasiswa.index', $data);
+        return view('mahasiswa.lists', $data);
     }
 
     /**
