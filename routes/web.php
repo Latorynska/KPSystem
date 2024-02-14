@@ -59,6 +59,7 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
         ->group(function(){
             Route::get('/', [DosenController::class, 'index']);
             Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
+            Route::post('/grup/link/{id}', [DosenController::class, 'postLinkGrupBimbingan'])->name('.grup.link.post');
         }
     );
 });

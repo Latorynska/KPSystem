@@ -92,7 +92,9 @@ class KpController extends Controller
         })->get();
         
         foreach ($pembimbings as $pembimbing) {
-            $pembimbing->kpCount = KP::where('pembimbing_id', $pembimbing->id)->count();
+            $pembimbing->kpCount = KP::where('pembimbing_id', $pembimbing->id)
+                ->whereYear('created_at', now()->year)
+                ->count();
         }
         
         $filePath = 'Proposal/' . $proposal->file_name;

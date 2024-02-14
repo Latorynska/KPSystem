@@ -45,4 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function grup_bimbingan()
+    {
+        return $this->hasOne(GrupBimbingan::class, 'pembimbing_id');   
+    }
 }

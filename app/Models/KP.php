@@ -41,4 +41,8 @@ class KP extends Model
     {
         return $this->hasOne(SuratBimbingan::class, 'kp_id');
     }
+
+    public function bimbingans(){
+        return $this->hasMany(Bimbingan::class, 'kp_id');
+    }
 }
