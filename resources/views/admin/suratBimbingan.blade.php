@@ -30,7 +30,7 @@
                                 <td x-text="kp.mahasiswa.nomor_induk" class="px-2 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.name" class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.metadata.judul" class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.pembimbing.name" class="px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="kp.pembimbing.name" class="px-1 py-4 text-center text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200 flex items-center justify-center">
                                     <input 
                                         class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" 

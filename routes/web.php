@@ -51,6 +51,7 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
         ->group(function(){
             Route::get('/', [MahasiswaController::class, 'lists']);
             Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
+            Route::post('/sync', [MahasiswaController::class, 'importFromExcel'])->name('.import');
             Route::patch('/{id}/reset', [AdminController::class, 'resetMahasiswaPassword'])->name('.password.reset');
         }
     );
@@ -59,6 +60,7 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
         ->group(function(){
             Route::get('/', [DosenController::class, 'index']);
             Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
+            Route::post('/sync', [DosenController::class, 'importFromExcel'])->name('.import');
             Route::post('/grup/link/{id}', [DosenController::class, 'postLinkGrupBimbingan'])->name('.grup.link.post');
         }
     );

@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Excel;
 
 use App\Models\User;
 use App\Models\KP;
 use App\Models\GrupBimbingan;
+
+// use App\Imports\DosenImport;
+
 
 class DosenController extends Controller
 {
@@ -26,32 +30,85 @@ class DosenController extends Controller
                 ->count();
         }
         $data['pembimbings'] = $pembimbings;
-        return view('dosen.index', $data);
+        return view('dosen.lists', $data);
     }
 
     // transaction
     public function synchronizePembimbingData(){
+        // waiting for API to consume, so this feature is turned off
+        return response()->json(['message' => 'Fitur dalam pengembangan, tidak bisa digunakan'], 500);
+        // try {
+        //     // Fetch JSON data from the API
+        //     $response = Http::get('https://65b8cab8b71048505a897656.mockapi.io/DosenList');
+        //     $pembimbingList = $response->json();
+        //     foreach ($pembimbingList as $pembimbing) {
+        //         $existingUser = User::where('nomor_induk', $pembimbing['NIDN'])->first();
+        //         if (!$existingUser) {
+        //             $newUser = User::create([
+        //                 'name' => $pembimbing['nama'],
+        //                 'email' => $pembimbing['email'],
+        //                 'nomor_induk' => $pembimbing['NIDN'],
+        //                 'password' => Hash::make('Password123'),
+        //             ]);
+                    
+        //             $newUser->assignRole('pembimbing');
+        //         }
+        //     }
+        //     return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e], 500);
+        // }
+    }
+
+    // public function importFromExcel(Request $request){
+    //     $request->validate([
+    //         'data_file' => 'required|max:10000|mimes:xlsx,xls',
+    //     ]);
+    //     try{
+    //         Excel::import(new DosenImport, $request->file('data_file'));
+
+    //         return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
+    //     } catch (\Exception $e) {
+    //         dd($e);
+    //         return response()->json(['message' => 'failed to upload the data', 'error' => $e->getMessage()], 500);
+    //     }
+    // }
+
+    public function importFromExcel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'data' => 'required|array',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $data = $request->data;
+        
         try {
-            // Fetch JSON data from the API
-            $response = Http::get('https://65b8cab8b71048505a897656.mockapi.io/DosenList');
-            $pembimbingList = $response->json();
-            foreach ($pembimbingList as $pembimbing) {
-                // dd($pembimbing);
-                $existingUser = User::where('nomor_induk', $pembimbing['NIDN'])->first();
+            foreach ($data as $row) {
+                $row = array_change_key_case($row, CASE_LOWER);
+                if (empty($row['nidn']) || empty($row['nama']) || empty($row['email'])) {
+                    continue;
+                }
+                $existingUser = User::where('nomor_induk', $row['nidn'])->first();
+
                 if (!$existingUser) {
                     $newUser = User::create([
-                        'name' => $pembimbing['nama'],
-                        'email' => $pembimbing['email'],
-                        'nomor_induk' => $pembimbing['NIDN'],
+                        'nomor_induk' => $row['nidn'],
+                        'name' => $row['nama'],
+                        'email' => $row['email'],
                         'password' => Hash::make('Password123'),
                     ]);
-                    
                     $newUser->assignRole('pembimbing');
+                    $kpData = new KP();
+                    $kpData->mahasiswa_id = $newUser->id;
+                    $kpData->save();
                 }
             }
-            return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
+            return response()->json(['message' => 'Data imported successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

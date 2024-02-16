@@ -54,7 +54,7 @@
                     </div>
                     <div class="text-4xl flex items-center justify-center">
                         <p>
-                            30
+                            -
                         </p>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="py-5" x-data="{selectedMahasiswa : ''}">
+    <div class="py-5" x-data="{selectedPembimbing:''}">
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                <x-table :data="$mahasiswas" :filterFields="'[\'nomor_induk\',\'name\', \'email\']'" itemperpage="10">
+                <x-table :data="$pembimbings" :filterFields="'[\'nomor_induk\',\'name\', \'email\']'">
                     <x-slot name="newData">
                         <div>
                             <x-button tag="button" color="default" 
@@ -19,27 +19,30 @@
                     <x-slot name="header">
                         <tr>
                             <th scope="col" class="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">No</th>
-                            <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">NIM</th>
+                            <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">NIDN</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nama</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Email</th>
+                            <th scope="col" class="px-0 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Jumlah Mahasiswa Bimbingan</th>
                             <th scope="col" class="px-0 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
                         </tr>
                     </x-slot>
+
                     <x-slot name="body">
                         <tr x-show="paginatedData.length === 0">
                             <td colspan="7" class="text-center py-4 text-white">No data available</td>
                         </tr>
-                        <template x-for="(mahasiswa, index) in paginatedData" :key="index">
+                        <template x-for="(pembimbing, index) in paginatedData" :key="index">
                             <tr class="even:bg-gray-100 odd:bg-white hover:bg-gray-100 dark:even:bg-gray-700 dark:odd:bg-gray-800 dark:hover:bg-gray-700">
-                                <td x-text="mahasiswa.number" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="mahasiswa.nomor_induk" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="mahasiswa.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="mahasiswa.email" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="pembimbing.number" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="pembimbing.nomor_induk" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="pembimbing.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="pembimbing.email" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="pembimbing.kpCount" class="px-0 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
-                                    <x-button type="button" color="warning" class="mt-2"
-                                        x-on:click.prevent="$dispatch('open-modal', 'resetPassword'); selectedMahasiswa = mahasiswa;"
+                                    <x-button type="button" color="success" class="mt-2"
+                                        x-on:click.prevent="$dispatch('open-modal', 'linkGrupModal'); selectedPembimbing= pembimbing;"
                                     >
-                                        Reset Password
+                                        Ubah Link Grup
                                     </x-button>
                                 </td>
                             </tr>
@@ -48,28 +51,27 @@
                 </x-table>
             </div>
         </div>
-        
-        {{-- modal konfirmasi reset password --}}
-        <x-modal name="resetPassword" focusable maxWidth="xl">
+        {{-- modal ganti link grup bimbingan --}}
+        <x-modal name="linkGrupModal" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
-                    Reset password akun mahasiswa?
+                    Link Grup Bimbingan
                 </div>
                 <form 
-                    {{-- x-bind:action="{{ route('admin.mahasiswa.password.reset',['id' => "selectedMahasiswa.id"]) }}"  --}}
-                    x-data="{ resetRoute: '{{ route('admin.mahasiswa.password.reset', ['id' => ':id']) }}' }"
-                    x-bind:action="resetRoute.replace(':id', selectedMahasiswa.id)"
+                    x-data="{ postRoute: '{{ route('admin.dosen.grup.link.post', ['id' => ':id']) }}' }"
+                    x-bind:action="postRoute.replace(':id', selectedPembimbing.id)"
                     method="POST" 
-                    @submit.prevent="submitResetPassword"
+                    @submit.prevent="submitLinkGrup"
                 >
                     @csrf
-                    @method('PATCH') 
+                    @method('POST') 
                     <x-form-text
-                        label="Masukkan Password Anda Sebagai Admin" 
-                        name="admin_password" 
-                        id="admin_password" 
-                        type="password"
-                        :error="$errors->first('admin_password')"
+                        label="Masukkan link grup sosial media mahasiswa bimbingan untuk bergabung"
+                        name="link_grup" 
+                        id="link_grup"
+                        x-bind:value="selectedPembimbing.grup_bimbingan && selectedPembimbing.grup_bimbingan.link_grup ? selectedPembimbing.grup_bimbingan.link_grup : ''"
+                        :error="$errors->first('link_grup')"
+                        required
                     />
                     <div class="mt-6 flex justify-between">
                     <x-secondary-button x-on:click="$dispatch('close')">
@@ -86,19 +88,19 @@
         <x-modal name="uploadData" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
-                    Pilih file data mahasiswa dengan data NIM, Nama, Email
+                    Pilih file data dosen pembimbing dengan data NIDN, Nama, Email
                 </div>
                 {{-- input data file --}}
                 <div x-data="{dataFile:''}" @dragover.prevent @dragenter.prevent @drop.prevent="dataFile = $event.dataTransfer.files[0].name">
                     <form 
-                        action={{route('admin.mahasiswa.import')}}
+                        action={{route('admin.dosen.import')}}
                         method="POST" 
-                        @submit.prevent="postImportMahasiswa"
+                        @submit.prevent="postImportDosen"
                     >
                         @csrf
                         @method('POST') 
                         <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                            <p class="text-white pb-2">Data Mahasiswa</p>
+                            <p class="text-white pb-2">Data Dosen Pembimbing</p>
                             <div class="flex items-center justify-center w-full" x-show="!dataFile">
                                 <label for="dataFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -154,7 +156,7 @@
                 }
             });
 
-            fetch('{{ route('admin.mahasiswa.sync') }}')
+            fetch('{{ route('admin.dosen.sync') }}')
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(data => {
@@ -179,7 +181,7 @@
                     this.syncing = false;
                 });
         }
-        function submitResetPassword(e) {
+        function submitLinkGrup(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',
                 allowOutsideClick: false,
@@ -201,7 +203,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Password mahasiswa berhasil diatur ulang',
+                        text: 'Link Grup Berhasil diperbarui',
                         timer: 1500,
                         showConfirmButton: false
                     });
@@ -231,62 +233,7 @@
                 });
             });
         }
-        // function postImportMahasiswa(e) {
-        //     Swal.fire({
-        //         title: 'Permintaan sedang diproses, mohon tunggu',
-        //         allowOutsideClick: false,
-        //         showConfirmButton: false,
-        //         didOpen: () => {
-        //             Swal.showLoading();
-        //         }
-        //     });
-
-        //     let form = e.target;
-        //     let formData = new FormData(form);
-
-        //     fetch(form.action, {
-        //         method: 'POST',
-        //         body: formData
-        //     })
-        //     .then(response => {
-        //         if (response.ok) {
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Success!',
-        //                 text: 'Data Mahasiswa Berhasil Ditambahkan',
-        //                 timer: 1500,
-        //                 showConfirmButton: false
-        //             });
-        //             setTimeout(() => {
-        //                 window.location.reload();
-        //             }, 1500);
-        //         } else if (response.status === 422) {
-        //             return response.json();
-        //         } else {
-        //             throw new Error('Unexpected server response');
-        //         }
-        //     })
-        //     .then(data => {
-        //         if (data && data.hasOwnProperty('errors')) {
-        //             let errorMessages = Object.values(data.errors).join('\n');
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Validation Error',
-        //                 text: errorMessages
-        //             });
-        //         }
-        //     })
-        //     .catch(error => {
-        //         Swal.close();
-        //         console.error(error);
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Oops...',
-        //             text: 'An error occurred!',
-        //         });
-        //     });
-        // }
-        function postImportMahasiswa(e) {
+        function postImportDosen(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',
                 allowOutsideClick: false,
@@ -313,7 +260,7 @@
                 let formattedData = jsonData.map(row => {
                     let obj = {};
                     headerRow.forEach((header, index) => {
-                        if (header.toLowerCase() === 'nim' || header.toLowerCase() === 'nama' || header.toLowerCase() === 'email') {
+                        if (header.toLowerCase() === 'nidn' || header.toLowerCase() === 'nama' || header.toLowerCase() === 'email') {
                             obj[header] = row[index];
                         }
                     });
@@ -335,7 +282,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
-                            text: 'Data Mahasiswa Berhasil Ditambahkan',
+                            text: 'Data Dosen Pembimbing Berhasil Ditambahkan',
                             timer: 1500,
                             showConfirmButton: false
                         });
@@ -371,7 +318,5 @@
 
             reader.readAsArrayBuffer(file);
         }
-
-
     </script>
 </x-app-layout>

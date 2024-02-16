@@ -80,11 +80,11 @@
                                     >
                                         Lihat di tab baru
                                     </x-button>
-                                    <x-button type="submit" color="success" class="float-end mt-2"
+                                    {{-- <x-button type="submit" color="success" class="float-end mt-2"
                                         x-on:click.prevent="$dispatch('open-modal', 'confirm')"
                                     >
                                         Setujui Judul KP
-                                    </x-button>
+                                    </x-button> --}}
                                 </div>
                             @else
                                 <p class="text-center dark:text-white">
@@ -299,7 +299,7 @@
             </div>
         </x-modal>
         {{-- modal konfirmasi approve judul kp --}}
-        <x-modal name="confirm" focusable maxWidth="xl">
+        {{-- <x-modal name="confirm" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
                     Konfirmasi Setujui Judul KP?
@@ -317,7 +317,7 @@
                     </form>
                 </div>
             </div>
-        </x-modal>
+        </x-modal> --}}
         <script>
             function submitForm(e) {
                 Swal.fire({

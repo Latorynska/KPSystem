@@ -64,9 +64,7 @@
     }
 
     function initPagination(data, filterFields, itemPerPage) {
-        console.log(data);
         data = data.map((row, index) => ({ ...row, number: index + 1 }));
-        console.log(data);
         return {
             currentPage: 1,
             itemsPerPage: itemPerPage,

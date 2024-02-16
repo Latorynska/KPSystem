@@ -11,8 +11,8 @@
                             <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">NIM</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nama</th>
                             <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Judul KP</th>
-                            <th scope="col" class="px-0 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Status Persetujuan</th>
-                            <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
+                            <th scope="col" class="px-0 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Status Persetujuan</th>
+                            <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
                         </tr>
                     </x-slot>
 
@@ -25,8 +25,8 @@
                                 <td x-text="kp.number" class="px-1 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.nomor_induk" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.name" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.metadata.judul" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.metadata.status" class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="kp.metadata.judul" class="px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
+                                <td x-text="kp.metadata.status" class="px-0 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
                                     <x-button tag="a" href="#" color="success"
                                         x-data="{ detailRoute: '{{ route('kordinator.kp.judul', ['id' => ':id']) }}' }"

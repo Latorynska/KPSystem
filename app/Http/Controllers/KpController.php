@@ -263,7 +263,7 @@ class KpController extends Controller
 
     public function revisiProposal(Request $request, string $id){
         $validator = Validator::make($request->all(), [
-            'judul' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
+            'judul' => 'nullable|max:255|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
             // 'latar_belakang' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
             // 'identifikasi_masalah' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
             // 'rencana_solusi' => 'nullable|regex:/^[a-zA-Z0-9@\/\'":,\s\-\n.*\/()+]+$/',
@@ -426,7 +426,7 @@ class KpController extends Controller
     public function downloadFormatProposal(){
         $filePath = public_path('storage/ContohFormatProposal.docx');
         if (file_exists($filePath)) {
-            return response()->download($filePath, "Format Proposal KP");
+            return response()->download($filePath, "Format Proposal KP.docx");
         } else {
             return response()->json(['message' => 'File not found.'], 404);
         }
