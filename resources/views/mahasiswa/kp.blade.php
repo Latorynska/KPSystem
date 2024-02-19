@@ -17,7 +17,7 @@
         </div>
     </div>
     @endif
-    <div class="py-5 flex items-center">
+    <div class="py-5 inline sm:flex items-center px-4 sm:px-0">
         {{-- stepper --}}
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
@@ -168,7 +168,7 @@
             </div>
         </div>
         {{-- KP data input section --}}
-        <div class="w-full mx-auto my-auto sm:px-6 lg:px-8">
+        <div class="w-full mx-auto sm:px-6 lg:px-8 mt-4">
             {{-- form metadata --}}
             <div class="w-full mx-auto">
                 <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
