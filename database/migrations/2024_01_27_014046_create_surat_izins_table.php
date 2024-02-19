@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('kp_id');
             $table->string('file_name',255);
+            $table->enum('status', ['done', 'awaited', 'reviewed']);
             $table->timestamps();
 
             $table->foreign('kp_id')->references('id')->on('kps')->onUpdate('cascade')->onDelete('cascade');
