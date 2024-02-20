@@ -53,7 +53,7 @@ class KpController extends Controller
     }
 
     public function juduls(){
-        $kps = KP::with('mahasiswa', 'metadata')
+        $kps = KP::with('mahasiswa', 'metadata', 'surat_izin')
             ->whereHas('metadata')
             ->get();
         $data['kps'] = $kps;
@@ -120,24 +120,22 @@ class KpController extends Controller
         }
         try {
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
-            $kp = KP::where('mahasiswa_id', Auth()->id())->with('metadata')->firstOrFail();
-            $suratIzin = SuratIzin::where('kp_id', $kp->id)->first();
-            $kp->metadata->update([
-                'status' => 'awaited',
-            ]);
+            $kp = KP::where('mahasiswa_id', Auth()->id())->with('surat_izin')->firstOrFail();
             if ($request->hasFile('surat_izin')) {
                 $file_name = $nim . '_surat_izin.pdf';
                 $path = $request->file('surat_izin')->storeAs('SuratIzin', $file_name);
-                if ($suratIzin) {
-                    $suratIzin->update([
+                if ($kp->surat_izin) {
+                    $kp->surat_izin->update([
                         'file_name' => $file_name,
                         'file_path' => $path,
+                        'status' => 'awaited',
                     ]);
                 } else {
-                    SuratIzin::create([
+                    $suratIzin = SuratIzin::create([
                         'kp_id' => $kp->id,
                         'file_name' => $file_name,
                         'file_path' => $path,
+                        'status' => 'awaited',
                     ]);
                 }
                 $notification = [
@@ -245,14 +243,38 @@ class KpController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $kp = KP::with('mahasiswa', 'metadata')->findOrFail($id);
+        $kp = KP::with('metadata')->findOrFail($id);
         try{
             $kp->metadata->update([
                 'status' => 'reviewed',
                 'pesan_revisi' => $request->pesan_revisi,
             ]);
             $notification = [
-                'message' => 'Revisi Proposal Berhasil ditambahkan',
+                'message' => 'Revisi Judul Berhasil ditambahkan',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('kordinator.kp.juduls')->with($notification);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update KP metadata', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function revisiSuratIzin(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'pesan_revisi' => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('surat_izin')->findOrFail($id);
+        try{
+            $kp->surat_izin->update([
+                'status' => 'reviewed',
+                'pesan_revisi' => $request->pesan_revisi,
+            ]);
+            $notification = [
+                'message' => 'Revisi Surat Izin Berhasil ditambahkan',
                 'alert-type' => 'success'
             ];
             return redirect()->route('kordinator.kp.juduls')->with($notification);
@@ -347,7 +369,7 @@ class KpController extends Controller
      * Display the specified resource.
      */
     public function details(string $id){
-        $kp = KP::with('mahasiswa', 'pembimbing', 'metadata')->findOrFail($id);
+        $kp = KP::with('mahasiswa', 'pembimbing', 'metadata', 'surat_izin')->findOrFail($id);
         $pembimbings = User::whereHas('roles', function($query){
             $query->where('name','pembimbing');
         })->get();
@@ -460,20 +482,34 @@ class KpController extends Controller
         }
     }
 
-    public function judulKpApprove(string $id){
-        $kp = KP::findOrFail($id); // Find KP record by ID
+    public function judulApprove(string $id){
+        $kp = KP::with('metadata')->findOrFail($id);
         try{
-            $kp->metadata()->update(['status' => 'done']); 
+            $kp->metadata->update(['status' => 'done']); 
             
             $notification = [
-                'message' => 'Proposal berhasil disetujui',
+                'message' => 'Judul KP berhasil disetujui',
                 'alert-type' => 'success'
             ];
-            // dd($proposal);
-            return redirect()->route('kordinator.kp.lists')->with($notification);
+            return redirect()->route('kordinator.kp.juduls')->with($notification);
         } catch (\Exception $e) {
             dd($e);
-            return response()->json(['message' => 'Failed to update proposal data','error : ' => $e], 500);
+            return response()->json(['message' => 'Failed to update Judul status','error : ' => $e], 500);
+        }
+    }
+    public function suratIzinApprove(string $id){
+        $suratIzin = SuratIzin::findOrFail($id);
+        try{
+            $suratIzin->update(['status' => 'done']); 
+            
+            $notification = [
+                'message' => 'Surat izin berhasil disetujui',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('kordinator.kp.juduls')->with($notification);
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['message' => 'Failed to update surat izin status','error : ' => $e], 500);
         }
     }
     public function proposalApprove(string $id){
@@ -502,11 +538,14 @@ class KpController extends Controller
             'nama_pembimbing_lapangan' => 'required|string',
             'nomor_pembimbing_lapangan' => 'required|string|numeric|digits_between:10,15',
         ]);
-
+        
         try {
             $user_id = Auth()->id();
             $kp = KP::with('metadata')->where('mahasiswa_id', $user_id)->firstOrFail();
             if ($kp->metadata()->exists()) {
+                if($kp->metadata->status == 'reviewed' && $request->status != 'reviewed'){
+                    return response()->json(['message' => "Judul anda sudah diulas oleh kordinator, Silahkan muat ulang halaman terlebih dahulu"], 409);
+                }
                 $kp->metadata()->update([
                     'judul' => $request->judul,
                     'instansi' => $request->instansi,

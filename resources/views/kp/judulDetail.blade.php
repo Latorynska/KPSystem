@@ -18,16 +18,16 @@
                                     >
                                         Lihat di tab baru
                                     </x-button>
-                                    <div class="">
+                                    <div>
                                         <x-button type="submit" color="danger" class="mt-2"
-                                            x-on:click.prevent="$dispatch('open-modal', 'reject')"
+                                            x-on:click.prevent="$dispatch('open-modal', 'rejectSuratIzin')"
                                         >
                                             Tolak Judul KP
                                         </x-button>
                                         <x-button type="submit" color="success" class="mt-2"
-                                            x-on:click.prevent="$dispatch('open-modal', 'confirm')"
+                                            x-on:click.prevent="$dispatch('open-modal', 'confirmSuratIzin')"
                                         >
-                                            Setujui Judul KP
+                                            Setujui Surat Izin
                                         </x-button>
                                     </div>
                                 </div>
@@ -46,37 +46,55 @@
                 <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
                     {{-- form metadata --}}
                     <div class="w-full mx-auto">
-                        <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
-                            Form Data KP
-                            <!-- input Judul KP -->
-                            <x-form-text
-                                label="Judul KP" 
-                                :value="$kp->metadata ? $kp->metadata->judul : ''" 
-                                readonly="true"
-                            />
-                            <!-- End input judul kp-->
-                            <!-- input nama instansi -->
-                            <x-form-text
-                                label="Nama Instansi" 
-                                :value="$kp->metadata ? $kp->metadata->instansi : ''"
-                                readonly="true"
-                            />
-                            <!-- End input nama instansi -->
-                            <!-- input nama pembimbing lapangan -->
-                            <x-form-text
-                                label="Nama Pembimbing Lapangan" 
-                                :value="$kp->metadata ? $kp->metadata->nama_pembimbing_lapangan : ''" 
-                                readonly="true"
-                            />
-                            <!-- End input nama pembimbing lapangan -->
-                            <!-- input nomor pembimbing lapangan -->
-                            <x-form-text
-                                label="Nomor Telepon Pembimbing Lapangan" 
-                                :value="$kp->metadata ? $kp->metadata->nomor_pembimbing_lapangan : ''" 
-                                readonly="true"
-                            />
-                            <!-- End input nomor pembimbing lapangan -->
-                        </div>
+                        <form action="{{ route('kordinator.kp.judul.approve',['id' => $kp->id]) }}" method="PATCH" @submit.prevent="submitRequest">
+                            @csrf
+                            @method('PATCH')
+                            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
+                                Form Data KP
+                                <!-- input Judul KP -->
+                                <x-form-text
+                                    label="Judul KP" 
+                                    :value="$kp->metadata ? $kp->metadata->judul : ''" 
+                                    readonly="true"
+                                />
+                                <!-- End input judul kp-->
+                                <!-- input nama instansi -->
+                                <x-form-text
+                                    label="Nama Instansi" 
+                                    :value="$kp->metadata ? $kp->metadata->instansi : ''"
+                                    readonly="true"
+                                />
+                                <!-- End input nama instansi -->
+                                <!-- input nama pembimbing lapangan -->
+                                <x-form-text
+                                    label="Nama Pembimbing Lapangan" 
+                                    :value="$kp->metadata ? $kp->metadata->nama_pembimbing_lapangan : ''" 
+                                    readonly="true"
+                                />
+                                <!-- End input nama pembimbing lapangan -->
+                                <!-- input nomor pembimbing lapangan -->
+                                <x-form-text
+                                    label="Nomor Telepon Pembimbing Lapangan" 
+                                    :value="$kp->metadata ? $kp->metadata->nomor_pembimbing_lapangan : ''" 
+                                    readonly="true"
+                                />
+                                <!-- End input nomor pembimbing lapangan -->
+                                @if($kp->metadata?->status != 'done')
+                                <div class="flex justify-between">
+                                    <x-button type="submit" color="danger" class="mt-2"
+                                        x-on:click.prevent="$dispatch('open-modal', 'rejectJudul')"
+                                    >
+                                        Tolak Judul KP
+                                    </x-button>
+                                    <x-button type="submit" color="success" class="mt-2"
+                                        x-on:click.prevent="$dispatch('open-modal', 'confirmJudul')"
+                                    >
+                                        Setujui Judul KP
+                                    </x-button>
+                                </div>
+                                @endif
+                            </div>
+                        </form>
                     </div>
                     {{-- end form metadata --}}
                 </div>
@@ -84,7 +102,7 @@
             {{-- end metadata --}}
         </div>
         {{-- modal konfirmasi approve judul kp --}}
-        <x-modal name="confirm" focusable maxWidth="xl">
+        <x-modal name="confirmJudul" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
                     Konfirmasi Setujui Judul KP?
@@ -93,7 +111,7 @@
                     <x-secondary-button x-on:click="$dispatch('close')">
                         {{ __('Cancel') }}
                     </x-secondary-button>
-                    <form @submit.prevent="submitApproveJudulKP">
+                    <form action={{route('kordinator.kp.judul.approve',['id'=>$kp->id])}} @submit.prevent="submitRequest" >
                         @csrf
                         @method('PATCH')
                         <x-button type="submit" tag="button" color="success">
@@ -103,19 +121,68 @@
                 </div>
             </div>
         </x-modal>
+        {{-- modal konfirmasi approve surat izin --}}
+        @if($suratIzin)
+        <x-modal name="confirmSuratIzin" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Konfirmasi Setujui Judul KP?
+                </div>
+                <div class="mt-6 flex justify-between">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+                    <form @submit.prevent="submitRequest" action={{route('kordinator.kp.suratIzin.approve',['id'=>$suratIzin->id])}}>
+                        @csrf
+                        @method('PATCH')
+                        <x-button type="submit" tag="button" color="success">
+                            Konfirmasi
+                        </x-button>
+                    </form>
+                </div>
+            </div>
+        </x-modal>
+        @endif
         {{-- modal tolak judul kp --}}
-        <x-modal name="reject" focusable maxWidth="xl">
+        <x-modal name="rejectJudul" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
                     Yakin ingin menolak judul KP?
                 </div>
                 
-                <form @submit.prevent="submitTolakJudul" action={{route('kordinator.kp.revisiJudul',['id'=>$kp->id])}} method="POST">
+                <form @submit.prevent="submitTolakJudul" action={{route('kordinator.kp.judul.revisi',['id'=>$kp->id])}} method="POST">
                 <x-textarea
                     label="Pesan Penolakan Judul KP" 
                     name="pesan_revisi" 
                     id="pesan_revisi"
                     :value="$kp->metadata?->pesan_revisi ? $kp->metadata->pesan_revisi : ''" 
+                    :error="$errors->first('pesan_revisi')"
+                />
+                <div class="mt-6 flex justify-between">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+                    @csrf
+                    @method('PATCH')
+                    <x-button type="submit" tag="button" color="success">
+                        Konfirmasi
+                    </x-button>
+                </div>
+                </form>
+            </div>
+        </x-modal>
+        {{-- modal tolak surat izin kp --}}
+        <x-modal name="rejectSuratIzin" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Yakin ingin menolak judul KP?
+                </div>
+                <form @submit.prevent="submitRequest" action={{route('kordinator.kp.suratIzin.revisi',['id'=>$kp->id])}} method="POST">
+                <x-textarea
+                    label="Pesan Penolakan Surat Izin KP" 
+                    name="pesan_revisi" 
+                    id="pesan_revisi"
+                    :value="$kp->surat_izin?->pesan_revisi ? $kp->surat_izin->pesan_revisi : ''" 
                     :error="$errors->first('pesan_revisi')"
                 />
                 <div class="mt-6 flex justify-between">
@@ -165,7 +232,7 @@
                     });
                 })
             }
-            function submitApproveJudulKP(e) {
+            function submitApproveSuratIzin(e) {
                 Swal.fire({
                     title: 'Permintaan sedang diproses, mohon tunggu',
                     allowOutsideClick: false,
@@ -174,9 +241,11 @@
                         Swal.showLoading();
                     }
                 });
+
                 const formData = new FormData(e.target);
-                fetch("{{route('kordinator.kp.judul.approve',['id'=>$kp->id])}}",{
-                    method: 'POST',
+                @if ($suratIzin)
+                fetch("{{ route('kordinator.kp.suratIzin.approve', ['id' => $suratIzin->id]) }}", {
+                    method: 'PATCH',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
@@ -192,7 +261,7 @@
                             showConfirmButton: false
                         });
                         setTimeout(() => {
-                            window.location = "{{route('kordinator.kp.juduls')}}";
+                            window.location = "{{ route('kordinator.kp.juduls') }}";
                         }, 1500);
                     } else {
                         return response.json();
@@ -217,6 +286,13 @@
                         text: 'Galat terjadi, silahkan hubungi pengembang atau cek di konsol'
                     });
                 })
+                @else
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Surat Izin Error',
+                    text: 'Surat Izin tidak tersedia.'
+                });
+                @endif
             }
             function submitTolakJudul(e) {
                 Swal.fire({
@@ -257,6 +333,66 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Validation Error',
+                            text: errorMessages
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'An error occurred!',
+                    });
+                });
+            }
+            function submitRequest(e) {
+                Swal.fire({
+                    title: 'Permintaan sedang diproses, mohon tunggu',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                let form = e.target;
+                let formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Permintaan berhasil disimpan',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => {
+                            window.location.href = response.url;
+                        }, 1500);
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errorMessages = Object.values(data.errors).join('\n');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: errorMessages
+                        });
+                    } else if(data && data.hasOwnProperty('message')){
+                        let messages = Object.values(message);
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Got Message From Server',
                             text: errorMessages
                         });
                     }

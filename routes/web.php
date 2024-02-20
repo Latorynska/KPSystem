@@ -79,8 +79,10 @@ Route::group(['middleware' => ['role:kordinator']], function () {
         ->group(function(){
             Route::get('/juduls', [KpController::class, 'juduls'])->name('.juduls');
             Route::get('/judul/{id}', [KpController::class, 'judulDetail'])->name('.judul');
-            Route::patch('/judul/{id}/revisi', [KpController::class, 'revisiJudul'])->name('.revisiJudul');
-            Route::patch('/judul/{id}', [KpController::class, 'judulKpApprove'])->name('.judul.approve');
+            Route::patch('/judul/{id}/revisi', [KpController::class, 'revisiJudul'])->name('.judul.revisi');
+            Route::patch('/judul/{id}/approve', [KpController::class, 'judulApprove'])->name('.judul.approve');
+            Route::patch('/judul/suratizin/{id}/approve', [KpController::class, 'suratIzinApprove'])->name('.suratIzin.approve');
+            Route::patch('/judul/suratizin/{id}/revisi', [KpController::class, 'revisiSuratIzin'])->name('.suratIzin.revisi');
             Route::get('/details/{id}', [KpController::class, 'details'])->name('.details');
             Route::patch('/details/{id}', [KpController::class, 'assignPembimbing'])->name('.assign');
             Route::get('/proposals', [KpController::class, 'proposals'])->name('.proposals');

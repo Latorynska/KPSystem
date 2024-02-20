@@ -34,6 +34,7 @@
                 'disabled' => $disabled,
             ])
         }}
+        type="{{$type}}"
     >
         {{ $slot }}
     </button>

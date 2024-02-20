@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class SuratIzin extends Model
 {
     use HasFactory;
-    protected $fillable = ['kp_id','file_name'];
+    protected $fillable = ['kp_id','file_name','status','pesan_revisi'];
 }

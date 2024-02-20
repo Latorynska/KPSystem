@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('kp_id');
             $table->string('file_name',255);
-            $table->enum('status', ['done', 'awaited', 'reviewed']);
+            $table->enum('status', ['done', 'awaited', 'reviewed'])->default('awaited');
             $table->text('pesan_revisi')->nullable();
             $table->timestamps();
 
