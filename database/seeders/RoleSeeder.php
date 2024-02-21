@@ -29,5 +29,9 @@ class RoleSeeder extends Seeder
         $role_mahasiswa = Role::create([
             'name' => 'mahasiswa'
         ]);
+
+        $role_pembimbing_lapangan = Role::create([
+            'name' => 'pembimbing_lapangan'
+        ]);
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('isi');
             $table->datetime('tanggal');
             $table->enum('tipe',['dosen','lapangan']);
-            $table->string('file_bukti',255)->nullable();
+            // $table->string('file_bukti',255)->nullable();
             $table->timestamps();
             $table->foreign('kp_id')->references('id')->on('kps')->onUpdate('cascade')->onDelete('cascade');
         });
