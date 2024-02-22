@@ -7,6 +7,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\PembimbingController;
+use App\Http\Controllers\PembimbingLapanganController;
 use App\Http\Controllers\KpController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,13 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
             Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
             Route::post('/sync', [DosenController::class, 'importFromExcel'])->name('.import');
             Route::post('/grup/link/{id}', [DosenController::class, 'postLinkGrupBimbingan'])->name('.grup.link.post');
+        }
+    );
+    Route::prefix('admin/pembimbingLapangan')
+        ->name('admin.pembimbingLapangan')
+        ->group(function(){
+            Route::get('/', [PembimbingLapanganController::class, 'lists']);
+            Route::post('/', [PembimbingLapanganController::class, 'create'])->name('.create');
         }
     );
 });

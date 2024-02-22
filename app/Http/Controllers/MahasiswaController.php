@@ -50,31 +50,31 @@ class MahasiswaController extends Controller
     public function synchronizeMahasiswaData()
     {
         // waiting for API to consume, so this feature is turned off
-        // return response()->json(['message' => 'Fitur dalam pengembangan, tidak bisa digunakan'], 500);
-        try {
-            $response = Http::get('https://65b8cab8b71048505a897656.mockapi.io/MahasiswaList');
-            $mahasiswaList = $response->json();
-            foreach ($mahasiswaList as $mahasiswa) {
-                $existingUser = User::where('nomor_induk', $mahasiswa['NIM'])->first();
-                if (!$existingUser) {
-                    $newUser = User::create([
-                        'name' => $mahasiswa['nama'],
-                        'email' => $mahasiswa['email'],
-                        'nomor_induk' => $mahasiswa['NIM'],
-                        'password' => Hash::make('Password123'),
-                    ]);
-                    $newUser->assignRole('mahasiswa');
+        return response()->json(['message' => 'Fitur dalam pengembangan, tidak bisa digunakan'], 500);
+        // try {
+        //     $response = Http::get('https://65b8cab8b71048505a897656.mockapi.io/MahasiswaList');
+        //     $mahasiswaList = $response->json();
+        //     foreach ($mahasiswaList as $mahasiswa) {
+        //         $existingUser = User::where('nomor_induk', $mahasiswa['NIM'])->first();
+        //         if (!$existingUser) {
+        //             $newUser = User::create([
+        //                 'name' => $mahasiswa['nama'],
+        //                 'email' => $mahasiswa['email'],
+        //                 'nomor_induk' => $mahasiswa['NIM'],
+        //                 'password' => Hash::make('Password123'),
+        //             ]);
+        //             $newUser->assignRole('mahasiswa');
                     
-                    $kpData = new KP();
-                    $kpData->mahasiswa_id = $newUser->id;
-                    $kpData->save();
-                }
-            }
+        //             $kpData = new KP();
+        //             $kpData->mahasiswa_id = $newUser->id;
+        //             $kpData->save();
+        //         }
+        //     }
 
-            return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        //     return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e->getMessage()], 500);
+        // }
     }
 
     // import data from excel
