@@ -23,14 +23,14 @@ class PembimbingLapanganController extends Controller
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'nomor_induk' => 'required',
-            'email' => 'required',
+            'nomor_induk' => 'required|unique:users,nomor_induk',
+            'email' => 'required|unique:users,email',
         ]);
     
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+        // return response()->json(['message' => 'data received'], 500);
         try{
             $existingUser = User::where('nomor_induk', $request->nomor_induk)->first();
             if($existingUser){
@@ -44,6 +44,7 @@ class PembimbingLapanganController extends Controller
                 ]);
                 $newPembimbingLapangan->assignRole('pembimbing_lapangan');
             }
+            return redirect()->back();
         } catch (\Exception $e) {
             dd($e);
             return response()->json(['message' => 'Failed to store file'], 500);

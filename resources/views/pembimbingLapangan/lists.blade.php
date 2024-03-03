@@ -6,7 +6,7 @@
                     <x-slot name="newData">
                         <div>
                             <x-button tag="button" color="default" 
-                                x-on:click.prevent="$dispatch('open-modal', 'uploadData')"
+                                x-on:click.prevent="$dispatch('open-modal', 'createData')"
                             >
                                 Tambah Data Baru
                             </x-button>
@@ -52,9 +52,6 @@
                     Reset password akun mahasiswa?
                 </div>
                 <form 
-                    {{-- x-bind:action="{{ route('admin.mahasiswa.password.reset',['id' => "selectedMahasiswa.id"]) }}"  --}}
-                    {{-- x-data="{ resetRoute: '{{ route('admin.mahasiswa.password.reset', ['id' => ':id']) }}' }"
-                    x-bind:action="resetRoute.replace(':id', selectedMahasiswa.id)" --}}
                     method="POST" 
                     @submit.prevent="submitResetPassword"
                 >
@@ -79,16 +76,16 @@
             </div>
         </x-modal>
         {{-- modal input data --}}
-        <x-modal name="uploadData" focusable maxWidth="xl">
+        <x-modal name="createData" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
                     Masukkan Data Pembimbing Lapangan Baru
                 </div>
                 {{-- input data pembimbing lapangan --}}
                 <form 
-                    action={{route('admin.mahasiswa.import')}}
+                    action={{route('admin.pembimbingLapangan.create')}}
                     method="POST" 
-                    @submit.prevent="postImportMahasiswa"
+                    @submit.prevent="submitForm"
                 >
                     @csrf
                     @method('POST') 
@@ -103,7 +100,7 @@
                     <!-- End input nama pembimbing lapangan -->
                     <!-- input nomor induk / username -->
                     <x-form-text
-                        label="Username atau Nomor Induk Pembimbing Lapangan" 
+                        label="Username atau Nomor Handphone Pembimbing Lapangan" 
                         name="nomor_induk" 
                         id="nomor_induk" 
                         :error="$errors->first('nomor_induk')"
@@ -119,7 +116,7 @@
                     />
                     <!-- End input nomor induk / username -->
                     <p class="text-xs text-gray-400">
-                        *Catatan : Password akan dibuat secara default
+                        *Catatan : Password akan dibuat secara default, untuk username diwajibkan agar menggunakan data unik seperti nomor handphone atau nomor induk
                     </p>
                     <div class="mt-6 flex justify-between">
                         <x-secondary-button x-on:click="$dispatch('close')">
@@ -134,4 +131,65 @@
             </div>
         </x-modal>
     </div>
+    <script>
+        function submitForm(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Akun pembimbing berhasil dibuat',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location.href = response.url;
+                    }, 1500);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                } else if(data){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Got Message From Server',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
+            });
+        }
+    </script>
 </x-app-layout>

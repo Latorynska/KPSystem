@@ -10,7 +10,7 @@ class KP extends Model
     use HasFactory;
     
     protected $table = 'kps';
-    protected $fillable = ['pembimbing_id','mahasiswa_id'];
+    protected $fillable = ['pembimbing_id','mahasiswa_id','pembimbing_lapangan_id'];
 
     public function mahasiswa()
     {
@@ -20,6 +20,11 @@ class KP extends Model
     public function pembimbing()
     {
         return $this->belongsTo(User::class, 'pembimbing_id');
+    }
+
+    public function pembimbing_lapangan()
+    {
+        return $this->belongsTo(User::class, 'pembimbing_lapangan_id');
     }
 
     public function metadata()

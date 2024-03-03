@@ -30,25 +30,8 @@ class MahasiswaController extends Controller
         return view('mahasiswa.lists', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     // import data using api from existing system
-    public function synchronizeMahasiswaData()
-    {
+    public function synchronizeMahasiswaData(){
         // waiting for API to consume, so this feature is turned off
         return response()->json(['message' => 'Fitur dalam pengembangan, tidak bisa digunakan'], 500);
         // try {
@@ -77,27 +60,7 @@ class MahasiswaController extends Controller
         // }
     }
 
-    // import data from excel
-    // public function importFromExcel(Request $request){
-        
-    //     $validator = Validator::make($request->all(), [
-    //         'data_file' => 'required|file|mimes:xlsx,xls|max:1024',
-    //     ]);
-    
-    //     if ($validator->fails()) {
-    //         return response()->json(['errors' => $validator->errors()], 422);
-    //     }
-    //     try{
-    //         Excel::import(new MahasiswaImport, $request->file('data_file'));
-    
-    //         return response()->json(['message' => 'Data Synchronized', 'status' => 'ok'], 200);
-    //     } catch (\Exception $e) {
-    //         dd($e);
-    //         return response()->json(['message' => 'failed to upload the data', 'error' => $e->getMessage()], 500);
-    //     }
-    // }
-    public function importFromExcel(Request $request)
-    {
+    public function importFromExcel(Request $request){
         $validator = Validator::make($request->all(), [
             'data' => 'required|array',
         ]);
@@ -134,35 +97,20 @@ class MahasiswaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function bimbingan()
     {
-        //
-    }
+        $mahasiswa_id = auth()->id();
+        $kp = KP::with('bimbingans', 'pembimbing.grup_bimbingan', 'surat_bimbingan')
+                ->where('mahasiswa_id', $mahasiswa_id)
+                ->firstOrFail();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // $dosenBimbingans = $kp->bimbingans->where('tipe', 'dosen');
+        // $lapanganBimbingans = $kp->bimbingans->where('tipe', 'lapangan');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $data['kp'] = $kp;
+        // $data['dosenBimbingans'] = $dosenBimbingans;
+        // $data['lapanganBimbingans'] = $lapanganBimbingans;
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('mahasiswa.bimbingan', $data);
     }
 }

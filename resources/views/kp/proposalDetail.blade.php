@@ -24,7 +24,7 @@
                     {{-- form metadata --}}
                 <div class="w-full mx-auto">
                     <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 h-full">
-                        <form action="{{ route('kordinator.kp.revisiProposal',['id' => $proposal->id]) }}" method="POST" @submit.prevent="submitForm">
+                        <form action="{{ route('kordinator.kp.proposal.revisi',['id' => $proposal->id]) }}" method="POST" @submit.prevent="submitForm">
                             @csrf
                             @method('POST')
                             Form Judul KP
@@ -232,59 +232,6 @@
                     text: 'An error occurred!',
                 });
             });
-            // Swal.fire({
-            //     title: 'Permintaan sedang diproses, mohon tunggu',
-            //     allowOutsideClick: false,
-            //     showConfirmButton: false,
-            //     didOpen: () => {
-            //         Swal.showLoading();
-            //     }
-            // });
-            // const formData = new FormData(e.target);
-            // fetch("{{ route('kordinator.kp.revisiProposal',['id' => $proposal->id]) }}", {
-            //     method: 'POST',
-            //     headers: {
-            //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //     },
-            //     body: formData,
-            // })
-            // .then(response => {
-            //     Swal.close();
-            //     if (response.redirected) {
-            //         Swal.fire({
-            //             icon: 'success',
-            //             title: 'Success!',
-            //             text: 'Pesan Perbaikan Proposal Berhasil Dikirim',
-            //             timer: 1500,
-            //             showConfirmButton: false
-            //         });
-            //         setTimeout(() => {
-            //             window.location = "{{route('kordinator.kp.proposals')}}";
-            //         }, 1500);
-            //     } else {
-            //         return response.json();
-            //     }
-            // })
-            // .then(data => {
-            //     if (data && data.hasOwnProperty('errors')) {
-            //         Swal.close()
-            //         let errorMessages = Object.values(data.errors).join('\n');
-            //         Swal.fire({
-            //             icon: 'error',
-            //             title: 'Validation Error',
-            //             text: errorMessages
-            //         });
-            //     }
-            // })
-            // .catch(error => {
-            //     Swal.close();
-            //     console.error('There was an error : ', error);
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Oops...',
-            //         text: 'Galat terjadi, silahkan hubungi pengembang atau cek di konsol'
-            //     });
-            // });
         }
         function submitPembimbing(e) {
             Swal.fire({

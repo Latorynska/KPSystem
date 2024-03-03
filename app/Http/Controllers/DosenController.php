@@ -101,9 +101,6 @@ class DosenController extends Controller
                         'password' => Hash::make('Password123'),
                     ]);
                     $newUser->assignRole('pembimbing');
-                    $kpData = new KP();
-                    $kpData->mahasiswa_id = $newUser->id;
-                    $kpData->save();
                 }
             }
             return response()->json(['message' => 'Data imported successfully'], 200);
