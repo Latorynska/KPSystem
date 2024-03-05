@@ -140,6 +140,14 @@ Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
         }
     );
 });
+Route::group(['middleware' => ['role:pembimbing_lapangan|pembimbing']], function () {
+    Route::prefix('pembimbing/')
+        ->name('pembimbing.bimbingan')
+        ->group(function(){
+            Route::get('/lists', [BimbinganController::class, 'bimbinganList'])->name('.lists');
+        }
+    );
+});
 
 
 require __DIR__.'/auth.php';

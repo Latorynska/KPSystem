@@ -14,8 +14,7 @@ use App\Models\Bimbingan;
 
 class BimbinganController extends Controller
 {
-    public function lists()
-    {
+    public function lists(){
         $kps = KP::with('metadata', 'proposal', 'surat_bimbingan', 'mahasiswa', 'pembimbing', 'pembimbing_lapangan')
             ->whereHas('proposal', function ($query) {
                 $query->where('status', 'done');
@@ -84,4 +83,27 @@ class BimbinganController extends Controller
             return response()->json(['message' => 'Failed to update KP data','error : ' => $e], 500);
         }
     }
+
+    public function bimbinganList(){
+        if (auth()->user()->hasRole('pembimbing_lapangan')) {
+            $kps = KP::where('pembimbing_lapangan_id', auth()->id())
+                ->with('mahasiswa', 'metadata','bimbingans')
+                ->whereHas('bimbingans', function ($query) {
+                    $query->where('tipe', 'lapangan');
+                })
+                ->get();
+        } else if (auth()->user()->hasRole('pembimbing')) {
+            $kps = KP::where('pembimbing_id', auth()->id())
+                ->with('mahasiswa', 'metadata','bimbingans')
+                ->whereHas('bimbingans', function ($query) {
+                    $query->where('tipe', 'lapangan');
+                })
+                ->get();
+        }
+
+        $data['kps'] = $kps;
+        // dd($data);
+        return view('pembimbingLapangan.bimbinganList', $data);
+    }
+
 }
