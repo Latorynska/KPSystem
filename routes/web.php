@@ -145,6 +145,7 @@ Route::group(['middleware' => ['role:pembimbing_lapangan|pembimbing']], function
         ->name('pembimbing.bimbingan')
         ->group(function(){
             Route::get('/lists', [BimbinganController::class, 'bimbinganList'])->name('.lists');
+            Route::get('/lists/details/{id}', [BimbinganController::class, 'details'])->name('.lists.details');
         }
     );
 });

@@ -36,6 +36,24 @@ class BimbinganController extends Controller
         return view('bimbingan.lists', $data);
     }
 
+    
+    public function details(string $id){
+        $kp = KP::findOrFail($id);
+        $kp->load([
+            'bimbingans' => function ($query) {
+                if (auth()->user()->hasRole('pembimbing_lapangan')) {
+                    $query->where('tipe', 'lapangan');
+                } elseif (auth()->user()->hasRole('pembimbing')) {
+                    $query->where('tipe', 'dosen');
+                }
+            },
+        ]);
+
+        $data['kp'] = $kp;
+        return view('pembimbingLapangan.bimbinganDetail', $data);
+    }
+
+
     public function create(Request $request){
         $validator = Validator::make($request->all(), [
             'tipe' => 'required',
@@ -85,25 +103,30 @@ class BimbinganController extends Controller
     }
 
     public function bimbinganList(){
-        if (auth()->user()->hasRole('pembimbing_lapangan')) {
-            $kps = KP::where('pembimbing_lapangan_id', auth()->id())
-                ->with('mahasiswa', 'metadata','bimbingans')
-                ->whereHas('bimbingans', function ($query) {
-                    $query->where('tipe', 'lapangan');
-                })
-                ->get();
-        } else if (auth()->user()->hasRole('pembimbing')) {
-            $kps = KP::where('pembimbing_id', auth()->id())
-                ->with('mahasiswa', 'metadata','bimbingans')
-                ->whereHas('bimbingans', function ($query) {
-                    $query->where('tipe', 'lapangan');
-                })
-                ->get();
+        $kps = KP::with([
+                'mahasiswa',
+                'metadata',
+                'bimbingans' => function ($query) {
+                    if (auth()->user()->hasRole('pembimbing_lapangan')) {
+                        $query->where('tipe', 'lapangan');
+                    } elseif (auth()->user()->hasRole('pembimbing')) {
+                        $query->where('tipe', 'dosen');
+                    }
+                },
+            ])
+            ->when(auth()->user()->hasRole('pembimbing_lapangan'), function ($query) {
+                $query->where('pembimbing_lapangan_id', auth()->id());
+            })
+            ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
+                $query->where('pembimbing_id', auth()->id());
+            })
+            ->get();
+
+        foreach ($kps as $kp) {
+            $kp->bimbingan_count = $kp->bimbingans->count();
         }
 
         $data['kps'] = $kps;
-        // dd($data);
         return view('pembimbingLapangan.bimbinganList', $data);
     }
-
 }

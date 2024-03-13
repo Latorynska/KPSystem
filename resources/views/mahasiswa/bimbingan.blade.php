@@ -14,6 +14,7 @@
                 @endif
             </div>
         </div>
+        @if($kp->surat_bimbingan?->status_pengambilan)
         <div class="py-5 inline sm:flex items-center px-4">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
@@ -74,6 +75,12 @@
                 </div>
             </div>
             <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto">
+                @if(!isset($kp->pembimbing_lapangan_id))
+                <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
+                    <p>Akun Pembimbing Lapangan Anda Belum Tersedia di data KP</p>
+                    <p>Silahkan Hubungi Kordinator Kp agar bimbingan lapangan anda dapat disetujui oleh pembimbing lapangan</p>
+                </div>
+                @endif
                 <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
                     Data Bimbingan Lapangan
                     <x-table :data="collect($kp->bimbingans->where('tipe', 'lapangan'))->values()" :filterFields="'[\'tanggal\',\'isi\', \'status\']'" itemperpage="10">
@@ -132,6 +139,7 @@
                 </div>
             </div>
         </div>
+        @endif
         
         {{-- modal input data --}}
         <x-modal name="createData" focusable maxWidth="xl">
