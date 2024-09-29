@@ -22,10 +22,10 @@ class KP extends Model
         return $this->belongsTo(User::class, 'pembimbing_id');
     }
 
-    public function pembimbing_lapangan()
-    {
-        return $this->belongsTo(User::class, 'pembimbing_lapangan_id');
-    }
+    // public function pembimbing_lapangan()
+    // {
+    //     return $this->belongsTo(User::class, 'pembimbing_lapangan_id');
+    // }
 
     public function metadata()
     {

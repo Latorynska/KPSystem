@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('kp_id');
             $table->text('isi');
             $table->datetime('tanggal');
-            $table->enum('tipe',['dosen','lapangan']);
+            // $table->enum('tipe',['dosen','lapangan']);
             $table->enum('status', ['done', 'awaited', 'reviewed']);
             // $table->string('file_bukti',255)->nullable();
             $table->timestamps();

@@ -17,8 +17,8 @@
                             <th scope="col" class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nama Mahasiswa</th>
                             <th scope="col" class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Pembimbing Akademik</th>
                             <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Bimbingan Akademik</th>
-                            <th scope="col" class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Pembimbing Lapangan</th>
-                            <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Bimbingan Lapangan</th>
+                            {{-- <th scope="col" class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Pembimbing Lapangan</th> --}}
+                            {{-- <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Bimbingan Lapangan</th> --}}
                             <th scope="col" class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Judul KP</th>
                             <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
                         </tr>
@@ -35,8 +35,8 @@
                                 <td x-text="kp.mahasiswa.name" class="px-4 py-4 text-start whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.pembimbing ? kp.pembimbing.name : 'belum dipilih'" class="px-4 py-4 text-start whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.dosen_bimbingan_count + '/7'" class="px-4 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.pembimbing_lapangan ? kp.pembimbing_lapangan.name : 'belum dipilih'" class="px-4 py-4 text-start whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td x-text="kp.lapangan_bimbingan_count + '/10'" class="px-4 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                {{-- <td x-text="kp.pembimbing_lapangan ? kp.pembimbing_lapangan.name : 'belum dipilih'" class="px-4 py-4 text-start whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td> --}}
+                                {{-- <td x-text="kp.lapangan_bimbingan_count + '/10'" class="px-4 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td> --}}
                                 <td x-text="kp.metadata ? kp.metadata.judul : 'belum diisi'" class="px-1 py-4 text-start text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td class="px-2 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
                                     <div class="hs-dropdown relative inline-flex">
@@ -78,7 +78,7 @@
                         pilih pembimbing
                     </span>
                 </div>
-                <x-table :data="$pembimbing_lapangans" :filterFields="'[\'name\', \'nomor_induk\']'">
+                {{-- <x-table :data="$pembimbing_lapangans" :filterFields="'[\'name\', \'nomor_induk\']'">
                     <x-slot name="newData">
                         <div>
                             <x-button tag="button" color="default" 
@@ -126,7 +126,7 @@
                             </tr>
                         </template>
                     </x-slot>
-                </x-table>
+                </x-table> --}}
                 <p class="text-white">
                     Pembimbing Dipilih : <span x-text="selectedPembimbingLapangan?.name"></span>
                 </p>
@@ -158,60 +158,7 @@
         </x-modal>
         
         {{-- modal input pembimbing lapangan data --}}
-        <x-modal name="createData" focusable maxWidth="xl">
-            <div class="p-6">
-                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
-                    Masukkan Data Pembimbing Lapangan Baru
-                </div>
-                {{-- input data pembimbing lapangan --}}
-                <form 
-                    action={{route('admin.pembimbingLapangan.create')}}
-                    method="POST" 
-                    @submit.prevent="submitForm"
-                >
-                    @csrf
-                    @method('POST') 
-                    <!-- input nama pembimbing lapangan -->
-                    <x-form-text
-                        label="Nama Pembimbing Lapangan" 
-                        name="name" 
-                        {{-- :value="$kp->metadata ? $kp->metadata->instansi : ''"  --}}
-                        id="name" 
-                        :error="$errors->first('name')"
-                    />
-                    <!-- End input nama pembimbing lapangan -->
-                    <!-- input nomor induk / username -->
-                    <x-form-text
-                        label="Username atau Nomor Handphone Pembimbing Lapangan" 
-                        name="nomor_induk" 
-                        id="nomor_induk" 
-                        :error="$errors->first('nomor_induk')"
-                    />
-                    <!-- End input nomor induk / username -->
-                    <!-- input nomor induk / username -->
-                    <x-form-text
-                        label="Email Pembimbing Lapangan" 
-                        name="email" 
-                        id="email" 
-                        :error="$errors->first('email')"
-                        type="email"
-                    />
-                    <!-- End input nomor induk / username -->
-                    <p class="text-xs text-gray-400">
-                        *Catatan : Password akan dibuat secara default, untuk username diwajibkan agar menggunakan data unik seperti nomor handphone atau nomor induk
-                    </p>
-                    <div class="mt-6 flex justify-between">
-                        <x-secondary-button x-on:click="$dispatch('close')">
-                            {{ __('Cancel') }}
-                        </x-secondary-button>
-                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
-                            Submit
-                        </x-button>
-                    </div>
-                </form>
-                {{-- end input data pembimbing lapangan --}}
-            </div>
-        </x-modal>
+        
     </div>
     <script>
         function submitForm(e) {
@@ -223,7 +170,7 @@
                     Swal.showLoading();
                 }
             });
-
+            
             let form = e.target;
             let formData = new FormData(form);
 

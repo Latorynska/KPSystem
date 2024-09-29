@@ -30,8 +30,8 @@ class RoleSeeder extends Seeder
             'name' => 'mahasiswa'
         ]);
 
-        $role_pembimbing_lapangan = Role::create([
-            'name' => 'pembimbing_lapangan'
-        ]);
+        // $role_pembimbing_lapangan = Role::create([
+        //     'name' => 'pembimbing_lapangan'
+        // ]);
     }
 }

@@ -15,12 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('mahasiswa_id');
             $table->unsignedBigInteger('pembimbing_id')->nullable();
-            $table->unsignedBigInteger('pembimbing_lapangan_id')->nullable();
             $table->timestamps();
 
             $table->foreign('mahasiswa_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('pembimbing_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('pembimbing_lapangan_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             // alter command for pembimbing lapangan id
             // ALTER TABLE kps
             // ADD COLUMN pembimbing_lapangan_id BIGINT UNSIGNED NULL,
