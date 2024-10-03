@@ -50,13 +50,13 @@
                             </template>
                         </x-slot>
                     </x-table>
-                    @if(count($kp->bimbingans->where('tipe','dosen')) < 7)
+                    {{-- @if(count($kp->bimbingans->where('tipe','dosen')) < 7)
                     <x-button tag="button" color="success" class="float-end mt-2"
                         x-on:click.prevent="tipe='dosen';$dispatch('open-modal', 'createData');selectedBimbingan=''"
                     >
                         Tambah Data Baru
                     </x-button>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
             <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto">

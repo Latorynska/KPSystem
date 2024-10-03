@@ -26,9 +26,9 @@ class BimbinganController extends Controller
         //     $query->where('name','pembimbing_lapangan');
         // })->get();
         foreach ($kps as $kp) {
-            $dosenBimbinganCount = $kp->bimbingans()->where('tipe', 'dosen')->count();
+            $bimbinganCount = $kp->bimbingans()->count();
             // $lapanganBimbinganCount = $kp->bimbingans()->where('tipe', 'lapangan')->count();
-            $kp->dosen_bimbingan_count = $dosenBimbinganCount;
+            $kp->bimbingan_count = $bimbinganCount;
             // $kp->lapangan_bimbingan_count = $lapanganBimbinganCount;
         }
 
@@ -41,18 +41,11 @@ class BimbinganController extends Controller
     public function details(string $id){
         $kp = KP::findOrFail($id);
         $kp->load([
-            'bimbingans' => function ($query) {
-                // if (auth()->user()->hasRole('pembimbing_lapangan')) {
-                //     $query->where('tipe', 'lapangan');
-                // } elseif (auth()->user()->hasRole('pembimbing')) {
-                //     $query->where('tipe', 'dosen');
-                // }
-                $query->where('tipe', 'dosen');
-            },
+            'bimbingans'
         ]);
 
         $data['kp'] = $kp;
-        return view('pembimbingLapangan.bimbinganDetail', $data);
+        return view('pembimbing.bimbinganDetail', $data);
     }
 
 
@@ -108,14 +101,7 @@ class BimbinganController extends Controller
         $kps = KP::with([
                 'mahasiswa',
                 'metadata',
-                'bimbingans' => function ($query) {
-                    // if (auth()->user()->hasRole('pembimbing_lapangan')) {
-                    //     $query->where('tipe', 'lapangan');
-                    // } elseif (auth()->user()->hasRole('pembimbing')) {
-                    //     $query->where('tipe', 'dosen');
-                    // }
-                    $query->where('tipe', 'dosen');
-                },
+                'bimbingans',
             ])
             // ->when(auth()->user()->hasRole('pembimbing_lapangan'), function ($query) {
             //     $query->where('pembimbing_lapangan_id', auth()->id());
@@ -130,6 +116,6 @@ class BimbinganController extends Controller
         }
 
         $data['kps'] = $kps;
-        return view('pembimbingLapangan.bimbinganList', $data);
+        return view('pembimbing.bimbinganList', $data);
     }
 }

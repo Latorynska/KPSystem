@@ -11,8 +11,8 @@
                                 Import from excel
                             </x-button>
                             <x-button tag="a" color="" class="text-sm ml-4" x-data="{ syncing: false }" x-on:click.prevent="fetchData">
-                                <span x-show="syncing">Menyinkronkan...</span>
-                                <span x-show="!syncing">Sinkronkan Data</span>
+                                <span x-show="syncing == true">Menyinkronkan...</span>
+                                <span x-show="syncing == false">Sinkronkan Data</span>
                             </x-button>
                         </div>
                     </x-slot>

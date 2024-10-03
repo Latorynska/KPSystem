@@ -19,7 +19,7 @@
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
                     Data Bimbingan Akademik
-                    <x-table :data="collect($kp->bimbingans->where('tipe', 'dosen'))->values()" :filterFields="'[\'tanggal\',\'isi\', \'status\']'" itemperpage="10">
+                    <x-table :data="collect($kp->bimbingans)->values()" :filterFields="'[\'tanggal\',\'isi\', \'status\']'" itemperpage="10">
                         <x-slot name="newData">
                             <div class="inline text-end">
                                 <p class="dark:text-gray-300 text-sm">
@@ -33,7 +33,7 @@
                         <x-slot name="header">
                             <tr>
                                 <th scope="col" class="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">No</th>
-                                <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Tanggal Bimbingan</th>
+                                <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Tanggal Bimbingan</th>
                                 <th scope="col" class="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Isi Bimbingan</th>
                                 <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Status Bimbingan</th>
                                 <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400 w-fit">Action</th>
@@ -50,7 +50,7 @@
                                     <td class="px-2 py-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200">
                                         <span x-text="new Date(bimbingan.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })"></span>
                                     </td>
-                                    <td class="px-2 py-4 text-justify text-xs sm:text-sm text-gray-800 dark:text-gray-200" x-text="bimbingan.isi.length > 15 ? bimbingan.isi.slice(0, 15) + '...' : bimbingan.isi"></td>
+                                    <td class="px-2 py-4 text-justify text-xs sm:text-sm text-gray-800 dark:text-gray-200" x-text="bimbingan.isi.length > 30 ? bimbingan.isi.slice(0, 30) + '...' : bimbingan.isi"></td>
                                     <td x-text="bimbingan.status" class="px-2 py-4 text-center whitespace-nowrap text-xs sm:text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td class="px-0 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
                                         <x-button
@@ -156,14 +156,14 @@
                     @csrf
                     @method('POST') 
                     <!-- input tipe bimbingan-->
-                    <x-form-text
+                    {{-- <x-form-text
                         label="Tipe Bimbingan" 
                         name="tipe" 
                         readonly="true"
                         x-bind:value="selectedBimbingan ? selectedBimbingan.tipe : tipe"
                         id="tipe"
                         :error="$errors->first('tipe')"
-                    />
+                    /> --}}
                     <!-- End input tipe bimbingan -->
                     <!-- input tanggal bimbingan-->
                     <x-form-text
