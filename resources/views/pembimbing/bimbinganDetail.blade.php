@@ -8,10 +8,12 @@
                         <x-slot name="newData">
                             <div class="inline text-end">
                                 <p class="dark:text-gray-300 text-sm">
-                                    Data : {{count($kp->bimbingans->where('tipe', 'dosen'))}}/7
+                                    Data : {{count($kp->bimbingans)}}/7
                                 </p>
                                 <p class="dark:text-gray-300 text-sm">
-                                    Disetujui : {{ count($kp->bimbingans->where(['tipe' => 'dosen', 'status' => 'done'])) }}/7
+                                    Disetujui : {{ $kp->bimbingans->filter(function($bimbingan) {
+                                        return $bimbingan->status === 'done';
+                                    })->count() }}/7
                                 </p>
                             </div>
                         </x-slot>
@@ -73,16 +75,104 @@
                             Status Bimbingan: <span x-text="selectedBimbingan.status"></span>
                         </p>
                     </div>
-                    <x-button 
+                    <x-button tag="button" color="success"
+                        x-on:click.prevent="tipe='dosen';$dispatch('open-modal', 'setujuiBimbingan');"
+                        x-show="selectedBimbingan"
+                    >
+                        Setujui Bimbingan
+                    </x-button>
+                    {{-- <x-button 
                         tag="button"
                         color="success"
                         x-on:click.prevent="selectedBimbingan=bimbingan;"
                         x-show="selectedBimbingan"
                     >
                         Setujui Bimbingan
-                    </x-button>
+                    </x-button> --}}
                 </div>
             </div>
         </div>
+        {{-- modal input data --}}
+        <x-modal name="setujuiBimbingan" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Konfirmasi Setujui Judul KP?
+                </div>
+                <div class="mt-6 flex justify-between">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+                    <form :action="`{{ route('pembimbing.bimbingan.approve', '') }}/${selectedBimbingan.id}`" @submit.prevent="submitRequest">
+                        @csrf
+                        @method('PATCH')
+                        <x-button type="submit" tag="button" color="success">
+                            Konfirmasi
+                        </x-button>
+                    </form>
+                </div>
+            </div>
+        </x-modal>
+        <script>
+            function submitRequest(e) {
+                Swal.fire({
+                    title: 'Permintaan sedang diproses, mohon tunggu',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                let form = e.target;
+                let formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Permintaan berhasil disimpan',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => {
+                            window.location.href = response.url;
+                        }, 1500);
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errorMessages = Object.values(data.errors).join('\n');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: errorMessages
+                        });
+                    } else if(data && data.hasOwnProperty('message')){
+                        let messages = Object.values(message);
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Got Message From Server',
+                            text: errorMessages
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'An error occurred!',
+                    });
+                });
+            }
+        </script>
     </div>
 </x-app-layout>

@@ -65,14 +65,6 @@ Route::group(['middleware' => ['role:admin|kordinator']], function () {
         }
     );
 });
-Route::group(['middleware' => ['role:pembimbing']], function () {
-    Route::prefix('pembimbing/bimbingan/lists')
-        ->name('pembimbing')
-        ->group(function(){
-            Route::get('/', [PembimbingController::class, 'lists'])->name('.bimbingan.mahasiswa');
-        }
-    );
-});
 Route::group(['middleware' => ['role:kordinator']], function () {
     Route::prefix('kordinator/kp')
         ->name('kordinator.kp')
@@ -120,6 +112,7 @@ Route::group(['middleware' => ['role:mahasiswa']], function () {
         ->group(function(){
             Route::get('/', [MahasiswaController::class, 'bimbingan']);
             Route::post('/create', [BimbinganController::class, 'create'])->name('.create');
+            Route::patch('/update/{id}', [BimbinganController::class, 'update'])->name('.update');
         }
     );
 });
@@ -132,15 +125,24 @@ Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
         }
     );
 });
-Route::group(['middleware' => ['role:kordinator|pembimbing']], function () {
+Route::group(['middleware' => ['role:pembimbing']], function () {
     Route::prefix('pembimbing/')
         ->name('pembimbing.bimbingan')
         ->group(function(){
             Route::get('/lists', [BimbinganController::class, 'bimbinganList'])->name('.lists');
             Route::get('/lists/details/{id}', [BimbinganController::class, 'details'])->name('.lists.details');
+            Route::patch('/bimbingan/approve/{id}', [BimbinganController::class, 'bimbinganApprove'])->name('.approve');
+        }
+    );
+    Route::prefix('pembimbing/bimbingan/lists')
+        ->name('pembimbing')
+        ->group(function(){
+            Route::get('/', [PembimbingController::class, 'lists'])->name('.bimbingan.mahasiswa');
         }
     );
 });
-
+// Route::group(['middleware' => ['role:pembimbing']], function () {
+    
+// });
 
 require __DIR__.'/auth.php';

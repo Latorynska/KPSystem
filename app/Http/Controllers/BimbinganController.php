@@ -76,6 +76,29 @@ class BimbinganController extends Controller
         }
     }
 
+    public function update(Request $request, string $id){
+        $bimbingan = Bimbingan::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'isi' => 'required',
+            'tanggal' => 'required|date_format:Y-m-d',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        try{
+            $bimbingan->update([
+                'isi' => $request->isi,
+                'tanggal' => $request->tanggal,
+                'status' => 'awaited',
+            ]);
+            return redirect()->route('mahasiswa.bimbingan');
+        }catch (\Exception $e) {
+            // dd($e);
+            return response()->json(['message' => 'Failed to update data'], 500);
+        }
+    }
+
     // public function assignPembimbingLapangan(Request $request, string $id){
     //     $kp = KP::findOrFail($id);
     //     $request->validate([
@@ -117,5 +140,21 @@ class BimbinganController extends Controller
 
         $data['kps'] = $kps;
         return view('pembimbing.bimbinganList', $data);
+    }
+
+    public function bimbinganApprove(string $id){
+        $bimbingan = Bimbingan::findOrFail($id);
+        try{
+            $bimbingan->update(['status' => 'done']);
+
+            $notification = [
+                'message' => 'Bimbingan Disetujui',
+                'alert-type' => 'success'
+            ];
+            return redirect()->route('pembimbing.bimbingan.lists.details', ['id' => $bimbingan->kp_id])->with($notification);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update bimbingan status', 'error' => $e], 500);
+        }
+        
     }
 }

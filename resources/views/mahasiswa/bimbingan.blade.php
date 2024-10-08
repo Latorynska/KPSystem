@@ -23,10 +23,12 @@
                         <x-slot name="newData">
                             <div class="inline text-end">
                                 <p class="dark:text-gray-300 text-sm">
-                                    Data : {{count($kp->bimbingans->where('tipe', 'dosen'))}}/7
+                                    Data : {{count($kp->bimbingans)}}/7
                                 </p>
                                 <p class="dark:text-gray-300 text-sm">
-                                    Disetujui : {{ count($kp->bimbingans->where(['tipe' => 'dosen', 'status' => 'done'])) }}/7
+                                    Disetujui : {{ $kp->bimbingans->filter(function($bimbingan) {
+                                        return $bimbingan->status === 'done';
+                                    })->count() }}/7
                                 </p>
                             </div>
                         </x-slot>
@@ -56,7 +58,7 @@
                                         <x-button
                                             tag="button"
                                             color="success"
-                                            x-on:click.prevent="tipe='';selectedBimbingan=bimbingan;$dispatch('open-modal', 'createData')"
+                                            x-on:click.prevent="selectedBimbingan=bimbingan;$dispatch('open-modal', 'updateData')"
                                         >
                                             Detail
                                         </x-button>
@@ -65,9 +67,9 @@
                             </template>
                         </x-slot>
                     </x-table>
-                    @if(count($kp->bimbingans->where('tipe','dosen')) < 7)
+                    @if(count($kp->bimbingans) < 7)
                     <x-button tag="button" color="success" class="float-end mt-2"
-                        x-on:click.prevent="tipe='dosen';$dispatch('open-modal', 'createData');selectedBimbingan=''"
+                        x-on:click.prevent="$dispatch('open-modal', 'createData');selectedBimbingan=''"
                     >
                         Tambah Data Baru
                     </x-button>
@@ -192,8 +194,54 @@
                         <x-secondary-button x-on:click="$dispatch('close')">
                             {{ __('Cancel') }}
                         </x-secondary-button>
-                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="tipe">
+                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="selectedBimbingan ===''">
                             Submit
+                        </x-button>
+                    </div>
+                </form>
+                {{-- end input data pembimbing lapangan --}}
+            </div>
+        </x-modal>
+        {{-- modal update data --}}
+        <x-modal name="updateData" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Update Data Bimbingan
+                </div>
+                {{-- input data pembimbing lapangan --}}
+                    <form 
+                        :action="`{{ route('mahasiswa.bimbingan.update', '') }}/${selectedBimbingan.id}`"
+                        method="PATCH" 
+                        @submit.prevent="submitForm"
+                    >
+                    @csrf
+                    @method('PATCH') 
+                    <!-- input tanggal bimbingan-->
+                    <x-form-text
+                        label="Tanggal Bimbingan" 
+                        name="tanggal" 
+                        type="date"
+                        x-bind:value="selectedBimbingan ? new Date(selectedBimbingan.tanggal).toISOString().split('T')[0] : ''"
+                        id="tanggal"
+                        :error="$errors->first('tanggal')"
+                    />
+                    <!-- End input tanggal bimbingan -->
+                    <!-- input isi text bimbingan -->  
+                    <x-textarea
+                        label="Isi Bimbingan" 
+                        name="isi" 
+                        id="isi"
+                        rows="5"
+                        x-bind:value="selectedBimbingan ? selectedBimbingan.isi : ''" 
+                        {{-- :error="$errors->first('identifikasi_masalah')" --}}
+                    />
+                    <!-- End input isi text bimbingan -->
+                    <div class="mt-6 flex justify-between">
+                        <x-secondary-button x-on:click="$dispatch('close')">
+                            {{ __('Cancel') }}
+                        </x-secondary-button>
+                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="selectedBimbingan.status != 'done'">
+                            update
                         </x-button>
                     </div>
                 </form>
