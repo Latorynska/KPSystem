@@ -50,4 +50,8 @@ class KP extends Model
     public function bimbingans(){
         return $this->hasMany(Bimbingan::class, 'kp_id');
     }
+
+    public function syarat_seminar(){
+        return $this->hasOne(SyaratSeminar::class, 'kp_id');
+    }
 }

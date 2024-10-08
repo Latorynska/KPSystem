@@ -10,6 +10,8 @@ use Excel;
 
 use App\Models\User;
 use App\Models\KP;
+use App\Models\SyaratSeminar;
+
 
 // use App\Imports\MahasiswaImport;
 
@@ -21,8 +23,7 @@ class MahasiswaController extends Controller
     public function dashboard(){
         return view('mahasiswa.dashboard');
     }
-    public function lists()
-    {
+    public function lists(){
         $mahasiswa = User::whereHas('roles', function($query){
             $query->where('name','mahasiswa');
         })->get();
@@ -89,6 +90,9 @@ class MahasiswaController extends Controller
                     $kpData = new KP();
                     $kpData->mahasiswa_id = $newUser->id;
                     $kpData->save();
+                    $syaratSeminar = new SyaratSeminar();
+                    $syaratSeminar->kp_id = $kpData->id;
+                    $syaratSeminar->save();
                 }
             }
             return response()->json(['message' => 'Data imported successfully'], 200);
@@ -97,8 +101,7 @@ class MahasiswaController extends Controller
         }
     }
 
-    public function bimbingan()
-    {
+    public function bimbingan(){
         $mahasiswa_id = auth()->id();
         $kp = KP::with('bimbingans', 'pembimbing.grup_bimbingan', 'surat_bimbingan')
                 ->where('mahasiswa_id', $mahasiswa_id)
