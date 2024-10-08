@@ -76,4 +76,21 @@ class AdminController extends Controller
             return response()->json(['message' => 'Failed to update data'], 500);
         }
     }
+
+    public function administratifSeminarIndex() {
+        $kps = KP::with('mahasiswa', 'metadata', 'pembimbing', 'surat_bimbingan', 'bimbingans')
+            ->whereHas('proposal', function ($query) {
+                $query->where('status', 'done');
+            })
+            ->whereHas('bimbingans', function ($query) {
+                $query->where('status', 'done');
+            })
+            ->groupBy('id')
+            ->havingRaw('COUNT(bimbingans.id) > 7')
+            ->get();
+        
+        $data['kps'] = $kps;
+    
+        return view('', $data);
+    }
 }
