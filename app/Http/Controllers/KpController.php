@@ -155,7 +155,7 @@ class KpController extends Controller
     }
     public function storeProposal(Request $request){
         $validator = Validator::make($request->all(), [
-            'proposal' => 'required|file|mimes:pdf|max:1024',
+            'proposal' => 'required|file|mimes:pdf|max:4096',
         ]);
     
         if ($validator->fails()) {
