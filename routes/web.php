@@ -43,6 +43,12 @@ Route::group(['middleware' => ['role:admin']], function () {
             Route::patch('/{id}', [AdminController::class, 'suratBimbinganPengambilan'])->name('.pengambilan');
         }
     );
+    Route::prefix('admin/syaratseminar')
+        ->name('admin.syaratSeminar')
+        ->group(function(){
+            Route::get('/', [AdminController::class, 'administratifSeminarIndex']);
+        }
+    );
 });
 
 Route::group(['middleware' => ['role:admin|kordinator']], function () {

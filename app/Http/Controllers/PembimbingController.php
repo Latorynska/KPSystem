@@ -25,6 +25,6 @@ class PembimbingController extends Controller
                 ->get();
     
         $data['kps'] = $kps;
-        return view('pembimbing.bimbinganLists',$data);
+        return view('pembimbing.bimbinganList',$data);
     }
 }

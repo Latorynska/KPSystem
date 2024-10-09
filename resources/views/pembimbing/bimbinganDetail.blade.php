@@ -77,7 +77,7 @@
                     </div>
                     <x-button tag="button" color="success"
                         x-on:click.prevent="tipe='dosen';$dispatch('open-modal', 'setujuiBimbingan');"
-                        x-show="selectedBimbingan"
+                        x-show="selectedBimbingan != '' && selectedBimbingan.status != 'done'"
                     >
                         Setujui Bimbingan
                     </x-button>
