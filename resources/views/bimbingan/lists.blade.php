@@ -38,9 +38,9 @@
                                 {{-- <td x-text="kp.pembimbing_lapangan ? kp.pembimbing_lapangan.name : 'belum dipilih'" class="px-4 py-4 text-start whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td> --}}
                                 {{-- <td x-text="kp.lapangan_bimbingan_count + '/10'" class="px-4 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td> --}}
                                 <td x-text="kp.metadata ? kp.metadata.judul : 'belum diisi'" class="px-1 py-4 text-start text-sm text-gray-800 dark:text-gray-200"></td>
-                                <td class="px-2 py-2 whitespace-nowrap text-center text-sm font-medium w-fit">
+                                <td class="px-2 py-2 whitespace-nowrap text-center items-center text-sm font-medium w-fit">
                                     <a 
-                                        class="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
+                                        class="flex w-full justify-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
                                         x-data="{ detailRoute: '{{ route('pembimbing.bimbingan.lists.details', ['id' => ':id']) }}' }"
                                         x-bind:href="detailRoute.replace(':id', kp.id)"
                                     >

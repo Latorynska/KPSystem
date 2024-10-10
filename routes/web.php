@@ -47,6 +47,7 @@ Route::group(['middleware' => ['role:admin']], function () {
         ->name('admin.syaratSeminar')
         ->group(function(){
             Route::get('/', [AdminController::class, 'administratifSeminarIndex']);
+            Route::patch('/{id}', [AdminController::class, 'updateSyaratSeminar'])->name('.patch');
         }
     );
 });

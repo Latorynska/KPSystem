@@ -92,6 +92,21 @@ class AdminController extends Controller
     
         // dd($data);
         return view('admin.syaratSeminar', $data);
-    }    
+    }
+    public function updateSyaratSeminar(Request $request, string $id) {
+        try {
+            $kp = KP::with('syarat_seminar')->findOrFail($id);
+        
+            $field = array_keys($request->all())[0];
+            $value = $request->input($field);
 
+            $kp->syarat_seminar->update([
+                $field => $value,
+            ]);
+            return response()->json(['message' => 'Data updated successfully'], 200);
+        } catch (\Exception $e) {
+            // Handle exception
+            return response()->json(['message' => 'Failed to update data', 'error' => $e->getMessage()], 500);
+        }
+    }    
 }

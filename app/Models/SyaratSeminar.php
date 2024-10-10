@@ -9,6 +9,7 @@ class SyaratSeminar extends Model
 {
     use HasFactory;
     protected $table = 'syarat_seminars';
-    protected $fillable = ['laporan_kp','lembar_pengesahan','bebas_tunggakan','bebas_pinjaman'];
+    protected $primaryKey = 'kp_id';
+    protected $fillable = ['laporan_kp','lembar_pengesahan','bebas_tunggakan','bebas_pinjaman', 'tanggal'];
     
 }

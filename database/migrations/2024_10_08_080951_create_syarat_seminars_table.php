@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('lembar_pengesahan')->default(false);
             $table->boolean('bebas_tunggakan')->default(false);
             $table->boolean('bebas_pinjaman')->default(false);
+            $table->datetime('tanggal')->nullable();
             $table->timestamps();
         });
     }
