@@ -31,10 +31,10 @@
                                 <td x-text="kp.number" class="px-2 py-4 text-center whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.nomor_induk" class="px-6 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
                                 <td x-text="kp.mahasiswa.name" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></td>
-                                <td x-text="kp.metadata.judul.length > 30 ? kp.metadata.judul(0, 30) + '...' : kp.metadata.judul" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></td>
-                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200 flex items-center justify-center">
+                                <td x-text="kp.metadata.judul.length > 30 ? kp.metadata.judul.slice(0, 30) + '...' : kp.metadata.judul" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></td>
+                                <td class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-200">
                                     <input 
-                                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-300 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" 
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-800 dark:border-gray-300 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" 
                                         type="checkbox" 
                                         x-bind:checked="kp.syarat_seminar.laporan_kp"
                                         x-on:change="updateSyaratSeminar(kp.id, 'laporan_kp', $event.target.checked)"
@@ -65,6 +65,7 @@
                                     >
                                 </td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
+                                    <p x-text="kp.syarat_seminar.tanggal ? kp.syarat_seminar.tanggal : ''" x-show="kp.syarat_seminar.tanggal" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></p>
                                     <x-button
                                         tag="button"
                                         color="success"
@@ -89,7 +90,7 @@
                     <form 
                         {{-- :action="`{{ route('mahasiswa.bimbingan.update', '') }}/${selectedBimbingan.id}`" --}}
                         method="PATCH" 
-                        @submit.prevent="submitForm"
+                        @submit.prevent="updateSyaratSeminar(selectedSeminar.kp_id, 'tanggal',$event.target.tanggal.value)"
                     >
                     @csrf
                     @method('PATCH') 
@@ -97,7 +98,7 @@
                     <x-form-text
                         label="Tanggal Seminar" 
                         name="tanggal" 
-                        type="date"
+                        type="datetime-local"
                         x-bind:value="selectedSeminar.tanggal ? new Date(selectedSeminar.tanggal).toISOString().split('T')[0] : ''"
                         id="tanggal"
                         :error="$errors->first('tanggal')"
