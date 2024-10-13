@@ -24,7 +24,7 @@
 
                     <x-slot name="body">
                         <tr x-show="paginatedData.length === 0">
-                            <td colspan="8" class="text-center py-4 text-white">No data available</td>
+                            <td colspan="9" class="text-center py-4 text-white">No data available</td>
                         </tr>
                         <template x-for="(kp, index) in paginatedData" :key="index">
                             <tr class="even:bg-gray-100 odd:bg-white hover:bg-gray-100 dark:even:bg-gray-700 dark:odd:bg-gray-800 dark:hover:bg-gray-700">
@@ -65,7 +65,7 @@
                                     >
                                 </td>
                                 <td class="px-0 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
-                                    <p x-text="kp.syarat_seminar.tanggal ? kp.syarat_seminar.tanggal : ''" x-show="kp.syarat_seminar.tanggal" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></p>
+                                    <p x-text="kp.syarat_seminar.tanggal ? kp.syarat_seminar.tanggal : ''" x-show="kp.syarat_seminar.tanggal" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></p>
                                     <x-button
                                         tag="button"
                                         color="success"

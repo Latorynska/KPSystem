@@ -103,7 +103,7 @@ class MahasiswaController extends Controller
 
     public function bimbingan(){
         $mahasiswa_id = auth()->id();
-        $kp = KP::with('bimbingans', 'pembimbing.grup_bimbingan', 'surat_bimbingan')
+        $kp = KP::with('bimbingans', 'pembimbing.grup_bimbingan', 'surat_bimbingan','laporan')
                 ->where('mahasiswa_id', $mahasiswa_id)
                 ->firstOrFail();
 

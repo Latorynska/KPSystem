@@ -76,6 +76,51 @@
                     @endif
                 </div>
             </div>
+            @if($kp->bimbingans->where('status', 'done')->count() >= 7)
+                <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto" x-data="{ laporanFile: '{{ $kp->laporan->file_name ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanFile = $event.dataTransfer.files[0].name">
+                    <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
+                        Form Pengumpulan Proposal
+                        <div class="flex items-center justify-center w-full" x-show="!laporanFile">
+                            <label for="laporanFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                    </svg>
+                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">PDF (Max 4MB)</p>
+                                </div>
+                                <input id="laporanFile" name="laporan" type="file" class="hidden" accept=".pdf" @change="laporanFile = $event.target.files[0].name" />
+                            </label>
+                        </div>
+                        <!-- Display file name -->
+                        <div class="flex items-center" x-show="laporanFile">
+                            <x-button tag="a" href="#" target="_blank">
+                                <span x-text="laporanFile"></span>
+                            </x-button>
+                            <div class="relative group ml-2">
+                                <!-- Tooltip -->
+                                <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
+                                    click the file name button to view the file
+                                </span>
+                                <!-- Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        {{-- end display file name --}}
+                        <div class="flex justify-between mt-2" x-show="laporanFile">
+                            <x-button tag="button" color="danger" type="button" @click.prevent="laporanFile = ''" x-show="laporanFile != '{{$kp->laporan ? $kp->laporan->file_name : ''}}'">
+
+                                {{ isset($laporanFile) ? 'replace' : 'Cancel'}}
+                            </x-button>
+                            <x-button tag="button" type="submit" color="success" x-show="laporanFile && laporanFile !== '{{ $laporanFile ?? '' }}'">
+                                {{ isset($laporanFile) ? 'ReUpload' : 'Upload'}}
+                            </x-button>
+                        </div>
+                    </div>
+                </div>
+            @endif
             {{-- <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto">
                 @if(!isset($kp->pembimbing_lapangan_id))
                 <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
@@ -142,7 +187,6 @@
             </div> --}}
         </div>
         @endif
-        
         {{-- modal input data --}}
         <x-modal name="createData" focusable maxWidth="xl">
             <div class="p-6">

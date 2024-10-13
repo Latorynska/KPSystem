@@ -204,7 +204,7 @@ class KpController extends Controller
     }
     public function storeLaporan(Request $request){
         $request->validate([
-            'laporan' => 'required|file|mimes:pdf|max:1024',
+            'laporan' => 'required|file|mimes:pdf|max:4096',
         ]);
         try{
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
@@ -220,12 +220,12 @@ class KpController extends Controller
                 ]);
         
                 $notification = [
-                    'message' => 'Surat izin uploaded successfully',
+                    'message' => 'Laporan uploaded successfully',
                     'alert-type' => 'success'
                 ];
             } else {
                 $notification = [
-                    'message' => 'Failed to upload surat izin',
+                    'message' => 'Failed to upload laporan',
                     'alert-type' => 'error'
                 ];
             }
