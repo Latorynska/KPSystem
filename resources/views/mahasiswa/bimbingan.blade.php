@@ -78,6 +78,9 @@
             </div>
             @if($kp->bimbingans->where('status', 'done')->count() >= 7)
                 <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto" x-data="{ laporanFile: '{{ $kp->laporan->file_name ?? '' }}' }" @dragover.prevent @dragenter.prevent @drop.prevent="laporanFile = $event.dataTransfer.files[0].name">
+                    <form action="{{ route('mahasiswa.kp.laporanPost') }}" method="POST" enctype="multipart/form-data" @submit.prevent="uploadFile($event)">
+                    @csrf
+                    @method('POST')
                     <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
                         Form Pengumpulan Proposal
                         <div class="flex items-center justify-center w-full" x-show="!laporanFile">
@@ -94,7 +97,7 @@
                         </div>
                         <!-- Display file name -->
                         <div class="flex items-center" x-show="laporanFile">
-                            <x-button tag="a" href="#" target="_blank">
+                            <x-button tag="a" href="{{ $kp->laporan ? route('mahasiswa.kp.laporanView',['id' => $kp->laporan->kp_id]) : '#' }}" target="_blank">
                                 <span x-text="laporanFile"></span>
                             </x-button>
                             <div class="relative group ml-2">
@@ -110,15 +113,15 @@
                         </div>
                         {{-- end display file name --}}
                         <div class="flex justify-between mt-2" x-show="laporanFile">
-                            <x-button tag="button" color="danger" type="button" @click.prevent="laporanFile = ''" x-show="laporanFile != '{{$kp->laporan ? $kp->laporan->file_name : ''}}'">
-
-                                {{ isset($laporanFile) ? 'replace' : 'Cancel'}}
+                            <x-button tag="button" color="danger" type="button" @click.prevent="laporanFile = ''">
+                                replace
                             </x-button>
                             <x-button tag="button" type="submit" color="success" x-show="laporanFile && laporanFile !== '{{ $laporanFile ?? '' }}'">
                                 {{ isset($laporanFile) ? 'ReUpload' : 'Upload'}}
                             </x-button>
                         </div>
                     </div>
+                    </form>
                 </div>
             @endif
             {{-- <div class="w-full mx-auto sm:px-6 lg:px-8 overflow-x-auto">
@@ -294,6 +297,67 @@
         </x-modal>
     </div>
     <script>
+        function uploadFile(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'File Berhasil diunggah.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location.href = response.url;
+                    }, 1500);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                } else if(data){
+                    // console.log(data);
+                    // let messages = Object.values(data.message);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Got Message From Server',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
+            });
+        }
         function submitForm(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',

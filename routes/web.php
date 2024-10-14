@@ -129,6 +129,7 @@ Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
         ->group(function(){
             Route::get('/proposal/{id}', [KpController::class, 'viewProposal'])->name('.proposalView');
             Route::get('/suratIzin/{id}', [KpController::class, 'viewSuratIzin'])->name('.suratIzinView');
+            Route::get('/laporan/{id}', [KpController::class, 'viewLaporan'])->name('.laporanView');
         }
     );
 });
