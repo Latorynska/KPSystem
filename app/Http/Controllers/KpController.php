@@ -196,7 +196,7 @@ class KpController extends Controller
                 ];
             }
 
-            return redirect()->route('mahasiswa.bimbingan')->with($notification);
+            return redirect()->route('mahasiswa.kp')->with($notification);
         } catch (\Exception $e) {
             dd($e);
             return response()->json(['message' => 'Failed to store file'], 500);
@@ -229,7 +229,7 @@ class KpController extends Controller
                     'alert-type' => 'error'
                 ];
             }
-            return redirect()->route('mahasiswa.kp')->with($notification);
+            return redirect()->route('mahasiswa.bimbingan')->with($notification);
         } catch(\Exception $e){
             return response()->json(['message' => 'Failed to store file'], 500);
         }

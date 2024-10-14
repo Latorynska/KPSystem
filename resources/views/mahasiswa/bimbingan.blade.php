@@ -82,7 +82,7 @@
                     @csrf
                     @method('POST')
                     <div class="bg-white text-center dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4 mt-4">
-                        Form Pengumpulan Proposal
+                        Form Pengumpulan Laporan
                         <div class="flex items-center justify-center w-full" x-show="!laporanFile">
                             <label for="laporanFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -97,7 +97,7 @@
                         </div>
                         <!-- Display file name -->
                         <div class="flex items-center" x-show="laporanFile">
-                            <x-button tag="a" href="{{ $kp->laporan ? route('mahasiswa.kp.laporanView',['id' => $kp->laporan->kp_id]) : '#' }}" target="_blank">
+                            <x-button tag="a" href="{{ $kp->laporan ? route('mahasiswa.kp.laporanView',['id' => $kp->laporan->id]) : '#' }}" target="_blank">
                                 <span x-text="laporanFile"></span>
                             </x-button>
                             <div class="relative group ml-2">
@@ -116,7 +116,7 @@
                             <x-button tag="button" color="danger" type="button" @click.prevent="laporanFile = ''">
                                 replace
                             </x-button>
-                            <x-button tag="button" type="submit" color="success" x-show="laporanFile && laporanFile !== '{{ $laporanFile ?? '' }}'">
+                            <x-button tag="button" type="submit" color="success" x-show="laporanFile && laporanFile !== '{{ $kp->laporan ? $kp->laporan->file_name :  '' }}'">
                                 {{ isset($laporanFile) ? 'ReUpload' : 'Upload'}}
                             </x-button>
                         </div>
