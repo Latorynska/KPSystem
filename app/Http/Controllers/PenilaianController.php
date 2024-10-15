@@ -13,10 +13,22 @@ use App\Models\Penilaian;
 class PenilaianController extends Controller
 {
     //
-    public function lists(){
-        $kps = KP::with('mahasiswa', 'pembimbing', 'metadata')->get();
+    public function lists() {
+        $kps = KP::with([
+            'mahasiswa',
+            'metadata',
+            'bimbingans',
+            'penilaian'
+        ])
+        ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
+            return $query->where('pembimbing_id', auth()->id());
+        })
+        ->when(auth()->user()->hasRole('kordinator'), function ($query) {
+            return $query;
+        })
+        ->get();
+    
         $data['kps'] = $kps;
-        // dd($kps);
-        return view('kp.list',$data);
+        return view('kp.list', $data);
     }
 }
