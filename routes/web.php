@@ -8,6 +8,7 @@ use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\PembimbingController;
 use App\Http\Controllers\KpController;
+use App\Http\Controllers\PenilaianController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -134,7 +135,7 @@ Route::group(['middleware' => ['role:mahasiswa|kordinator']], function () {
     );
 });
 Route::group(['middleware' => ['role:pembimbing']], function () {
-    Route::prefix('pembimbing/')
+    Route::prefix('pembimbing')
         ->name('pembimbing.bimbingan')
         ->group(function(){
             Route::get('/lists', [BimbinganController::class, 'bimbinganList'])->name('.lists');
@@ -149,8 +150,14 @@ Route::group(['middleware' => ['role:pembimbing']], function () {
         }
     );
 });
-// Route::group(['middleware' => ['role:pembimbing']], function () {
-    
-// });
+
+Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan']], function () {
+    Route::prefix('kp/penilaian')
+        ->name('kp.penilaian')
+        ->group(function(){
+            Route::get('/lists', [PenilaianController::class, 'lists'])->name('.lists');
+        }
+    );
+});
 
 require __DIR__.'/auth.php';

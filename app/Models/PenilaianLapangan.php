@@ -26,4 +26,31 @@ class PenilaianLapangan extends Model
         'kemudahan',
         'hasil_infrastruktur'
     ];
+    
+    public function nilaiAkhir(): float
+    {
+        // Ambil semua nilai kolom yang diperlukan
+        $nilai = [
+            $this->keaktifan,
+            $this->kunjungan_mahasiswa,
+            $this->pemahaman_masalah,
+            $this->kemampuan_penyelesaian,
+            $this->keterampilan,
+            $this->disiplin,
+            $this->teamwork,
+            $this->komunikasi,
+            $this->sikap_perilaku,
+            $this->hasil_solusi,
+            $this->kepuasan,
+            $this->peluang_digunakan,
+            $this->kemudahan,
+            $this->hasil_infrastruktur,
+        ];
+
+        // Hitung rata-rata nilai
+        $totalNilai = array_sum($nilai);
+        $jumlahKolom = count($nilai);
+
+        return $jumlahKolom > 0 ? $totalNilai / $jumlahKolom : 0.0;
+    }
 }

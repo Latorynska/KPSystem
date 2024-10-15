@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Penilaian extends Model
 {
     use HasFactory;
+    protected $fillable = ['kp_id','penguji_id','pembimbing_lapangan_id'];
+
+    public function nilaiKordinator(){
+        return $this->hasOne(PenilaianKordinator::class, 'penilaian_id');
+    }
+
+    public function nilaiLapangan(){
+        return $this->hasOne(PenilaianLapangan::class, 'penilaian_id');
+    }
+
+    public function nilaiPenguji(){
+        return $this->hasOne(PenilaianPenguji::class, 'penilaian_id');
+    }
+
+    public function nilaiPembimbing(){
+        return $this->hasOne(PenilaianPembimbing::class, 'penilaian_id');
+    }
 }
