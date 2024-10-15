@@ -79,16 +79,20 @@ class AdminController extends Controller
 
     public function administratifSeminarIndex() {
         $kps = KP::with('mahasiswa', 'metadata', 'pembimbing', 'surat_bimbingan', 'syarat_seminar', 'bimbingans')
-            ->whereHas('proposal', function ($query) {
-                $query->where('status', 'done');
-            })
-            ->withCount(['bimbingans as total_bimbingans' => function ($query) {
-                $query->where('status', 'done');
-            }])
-            ->having('total_bimbingans', '>=', 7)
-            ->get();
-        
+        ->whereHas('proposal', function ($query) {
+            $query->where('status', 'done');
+        })
+        ->withCount(['bimbingans as total_bimbingans' => function ($query) {
+            $query->where('status', 'done');
+        }])
+        ->having('total_bimbingans', '>=', 7)
+        ->get();
+    
+        $pengujis = User::whereHas('roles', function($query){
+            $query->where('name','pembimbing');
+        })->get();
         $data['kps'] = $kps;
+        $data['pengujis'] = $pengujis;
     
         // dd($data);
         return view('admin.syaratSeminar', $data);
