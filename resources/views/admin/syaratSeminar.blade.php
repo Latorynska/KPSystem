@@ -75,7 +75,8 @@
                                         Set Tanggal Seminar
                                     </x-button>
                                 </td>           
-                                <td class="px-1 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
+                                <td class="px-1 py-2 whitespace-nowrap text-center text-wrap text-xs sm:text-sm font-medium w-fit">
+                                    <p x-text="kp.penilaian.penguji ? kp.penilaian.penguji.name : ''" x-show="kp.penilaian.penguji" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></p>
                                     <x-button
                                         tag="button"
                                         color="success"
@@ -255,7 +256,7 @@
                 body: formData
             })
             .then(response => {
-                if (response.redirected) {
+                if (response.ok) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',

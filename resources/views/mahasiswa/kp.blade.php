@@ -252,7 +252,7 @@
                                 :error="$errors->first('nomor_pembimbing_lapangan')"
                             />
                             <!-- End input nomor pembimbing lapangan -->
-                            @if(!isset($kp->metadata))
+                            @if(!isset($kp->metadata->judul))
                                 <x-button type="submit" color="success" class="float-end">
                                     Submit
                                 </x-button>

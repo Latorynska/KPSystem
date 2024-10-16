@@ -10,6 +10,10 @@ class Penilaian extends Model
     use HasFactory;
     protected $fillable = ['kp_id','penguji_id','pembimbing_lapangan_id'];
 
+    public function penguji(){
+        return $this->belongsTo(User::class, 'penguji_id');
+    }
+
     public function nilaiKordinator(){
         return $this->hasOne(PenilaianKordinator::class, 'penilaian_id');
     }

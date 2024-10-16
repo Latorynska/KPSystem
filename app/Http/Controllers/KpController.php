@@ -54,8 +54,11 @@ class KpController extends Controller
 
     public function juduls(){
         $kps = KP::with('mahasiswa', 'metadata', 'surat_izin')
-            ->whereHas('metadata')
+            ->whereHas('metadata', function ($query) {
+                $query->whereNotNull('judul')->where('judul', '!=', '');
+            })
             ->get();
+
         $data['kps'] = $kps;
         return view('kp.judul', $data);
     }
