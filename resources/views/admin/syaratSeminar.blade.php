@@ -65,7 +65,7 @@
                                         x-on:change="updateSyaratSeminar(kp.id, 'bebas_pinjaman', $event.target.checked)"
                                     >
                                 </td>
-                                <td class="px-0 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
+                                <td class="px-1 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
                                     <p x-text="kp.syarat_seminar.tanggal ? kp.syarat_seminar.tanggal : ''" x-show="kp.syarat_seminar.tanggal" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-200"></p>
                                     <x-button
                                         tag="button"
@@ -75,7 +75,7 @@
                                         Set Tanggal Seminar
                                     </x-button>
                                 </td>           
-                                <td class="px-0 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
+                                <td class="px-1 py-2 whitespace-nowrap text-center text-xs sm:text-sm font-medium w-fit">
                                     <x-button
                                         tag="button"
                                         color="success"
@@ -184,10 +184,14 @@
                     <x-secondary-button x-on:click="$dispatch('close')">
                         {{ __('Cancel') }}
                     </x-secondary-button>
-                    <form @submit.prevent="submitPengujji">
+                    <form 
+                        :action="`{{ route('admin.penilaian.assignPenguji', '') }}/${selectedKp.id}`"
+                        method="POST" 
+                        @submit.prevent="submitForm"
+                    >
                         @csrf
                         @method('PATCH')
-                        <input type="hidden" name="pembimbing_id" 
+                        <input type="hidden" name="penguji_id" 
                             x-bind:value="selectedPenguji ? selectedPenguji.id : ''" 
                         >
                         <x-button type="submit" tag="button" color="success" x-bind:disabled="!selectedPenguji.id">
@@ -231,6 +235,65 @@
                 });
                 console.error('There was an error!', error);
                 event.target.checked = !event.target.checked;
+            });
+        }
+        function submitForm(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Penguji berhasil dipilih',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                } else if(data){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Got Message From Server',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred!',
+                });
             });
         }
     </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 use App\Models\KP;
@@ -30,5 +31,25 @@ class PenilaianController extends Controller
     
         $data['kps'] = $kps;
         return view('kp.list', $data);
+    }
+
+    public function assignPenguji(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'penguji_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $penilaian = Penilaian::where('kp_id', $id)->firstOrFail();
+
+        try{
+            $penilaian->update([
+                'penguji_id' => $request->penguji_id
+            ]);
+            return response()->json(['message' => 'Penguji berhasil dipilih'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

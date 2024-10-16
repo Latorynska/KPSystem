@@ -10,7 +10,9 @@ use Excel;
 
 use App\Models\User;
 use App\Models\KP;
+use App\Models\KPMetadata;
 use App\Models\SyaratSeminar;
+use App\Models\Penilaian;
 
 
 // use App\Imports\MahasiswaImport;
@@ -90,9 +92,15 @@ class MahasiswaController extends Controller
                     $kpData = new KP();
                     $kpData->mahasiswa_id = $newUser->id;
                     $kpData->save();
+                    $metaData = new KPMetadata();
+                    $metaData->kp_id = $kpData->id;
+                    $metaData->save();
                     $syaratSeminar = new SyaratSeminar();
                     $syaratSeminar->kp_id = $kpData->id;
                     $syaratSeminar->save();
+                    $penilaian = new Penilaian();
+                    $penilaian->kp_id = $kpData->id;
+                    $penilaian->save();
                 }
             }
             return response()->json(['message' => 'Data imported successfully'], 200);

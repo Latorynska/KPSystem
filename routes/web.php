@@ -51,6 +51,12 @@ Route::group(['middleware' => ['role:admin']], function () {
             Route::patch('/{id}', [AdminController::class, 'updateSyaratSeminar'])->name('.patch');
         }
     );
+    Route::prefix('admin/penilaian')
+        ->name('admin.penilaian')
+        ->group(function(){
+            Route::patch('/{id}', [PenilaianController::class, 'assignPenguji'])->name('.assignPenguji');
+        }
+    );
 });
 
 Route::group(['middleware' => ['role:admin|kordinator']], function () {

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('penilaians', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('kp_id');
-            $table->unsignedBigInteger('penguji_id');
+            $table->unsignedBigInteger('penguji_id')->nullable();
             $table->unsignedBigInteger('pembimbing_lapangan_id')->nullable();
             $table->timestamps();
             $table->foreign('kp_id')->references('id')->on('kps')->onUpdate('cascade')->onDelete('cascade');
