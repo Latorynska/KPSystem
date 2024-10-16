@@ -16,22 +16,31 @@ class PenilaianController extends Controller
     //
     public function lists() {
         $kps = KP::with([
-            'mahasiswa',
-            'metadata',
-            'bimbingans',
-            'penilaian'
-        ])
-        ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
-            return $query->where('pembimbing_id', auth()->id());
-        })
-        ->when(auth()->user()->hasRole('kordinator'), function ($query) {
-            return $query;
-        })
-        ->get();
+                'mahasiswa',
+                'pembimbing',
+                'metadata',
+                'penilaian',
+                'penilaian.penguji',
+                'penilaian.nilaiKordinator',
+                'penilaian.nilaiLapangan',
+                'penilaian.nilaiPenguji',
+                'penilaian.nilaiPembimbing',
+                'syarat_seminar'
+            ])
+            ->whereHas('penilaian', function ($query) {
+                $query->whereNotNull('penguji_id');
+            })
+            ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
+                return $query->where('pembimbing_id', auth()->id());
+            })
+            ->when(auth()->user()->hasRole('kordinator'), function ($query) {
+                return $query;
+            })
+            ->get();
     
         $data['kps'] = $kps;
-        return view('kp.list', $data);
-    }
+        return view('penilaian.lists', $data);
+    }    
 
     public function assignPenguji(Request $request, string $id){
         $validator = Validator::make($request->all(), [

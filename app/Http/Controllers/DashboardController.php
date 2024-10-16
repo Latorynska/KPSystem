@@ -46,7 +46,9 @@ class DashboardController extends Controller
     }
 
     protected function kordinatorDashboard(){
-        $kp_awaited_count = KPMetadata::where('status','awaited')->count();
+        $kp_awaited_count = KPMetadata::where('status', 'awaited')
+            ->whereNotNull('judul')
+            ->count();
         $proposal_awaited_count = Proposal::where('status','awaited')->count();
         $data = [
             'kp_awaited_count' => $kp_awaited_count,
