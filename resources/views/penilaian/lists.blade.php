@@ -1,10 +1,10 @@
 <x-app-layout>
     <div class="py-5" x-data="{ selectedKp: {}}">
         {{auth()->user()->role}}
-        <div class="w-full mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                <div class="overflow-x-scroll">
-                    <x-table :data="$kps" :filterFields="'[\'mahasiswa.nomor_induk\',\'mahasiswa.name\', \'kp.metadata.judul\']'">
+        <div class="mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg px-4 py-4">
+                <div class="overflow-x-auto">
+                    <x-table :data="$kps" :filterFields="'[\'mahasiswa.nomor_induk\',\'mahasiswa.name\', \'kp.metadata.judul\']'" class="min-w-max w-full border-collapse border border-gray-300 dark:border-gray-700">
                         <x-slot name="newData"></x-slot>
                         <x-slot name="header">
                             <tr>
