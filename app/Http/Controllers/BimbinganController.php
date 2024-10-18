@@ -99,26 +99,26 @@ class BimbinganController extends Controller
         }
     }
 
-    // public function assignPembimbingLapangan(Request $request, string $id){
-    //     $kp = KP::findOrFail($id);
-    //     $request->validate([
-    //         'pembimbing_id' => 'required'
-    //     ]);
-    //     // return response()->json(['message' => $request->all()], 422);
-    //     try{
-    //         $kp->update([
-    //             'pembimbing_lapangan_id' => $request->pembimbing_id,
-    //         ]);
-    //         $notification = [
-    //             'message' => 'Data KP berhasil diperbarui',
-    //             'alert-type' => 'success'
-    //         ];
-    //         return redirect()->back();
-    //     } catch (\Exception $e) {
-    //         dd($e);
-    //         return response()->json(['message' => 'Failed to update KP data','error : ' => $e], 500);
-    //     }
-    // }
+    public function assignPembimbingLapangan(Request $request, string $id){
+        $kp = KP::findOrFail($id);
+        $request->validate([
+            'pembimbing_id' => 'required'
+        ]);
+        // return response()->json(['message' => $request->all()], 422);
+        try{
+            $kp->update([
+                'pembimbing_lapangan_id' => $request->pembimbing_id,
+            ]);
+            $notification = [
+                'message' => 'Data KP berhasil diperbarui',
+                'alert-type' => 'success'
+            ];
+            return redirect()->back();
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['message' => 'Failed to update KP data','error : ' => $e], 500);
+        }
+    }
 
     public function bimbinganList(){
         $kps = KP::with([

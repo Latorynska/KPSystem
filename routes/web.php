@@ -106,6 +106,13 @@ Route::group(['middleware' => ['role:kordinator']], function () {
             );
         }
     );
+    Route::prefix('admin/pembimbingLapangan')
+        ->name('admin.pembimbingLapangan')
+        ->group(function(){
+            Route::get('/', [PembimbingController::class, 'lapanganLists']);
+            Route::post('/', [PembimbingController::class, 'create'])->name('.create');
+        }
+    );
 });
 Route::group(['middleware' => ['role:mahasiswa']], function () {
     Route::prefix('mahasiswa/kp')
