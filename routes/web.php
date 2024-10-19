@@ -164,7 +164,7 @@ Route::group(['middleware' => ['role:pembimbing']], function () {
     );
 });
 
-Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan']], function () {
+Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan|admin']], function () {
     Route::prefix('kp/penilaian')
         ->name('kp.penilaian')
         ->group(function(){

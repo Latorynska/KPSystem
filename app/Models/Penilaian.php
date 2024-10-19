@@ -13,7 +13,9 @@ class Penilaian extends Model
     public function penguji(){
         return $this->belongsTo(User::class, 'penguji_id');
     }
-
+    public function pembimbingLapangan(){
+        return $this->belongsTo(User::class, 'pembimbing_lapangan_id');
+    }
     public function nilaiKordinator(){
         return $this->hasOne(PenilaianKordinator::class, 'penilaian_id');
     }

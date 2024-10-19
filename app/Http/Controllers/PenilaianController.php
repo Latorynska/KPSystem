@@ -21,6 +21,7 @@ class PenilaianController extends Controller
                 'metadata',
                 'penilaian',
                 'penilaian.penguji',
+                'penilaian.pembimbingLapangan',
                 'penilaian.nilaiKordinator',
                 'penilaian.nilaiLapangan',
                 'penilaian.nilaiPenguji',
@@ -37,7 +38,16 @@ class PenilaianController extends Controller
                 return $query;
             })
             ->get();
-    
+        if(Auth()->user()->hasRole('kordinator')){
+            $pembimbingLapangans = User::whereHas('roles', function($query){
+                $query->where('name','pembimbing_lapangan');
+            })->get();
+            $pembimbings = User::whereHas('roles', function($query){
+                $query->where('name','pembimbing');
+            })->get();
+            $data['pembimbingLapangans'] = $pembimbingLapangans;
+            $data['pembimbings'] = $pembimbings;
+        }
         $data['kps'] = $kps;
         return view('penilaian.lists', $data);
     }    
