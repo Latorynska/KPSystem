@@ -39,12 +39,12 @@
                     Kelola Dosen
                 </span>
             </x-side-nav-link>
-            {{-- <x-side-nav-link :href="route('admin.pembimbingLapangan')" :active="request()->routeIs('admin.pembimbingLapangan')">
+            <x-side-nav-link :href="route('admin.pembimbingLapangan')" :active="request()->routeIs('admin.pembimbingLapangan')">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span x-show="navOpen">
                     Kelola Pembimbing Lapangan
                 </span>
-            </x-side-nav-link> --}}
+            </x-side-nav-link>
             @endhasrole
             @hasrole('admin')
             <x-side-nav-link :href="route('admin.suratBimbingan')" :active="request()->routeIs('admin.suratBimbingan')">

@@ -9,5 +9,5 @@ class PenilaianKordinator extends Model
 {
     use HasFactory;
     protected $table = "penilaian_kordinators";
-    protected $fillable = ['penilaian_id','keaktifan','laporan','bimbingan'];
+    protected $fillable = ['penilaian_id','proposal','laporan','bimbingan'];
 }

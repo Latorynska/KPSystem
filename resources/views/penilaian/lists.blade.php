@@ -33,26 +33,26 @@
                                     <td x-text="kp.mahasiswa.nomor_induk" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.mahasiswa.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.metadata ? kp.metadata.judul : 'belum diisi'" class="px-1 py-4 text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td x-text="kp.penilaian.penguji.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                    <td x-text="kp.penguji.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.pembimbing.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.metadata.nama_pembimbing_lapangan" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.penilaian.nilaiPenguji ? 'nilai penguji' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.penilaian.nilaiPembimbing ? 'nilai pembimbing' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     @if(auth()->user()->hasRole('kordinator'))
                                         <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                            <p x-show="kp.penilaian && kp.penilaian.pembimbing_lapangan_id" x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'"></p>
+                                            <p x-show="kp.pembimbing_lapangan_id" x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'"></p>
                                             <div class="">
                                                 <x-button 
                                                     tag="button" 
                                                     color="success" 
                                                     x-on:click.prevent="$dispatch('open-modal', 'createData'); selectedKp=kp;"
-                                                    x-text="kp.penilaian.pembimbing_lapangan_id ? 'Ganti Pembimbing' : 'Pilih Pembimbing'"
+                                                    x-text="kp.pembimbing_lapangan_id ? 'Ganti Pembimbing' : 'Pilih Pembimbing'"
                                                 >
                                                 </x-button>
                                             </div>
                                         </td>
                                     @else
-                                        <td x-show="kp.penilaian && kp.penilaian.pembimbing_lapangan_id"  x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                        <td  x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     @endif
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                         <p x-text="kp.penilaian.nilaiKordinator ? 'nilai kordinator' : 'no data'"></p>
@@ -223,39 +223,49 @@
                 </div>
                 {{-- input data pembimbing lapangan --}}
                 <form 
-                    {{-- action={{route('admin.pembimbingLapangan.create')}} --}}
+                    :action="`{{ route('kp.penilaian.kordinator.nilai', '') }}/${selectedKp.id}`"
                     method="POST" 
                     @submit.prevent="submitForm"
                 >
                     @csrf
                     @method('POST') 
-                    <!-- input nilai bimbingan / keaktifan -->
-                    <x-form-text
-                        label="Nilai Bimbingan" 
-                        name="bimbingan" 
+                    <!-- input nilai proposal-->
+                    <x-input-slider 
+                        id="proposal" 
+                        label="Nilai Proposal" 
+                        min="1" 
+                        max="10" 
+                        step="1" 
+                        value="1" 
+                        error="{{ $errors->first('proposal') }}" 
+                        name="proposal"
+                    />
+                    <!-- End input nilai proposal -->
+                    <!-- input nilai Bimbingan -->
+                    <x-input-slider 
                         id="bimbingan" 
-                        :error="$errors->first('bimbingan')"
-                        type="number"
+                        label="Nilai Bimbingan" 
+                        min="1" 
+                        max="10" 
+                        step="1" 
+                        value="1" 
+                        error="{{ $errors->first('bimbingan') }}" 
+                        name="bimbingan"
                     />
-                    <!-- End input nilai bimbingan / keaktifan -->
-                    <!-- input nilai Laporan -->
-                    <x-form-text
-                        label="Nilai Laporan" 
-                        name="laporan" 
+                    <!-- End input nilai Bimbingan -->
+                    <!-- input nilai laporan -->
+                    <x-input-slider 
                         id="laporan" 
-                        :error="$errors->first('laporan')"
-                        type="number"
+                        label="Nilai Laporan" 
+                        min="1" 
+                        max="10" 
+                        step="1" 
+                        value="1" 
+                        error="{{ $errors->first('laporan') }}" 
+                        name="laporan"
                     />
-                    <!-- End input nilai Laporan -->
-                    <!-- input nilai pengujian -->
-                    <x-form-text
-                        label="Nilai Pengujian" 
-                        name="pengujian" 
-                        id="pengujian" 
-                        :error="$errors->first('pengujian')"
-                        type="number"
-                    />
-                    <!-- End input nilai pengujian -->
+                    <!-- End input nilai laporan -->
+
                     <div class="mt-6 flex justify-between">
                         <x-secondary-button x-on:click="$dispatch('close')">
                             {{ __('Cancel') }}
@@ -270,6 +280,7 @@
         </x-modal>
         @endhasrole
     </div>
+    
     <script>
         function submitForm(e) {
             Swal.fire({
@@ -289,16 +300,16 @@
                 body: formData
             })
             .then(response => {
-                if (response.redirected) {
+                if (response.ok) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Akun pembimbing berhasil dibuat',
+                        text: 'Akun berhasil disimpan!',
                         timer: 1500,
                         showConfirmButton: false
                     });
                     setTimeout(() => {
-                        window.location.href = response.url;
+                        window.location.reload();
                     }, 1500);
                 } else {
                     return response.json();

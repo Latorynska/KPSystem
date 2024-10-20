@@ -36,7 +36,7 @@ class PembimbingController extends Controller
             $query->where('name','pembimbing_lapangan');
         })->get();
         $data['pembimbingLapangans'] = $pembimbingLapangans;
-        return view('pembimbingLapangan.lists',$data);
+        return view('pembimbing.lapanganLists',$data);
     }
     
     // create new pembimbing lapangan data
@@ -46,41 +46,30 @@ class PembimbingController extends Controller
             'nomor_induk' => 'required|unique:users,nomor_induk',
             'email' => 'required|unique:users,email',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        // return response()->json(['message' => 'data received'], 500);
-        try{
-            $existingUser = User::where('nomor_induk', $request->nomor_induk)->first();
-            if($existingUser){
-                return response()->json(['message' => "Nomor Induk Sudah digunakan, silahkan gunakan nomor identitas lain"], 409);
-            } else {
-                $newPembimbingLapangan = User::create([
-                    'nomor_induk' => $request->nomor_induk,
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make('Password123'),
-                ]);
-                $newPembimbingLapangan->assignRole('pembimbing_lapangan');
-                if (isset($request->kp_id)) {
-                    $kp = KP::with('penilaian')->find($request->kp_id);
 
-                    if ($kp && $kp->penilaian) {
-                        $kp->penilaian->update([
-                            'pembimbing_lapangan_id' => $newPembimbingLapangan->id,
-                        ]);
-                    } else {
-                        return response()->json([
-                            'message' => 'KP atau penilaian tidak ditemukan'
-                        ], 404);
-                    }
-                }
+        try {
+            $newPembimbingLapangan = User::create([
+                'nomor_induk' => $request->nomor_induk,
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make('Password123'),
+            ]);
+            $newPembimbingLapangan->assignRole('pembimbing_lapangan');
+            if ($request->filled('kp_id')) {
+                $kp = KP::findOrFail($request->kp_id);
+                $kp->update([
+                    'pembimbing_lapangan_id' => $newPembimbingLapangan->id,
+                ]);
             }
-            return redirect()->back();
+
+            return response()->json(['message' => 'Pembimbing Lapangan berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
-            // dd($e);
-            return response()->json(['message' => 'Failed to store file'], 500);
+            return response()->json(['message' => 'Gagal menambahkan Pembimbing Lapangan'], 500);
         }
     }
+
 }

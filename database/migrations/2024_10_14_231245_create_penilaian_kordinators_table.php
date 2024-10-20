@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('penilaian_kordinators', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penilaian_id');
-            $table->integer('keaktifan');
+            $table->integer('proposal');
             $table->integer('laporan');
             $table->integer('bimbingan');
             $table->timestamps();

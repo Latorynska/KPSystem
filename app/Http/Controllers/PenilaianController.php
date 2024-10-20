@@ -18,14 +18,14 @@ class PenilaianController extends Controller
         $kps = KP::with([
                 'mahasiswa',
                 'pembimbing',
+                'pembimbing_lapangan',
+                'penguji',
                 'metadata',
                 'penilaian',
-                'penilaian.penguji',
-                'penilaian.pembimbingLapangan',
-                'penilaian.nilaiKordinator',
-                'penilaian.nilaiLapangan',
-                'penilaian.nilaiPenguji',
-                'penilaian.nilaiPembimbing',
+                'penilaian.nilai_kordinator',
+                'penilaian.nilai_lapangan',
+                'penilaian.nilai_penguji',
+                'penilaian.nilai_pembimbing',
                 'syarat_seminar'
             ])
             ->whereHas('penilaian', function ($query) {
@@ -59,11 +59,9 @@ class PenilaianController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $penilaian = Penilaian::where('kp_id', $id)->firstOrFail();
-
         try{
-            $penilaian->update([
+            $kp = KP::findOrFail($id);
+            $kp->update([
                 'penguji_id' => $request->penguji_id
             ]);
             return response()->json(['message' => 'Penguji berhasil dipilih'], 200);
@@ -71,4 +69,38 @@ class PenilaianController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function nilaiKordinator(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'proposal' => 'required|integer|between:1,10',
+            'bimbingan' => 'required|integer|between:1,10',
+            'laporan' => 'required|integer|between:1,10',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('penilaian','penilaian.nilai_kordinator')->findOrFail($id);
+        try {
+            $nilaiKordinator = $kp->penilaian->nilai_kordinator;
+            if ($nilaiKordinator) {
+                $nilaiKordinator->update([
+                    'proposal' => $request->proposal,
+                    'bimbingan' => $request->bimbingan,
+                    'laporan' => $request->laporan,
+                ]);
+            } else {
+                $kp->penilaian->nilai_kordinator()->create([
+                    'penilaian_id' => $kp->penilaian->id,
+                    'proposal' => $request->proposal,
+                    'bimbingan' => $request->bimbingan,
+                    'laporan' => $request->laporan,
+                ]);
+            }
+
+            return response()->json(['message' => 'Nilai kordinator berhasil disimpan'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 }

@@ -17,7 +17,9 @@
     },
     "dependencies": {
         "@preline/dropdown": "^2.0.2",
+        "@preline/range-slider": "^2.5.0",
         "@preline/tooltip": "^2.0.2",
+        "nouislider": "^15.8.1",
         "preline": "^2.0.3"
     }
 }

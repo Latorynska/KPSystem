@@ -78,7 +78,7 @@ class AdminController extends Controller
     }
 
     public function administratifSeminarIndex() {
-        $kps = KP::with('mahasiswa', 'metadata', 'pembimbing', 'surat_bimbingan', 'syarat_seminar', 'bimbingans', 'penilaian.penguji')
+        $kps = KP::with('mahasiswa', 'metadata', 'pembimbing','penguji','surat_bimbingan', 'syarat_seminar', 'bimbingans')
         ->whereHas('proposal', function ($query) {
             $query->where('status', 'done');
         })
