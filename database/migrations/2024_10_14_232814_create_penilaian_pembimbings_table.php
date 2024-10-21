@@ -14,9 +14,16 @@ return new class extends Migration
         Schema::create('penilaian_pembimbings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penilaian_id');
-            $table->integer('keaktifan');
-            $table->integer('laporan');
-            $table->integer('bimbingan');
+            $table->integer('pemahaman_masalah');
+            $table->integer('deskripsi_solusi');
+            $table->integer('percaya_diri');
+            $table->integer('tata_tulis');
+            $table->integer('pembuktian_produk');
+            $table->integer('efektivitas_produk');
+            $table->integer('kontribusi');
+            $table->integer('originalitas');
+            $table->integer('kemudahan_produk');
+            $table->integer('peningkatan_kinerja');
             $table->timestamps();
             $table->foreign('penilaian_id')->references('id')->on('penilaians')->onUpdate('cascade')->onDelete('cascade');
         });
