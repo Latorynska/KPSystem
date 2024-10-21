@@ -38,7 +38,21 @@
                                     <td x-text="kp.metadata.nama_pembimbing_lapangan" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.penilaian.nilaiPenguji ? 'nilai penguji' : 'no data'" class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                        <p x-text="kp.penilaian.nilaiPembimbing ? 'nilai pembimbing' : 'no data'"></p>
+                                        <p 
+                                            x-text="
+                                                kp.penilaian.nilai_pembimbing ? 
+                                                (kp.penilaian.nilai_pembimbing.pemahaman_masalah +
+                                                kp.penilaian.nilai_pembimbing.deskripsi_solusi +
+                                                kp.penilaian.nilai_pembimbing.percaya_diri +
+                                                kp.penilaian.nilai_pembimbing.tata_tulis +
+                                                kp.penilaian.nilai_pembimbing.pembuktian_produk +
+                                                kp.penilaian.nilai_pembimbing.efektivitas_produk +
+                                                kp.penilaian.nilai_pembimbing.kontribusi +
+                                                kp.penilaian.nilai_pembimbing.originalitas +
+                                                kp.penilaian.nilai_pembimbing.kemudahan_produk +
+                                                kp.penilaian.nilai_pembimbing.peningkatan_kinerja) 
+                                                : 'no data'"
+                                        ></p>
                                         @hasrole('pembimbing')
                                         <x-button 
                                             tag="button" 
@@ -305,7 +319,7 @@
                 </div>
                 {{-- input data pembimbing lapangan --}}
                 <form 
-                    {{-- :action="`{{ route('kp.penilaian.kordinator.nilai', '') }}/${selectedKp.id}`" --}}
+                    :action="`{{ route('kp.penilaian.pembimbing.nilai', '') }}/${selectedKp.id}`"
                     method="POST" 
                     @submit.prevent="submitForm"
                 >
@@ -323,7 +337,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.pemahaman_masalah : 2" 
                                 error="{{ $errors->first('pemahaman_masalah') }}" 
                                 name="pemahaman_masalah"
                             />
@@ -335,23 +349,23 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.deskripsi_solusi : 2" 
                                 error="{{ $errors->first('deskripsi_solusi') }}" 
                                 name="deskripsi_solusi"
                             />
                             <!-- End input nilai deskripsi_solusi -->
-                            <!-- input nilai pecaya_diri-->
+                            <!-- input nilai percaya_diri-->
                             <x-input-slider 
-                                id="pecaya_diri" 
+                                id="percaya_diri" 
                                 label="Percaya Diri dalam mengkomunikasikan hasil kerja praktek" 
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
-                                error="{{ $errors->first('pecaya_diri') }}" 
-                                name="pecaya_diri"
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.nilai_pembimbing : 2" 
+                                error="{{ $errors->first('percaya_diri') }}" 
+                                name="percaya_diri"
                             />
-                            <!-- End input nilai pecaya_diri -->
+                            <!-- End input nilai percaya_diri -->
                             <!-- input nilai tata_tulis-->
                             <x-input-slider 
                                 id="tata_tulis" 
@@ -359,7 +373,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.tata_tulis : 2" 
                                 error="{{ $errors->first('tata_tulis') }}" 
                                 name="tata_tulis"
                             />
@@ -371,7 +385,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.pembuktian_produk : 2" 
                                 error="{{ $errors->first('pembuktian_produk') }}" 
                                 name="pembuktian_produk"
                             />
@@ -388,7 +402,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.efektivitas_produk : 2" 
                                 error="{{ $errors->first('efektivitas_produk') }}" 
                                 name="efektivitas_produk"
                             />
@@ -400,7 +414,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.kontribusi : 2" 
                                 error="{{ $errors->first('kontribusi') }}" 
                                 name="kontribusi"
                             />
@@ -412,7 +426,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.originalitas : 2" 
                                 error="{{ $errors->first('originalitas') }}" 
                                 name="originalitas"
                             />
@@ -424,7 +438,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.kemudahan_produk : 2" 
                                 error="{{ $errors->first('kemudahan_produk') }}" 
                                 name="kemudahan_produk"
                             />
@@ -436,7 +450,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                value="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.peningkatan_kinerja : 2" 
                                 error="{{ $errors->first('peningkatan_kinerja') }}" 
                                 name="peningkatan_kinerja"
                             />
@@ -483,7 +497,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Akun berhasil disimpan!',
+                        text: 'Data Berhasil Disimpan!',
                         timer: 1500,
                         showConfirmButton: false
                     });

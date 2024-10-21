@@ -147,6 +147,11 @@ Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan|a
                 Route::post('/{id}', [PenilaianController::class, 'nilaiKordinator'])->name('.nilai');
             });
         });
+        Route::group(['middleware' => ['role:pembimbing']], function () {
+            Route::prefix('/pembimbing')->name('.pembimbing')->group(function () {
+                Route::post('/{id}', [PenilaianController::class, 'nilaiPembimbing'])->name('.nilai');
+            });
+        });
     });
 });
 

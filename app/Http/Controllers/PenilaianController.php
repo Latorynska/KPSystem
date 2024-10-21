@@ -108,5 +108,57 @@ class PenilaianController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function nilaiPembimbing(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'pemahaman_masalah' => 'required|integer|between:1,9',
+            'deskripsi_solusi' => 'required|integer|between:1,9',
+            'percaya_diri' => 'required|integer|between:1,9',
+            'tata_tulis' => 'required|integer|between:1,9',
+            'pembuktian_produk' => 'required|integer|between:1,9',
+            'efektivitas_produk' => 'required|integer|between:1,9',
+            'kontribusi' => 'required|integer|between:1,9',
+            'originalitas' => 'required|integer|between:1,9',
+            'kemudahan_produk' => 'required|integer|between:1,9',
+            'peningkatan_kinerja' => 'required|integer|between:1,9'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('penilaian','penilaian.nilai_pembimbing')->findOrFail($id);
+        try {
+            $nilaiPembimbing = $kp->penilaian->nilai_pembimbing;
+            if ($nilaiPembimbing) {
+                $nilaiPembimbing->update([
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'deskripsi_solusi' => $request->deskripsi_solusi,
+                    'percaya_diri' => $request->percaya_diri,
+                    'tata_tulis' => $request->tata_tulis,
+                    'pembuktian_produk' => $request->pembuktian_produk,
+                    'efektivitas_produk' => $request->efektivitas_produk,
+                    'kontribusi' => $request->kontribusi,
+                    'originalitas' => $request->originalitas,
+                    'kemudahan_produk' => $request->kemudahan_produk,
+                    'peningkatan_kinerja' => $request->peningkatan_kinerja
+                ]);
+            } else {
+                $kp->penilaian->nilai_pembimbing()->create([
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'deskripsi_solusi' => $request->deskripsi_solusi,
+                    'percaya_diri' => $request->percaya_diri,
+                    'tata_tulis' => $request->tata_tulis,
+                    'pembuktian_produk' => $request->pembuktian_produk,
+                    'efektivitas_produk' => $request->efektivitas_produk,
+                    'kontribusi' => $request->kontribusi,
+                    'originalitas' => $request->originalitas,
+                    'kemudahan_produk' => $request->kemudahan_produk,
+                    'peningkatan_kinerja' => $request->peningkatan_kinerja
+                ]);
+            }
+
+            return response()->json(['message' => 'Nilai kordinator berhasil disimpan'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 }
