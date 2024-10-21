@@ -36,7 +36,33 @@
                                     <td x-text="kp.penguji.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.pembimbing.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.metadata.nama_pembimbing_lapangan" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td x-text="kp.penilaian.nilaiPenguji ? 'nilai penguji' : 'no data'" class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                    <td  class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                        <p 
+                                            x-text="
+                                            kp.penilaian.nilai_penguji ? 
+                                            (kp.penilaian.nilai_penguji.pemahaman_masalah +
+                                            kp.penilaian.nilai_penguji.deskripsi_solusi +
+                                            kp.penilaian.nilai_penguji.percaya_diri +
+                                            kp.penilaian.nilai_penguji.tata_tulis +
+                                            kp.penilaian.nilai_penguji.pembuktian_produk +
+                                            kp.penilaian.nilai_penguji.efektivitas_produk +
+                                            kp.penilaian.nilai_penguji.kontribusi +
+                                            kp.penilaian.nilai_penguji.originalitas +
+                                            kp.penilaian.nilai_penguji.kemudahan_produk +
+                                            kp.penilaian.nilai_penguji.peningkatan_kinerja) 
+                                            : 'no data'"
+                                        ></p>
+                                        @hasrole('pembimbing')
+                                        <x-button 
+                                            tag="button" 
+                                            color="success" 
+                                            x-on:click.prevent="$dispatch('open-modal', 'nilaiPenguji'); selectedKp=kp;"
+                                            x-show="kp.penguji_id == {{auth()->user()->id}}"
+                                        >
+                                            Ubah Nilai
+                                        </x-button>
+                                        @endhasrole
+                                    </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                         <p 
                                             x-text="
@@ -78,7 +104,38 @@
                                             </div>
                                         </td>
                                     @else
-                                        <td  x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'" class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                            <p 
+                                                x-text="kp.penilaian.nilai_lapangan ? 
+                                                Math.round(
+                                                    ((kp.penilaian.nilai_lapangan.pemahaman_masalah || 0) +
+                                                        (kp.penilaian.nilai_lapangan.kemampuan_penyelesaian || 0) +
+                                                        (kp.penilaian.nilai_lapangan.keterampilan || 0) +
+                                                        (kp.penilaian.nilai_lapangan.disiplin || 0) +
+                                                        (kp.penilaian.nilai_lapangan.teamwork || 0) +
+                                                        (kp.penilaian.nilai_lapangan.komunikasi || 0) +
+                                                        (kp.penilaian.nilai_lapangan.sikap_perilaku || 0) +
+                                                        (kp.penilaian.nilai_lapangan.hasil_solusi || 0) +
+                                                        (kp.penilaian.nilai_lapangan.kepuasan || 0) +
+                                                        (kp.penilaian.nilai_lapangan.manfaat || 0) +
+                                                        (kp.penilaian.nilai_lapangan.peluang_digunakan || 0) +
+                                                        (kp.penilaian.nilai_lapangan.kemudahan || 0) +
+                                                        (kp.penilaian.nilai_lapangan.hasil_infrastruktur || 0)
+                                                    ) / 65 * 100 
+                                                    )
+                                                : 'no data'"
+                                            ></p>
+                                            @hasrole('pembimbing_lapangan')
+                                            <x-button 
+                                                tag="button" 
+                                                color="success" 
+                                                x-on:click.prevent="$dispatch('open-modal', 'nilaiLapangan'); selectedKp=kp;"
+                                                x-show="kp.pembimbing_lapangan_id == {{auth()->user()->id}}"
+                                            >
+                                                Ubah Nilai
+                                            </x-button>
+                                            @endhasrole
+                                        </td>
                                     @endif
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                         <p 
@@ -361,7 +418,7 @@
                                 min="2" 
                                 max="9" 
                                 step="1" 
-                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.nilai_pembimbing : 2" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_pembimbing ? selectedKp.penilaian.nilai_pembimbing.percaya_diri : 2" 
                                 error="{{ $errors->first('percaya_diri') }}" 
                                 name="percaya_diri"
                             />
@@ -468,6 +525,371 @@
                         </x-button>
                     </div>
                 </form>
+                {{-- end input data pembimbing lapangan --}}
+            </div>
+        </x-modal>
+        {{-- Modal Input Nilai Penguji --}}
+        <x-modal name="nilaiPenguji" focusable maxWidth="5xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    <div class="flex-col">
+                        <p>Penilaian Kp : <span x-text="selectedKp.metadata?.judul"></span></p>
+                        <p>Mahasiswa : <span x-text="selectedKp.mahasiswa?.name"></span></p>
+                    </div>
+                </div>
+                {{-- input data pembimbing lapangan --}}
+                <form 
+                    :action="`{{ route('kp.penilaian.penguji.nilai', '') }}/${selectedKp.id}`"
+                    method="POST" 
+                    @submit.prevent="submitForm"
+                >
+                    @csrf
+                    @method('POST')
+                    <div class="flex flex-row">
+                        <div class="w-1/2 p-1">
+                            <div class="text-center justify-between p-2 text-lg font-bold text-white">
+                                <p>Seminar</p>
+                            </div>
+                            <!-- input nilai pemahaman masalah-->
+                            <x-input-slider 
+                                id="pemahaman_masalah" 
+                                label="Pemahaman Terhadap Masalah" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.pemahaman_masalah : 2" 
+                                error="{{ $errors->first('pemahaman_masalah') }}" 
+                                name="pemahaman_masalah"
+                            />
+                            <!-- End input nilai pemahaman masalah -->
+                            <!-- input nilai deskripsi_solusi-->
+                            <x-input-slider 
+                                id="deskripsi_solusi" 
+                                label="Mendeskripsikan Langkah yang diambil untuk dapat menghasilkan solusi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.deskripsi_solusi : 2" 
+                                error="{{ $errors->first('deskripsi_solusi') }}" 
+                                name="deskripsi_solusi"
+                            />
+                            <!-- End input nilai deskripsi_solusi -->
+                            <!-- input nilai percaya_diri-->
+                            <x-input-slider 
+                                id="percaya_diri" 
+                                label="Percaya Diri dalam mengkomunikasikan hasil kerja praktek" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.percaya_diri : 2" 
+                                error="{{ $errors->first('percaya_diri') }}" 
+                                name="percaya_diri"
+                            />
+                            <!-- End input nilai percaya_diri -->
+                            <!-- input nilai tata_tulis-->
+                            <x-input-slider 
+                                id="tata_tulis" 
+                                label="Tata tulils laporan" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.tata_tulis : 2" 
+                                error="{{ $errors->first('tata_tulis') }}" 
+                                name="tata_tulis"
+                            />
+                            <!-- End input nilai tata_tulis -->
+                            <!-- input nilai pembuktian_produk-->
+                            <x-input-slider 
+                                id="pembuktian_produk" 
+                                label="Mampu membuktikan hasil KP sebagai solusi dari masalah" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.pembuktian_produk : 2" 
+                                error="{{ $errors->first('pembuktian_produk') }}" 
+                                name="pembuktian_produk"
+                            />
+                            <!-- End input nilai pembuktian_produk -->
+                        </div>
+                        <div class="w-1/2 p-1">
+                            <div class="text-center justify-between p-2 text-lg font-bold text-white">
+                                <p>Produk yang dihasilkan</p>
+                            </div>
+                            <!-- input nilai efektivitas_produk-->
+                            <x-input-slider 
+                                id="efektivitas_produk" 
+                                label="Hasil produk menjawab permasalahan" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.efektivitas_produk : 2" 
+                                error="{{ $errors->first('efektivitas_produk') }}" 
+                                name="efektivitas_produk"
+                            />
+                            <!-- End input nilai efektivitas_produk -->
+                            <!-- input nilai kontribusi-->
+                            <x-input-slider 
+                                id="kontribusi" 
+                                label="Kontribusi nyata terhadap instansi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.kontribusi : 2" 
+                                error="{{ $errors->first('kontribusi') }}" 
+                                name="kontribusi"
+                            />
+                            <!-- End input nilai kontribusi -->
+                            <!-- input nilai originalitas-->
+                            <x-input-slider 
+                                id="originalitas" 
+                                label="Originalitas produk (bukan pekerjaan oranglain)" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.originalitas : 2" 
+                                error="{{ $errors->first('originalitas') }}" 
+                                name="originalitas"
+                            />
+                            <!-- End input nilai originalitas -->
+                            <!-- input nilai kemudahan_produk-->
+                            <x-input-slider 
+                                id="kemudahan_produk" 
+                                label="Kemudahan penggunaan hasil/produk" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.kemudahan_produk : 2" 
+                                error="{{ $errors->first('kemudahan_produk') }}" 
+                                name="kemudahan_produk"
+                            />
+                            <!-- End input nilai kemudahan_produk -->
+                            <!-- input nilai peningkatan_kinerja-->
+                            <x-input-slider 
+                                id="peningkatan_kinerja" 
+                                label="Produk meningkatkan kinerja instansi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                x-bind:value="selectedKp?.penilaian?.nilai_penguji ? selectedKp.penilaian.nilai_penguji.peningkatan_kinerja : 2" 
+                                error="{{ $errors->first('peningkatan_kinerja') }}" 
+                                name="peningkatan_kinerja"
+                            />
+                            <!-- End input nilai peningkatan_kinerja -->
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="mt-6 flex justify-between">
+                        <x-secondary-button x-on:click="$dispatch('close')">
+                            {{ __('Cancel') }}
+                        </x-secondary-button>
+                        <x-button x-show="!selectedKp.penilaian?.pembimbing_lapangan" type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                            Submit
+                        </x-button>
+                    </div>
+                </form>
+                {{-- end input data pembimbing lapangan --}}
+            </div>
+        </x-modal>
+        @endhasrole
+        @hasrole('pembimbing_lapangan')
+        {{-- Modal Input Nilai Pembimbing Lapangan --}}
+        <x-modal name="nilaiLapangan" focusable maxWidth="5xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    <div class="flex-col">
+                        <p>Penilaian Kp : <span x-text="selectedKp.metadata?.judul"></span></p>
+                        <p>Mahasiswa : <span x-text="selectedKp.mahasiswa?.name"></span></p>
+                    </div>
+                </div>
+                {{-- input data pembimbing lapangan --}}
+                    <form 
+                        :action="`{{ route('kp.penilaian.lapangan.nilai', '') }}/${selectedKp.id}`"
+                        method="POST" 
+                        @submit.prevent="submitForm"
+                    >
+                    <div class="max-h-[80vh] overflow-y-auto">
+                        @csrf
+                        @method('POST')
+                        <!-- input nilai kunjungan_mahasiswa-->
+                        <x-input-slider 
+                            id="kunjungan_mahasiswa" 
+                            label="Berapa kali mahasiswa mengunjungi tempat KP? " 
+                            min="1" 
+                            max="10" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.kunjungan_mahasiswa : 1" 
+                            {{-- error="{{ $errors->first('kunjungan_mahasiswa') }}"  --}}
+                            name="kunjungan_mahasiswa"
+                        />
+                        <!-- End input nilai kunjungan_mahasiswa -->
+                        <!-- input nilai pemahaman_masalah-->
+                        <x-input-slider 
+                            id="pemahaman_masalah" 
+                            label="Pemahaman Mahasiswa Terhadap Masalah " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.pemahaman_masalah : 1" 
+                            error="{{ $errors->first('pemahaman_masalah') }}" 
+                            name="pemahaman_masalah"
+                        />
+                        <!-- End input nilai pemahaman_masalah -->
+                        <!-- input nilai kemampuan_penyelesaian-->
+                        <x-input-slider 
+                            id="kemampuan_penyelesaian" 
+                            label="Kemampuan Menyelesaikan Masalah " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.kemampuan_penyelesaian : 1" 
+                            error="{{ $errors->first('kemampuan_penyelesaian') }}" 
+                            name="kemampuan_penyelesaian"
+                        />
+                        <!-- End input nilai kemampuan_penyelesaian -->
+                        <!-- input nilai keterampilan-->
+                        <x-input-slider 
+                            id="keterampilan" 
+                            label="Keterampilan Bekerja " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.keterampilan : 1" 
+                            error="{{ $errors->first('keterampilan') }}" 
+                            name="keterampilan"
+                        />
+                        <!-- End input nilai keterampilan -->
+                        <!-- input nilai disiplin-->
+                        <x-input-slider 
+                            id="disiplin" 
+                            label="Disiplin Kerja (dapat berhubungan dengan waktu kerja praktek, waktu yang disarankan melakukan kerja praktek adalah 1-3 bulan) " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.disiplin : 1" 
+                            error="{{ $errors->first('disiplin') }}" 
+                            name="disiplin"
+                        />
+                        <!-- End input nilai disiplin -->
+                        <!-- input nilai teamwork-->
+                        <x-input-slider 
+                            id="teamwork" 
+                            label="Kemampuan Bekerja Sama (team work) " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.teamwork : 1" 
+                            error="{{ $errors->first('teamwork') }}" 
+                            name="teamwork"
+                        />
+                        <!-- End input nilai teamwork -->
+                        <!-- input nilai komunikasi-->
+                        <x-input-slider 
+                            id="komunikasi" 
+                            label="Kemampuan Berkomunikasi " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.komunikasi : 1" 
+                            error="{{ $errors->first('komunikasi') }}" 
+                            name="komunikasi"
+                        />
+                        <!-- End input nilai komunikasi -->
+                        <!-- input nilai sikap_perilaku-->
+                        <x-input-slider 
+                            id="sikap_perilaku" 
+                            label="Sikap dan Perilaku " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.sikap_perilaku : 1" 
+                            error="{{ $errors->first('sikap_perilaku') }}" 
+                            name="sikap_perilaku"
+                        />
+                        <!-- End input nilai sikap_perilaku -->
+                        <!-- input nilai hasil_solusi-->
+                        <x-input-slider 
+                            id="hasil_solusi" 
+                            label="Hasil yang diberikan memberikan solusi pada permasalahan " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.hasil_solusi : 1" 
+                            error="{{ $errors->first('hasil_solusi') }}" 
+                            name="hasil_solusi"
+                        />
+                        <!-- End input nilai hasil_solusi -->
+                        <!-- input nilai kepuasan-->
+                        <x-input-slider 
+                            id="kepuasan" 
+                            label="Kepuasan instansi terhadap hasil/produk yang dihasilkan " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.kepuasan : 1" 
+                            error="{{ $errors->first('kepuasan') }}" 
+                            name="kepuasan"
+                        />
+                        <!-- End input nilai kepuasan -->
+                        <!-- input nilai manfaat-->
+                        <x-input-slider 
+                            id="manfaat" 
+                            label="Manfaat hasil/produk yang dihasilkan untuk instansi " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.manfaat : 1" 
+                            error="{{ $errors->first('manfaat') }}" 
+                            name="manfaat"
+                        />
+                        <!-- End input nilai manfaat -->
+                        <!-- input nilai peluang_digunakan-->
+                        <x-input-slider 
+                            id="peluang_digunakan" 
+                            label="Peluang hasil/produk akan digunakan oleh instansi " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.peluang_digunakan : 1" 
+                            error="{{ $errors->first('peluang_digunakan') }}" 
+                            name="peluang_digunakan"
+                        />
+                        <!-- End input nilai peluang_digunakan -->
+                        <!-- input nilai kemudahan-->
+                        <x-input-slider 
+                            id="kemudahan" 
+                            label="Apakah hasil/produk mudah digunakan? " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.kemudahan : 1" 
+                            error="{{ $errors->first('kemudahan') }}" 
+                            name="kemudahan"
+                        />
+                        <!-- End input nilai kemudahan -->
+                        <!-- input nilai hasil_infrastruktur-->
+                        <x-input-slider 
+                            id="hasil_infrastruktur" 
+                            label="Spesifikasi penerapan produk/hasil disesuaikan dengan infrastruktur yang ada " 
+                            min="1" 
+                            max="5" 
+                            step="1" 
+                            x-bind:value="selectedKp.penilaian?.nilai_lapangan ? selectedKp.penilaian.nilai_lapangan.hasil_infrastruktur : 1" 
+                            error="{{ $errors->first('hasil_infrastruktur') }}" 
+                            name="hasil_infrastruktur"
+                        />
+                        <!-- End input nilai hasil_infrastruktur -->
+                        
+                    </div>
+                        <div class="mt-6 flex justify-between">
+                            <x-secondary-button x-on:click="$dispatch('close')">
+                                {{ __('Cancel') }}
+                            </x-secondary-button>
+                            <x-button x-show="!selectedKp.penilaian?.pembimbing_lapangan" type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                                Submit
+                            </x-button>
+                        </div>
+                    </form>
                 {{-- end input data pembimbing lapangan --}}
             </div>
         </x-modal>

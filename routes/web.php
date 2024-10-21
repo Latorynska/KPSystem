@@ -152,6 +152,16 @@ Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan|a
                 Route::post('/{id}', [PenilaianController::class, 'nilaiPembimbing'])->name('.nilai');
             });
         });
+        Route::group(['middleware' => ['role:pembimbing']], function () {
+            Route::prefix('/penguji')->name('.penguji')->group(function () {
+                Route::post('/{id}', [PenilaianController::class, 'nilaiPenguji'])->name('.nilai');
+            });
+        });
+        Route::group(['middleware' => ['role:pembimbing_lapangan']], function () {
+            Route::prefix('/lapangan')->name('.lapangan')->group(function () {
+                Route::post('/{id}', [PenilaianController::class, 'nilaiLapangan'])->name('.nilai');
+            });
+        });
     });
 });
 

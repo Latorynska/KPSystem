@@ -1,7 +1,7 @@
 @props([
     'label' => '',
     'id' => 'slider',
-    'value' => 1,
+    'value' => 0,
     'min' => 1,
     'max' => 10,
     'step' => 1,
@@ -17,7 +17,7 @@
         class="block text-md font-medium mb-2 break-words"
     >
         {{ $label }}: 
-        <output x-text="value"></output>
+        <output x-show="value != 0" x-text="value"></output>
     </label>
 
     <input 
@@ -26,7 +26,7 @@
         min="{{ $min }}" 
         max="{{ $max }}" 
         step="{{ $step }}" 
-        x-model="value" 
+        x-model="value"
         {{ $attributes->merge([
             'class' => "w-full h-2 bg-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
         ]) }}

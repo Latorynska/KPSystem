@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('penilaian_lapangans', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penilaian_id');
-            $table->integer('keaktifan');
             $table->integer('kunjungan_mahasiswa');
             $table->integer('pemahaman_masalah');
             $table->integer('kemampuan_penyelesaian');
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->integer('sikap_perilaku');
             $table->integer('hasil_solusi');
             $table->integer('kepuasan');
+            $table->integer('manfaat');
             $table->integer('peluang_digunakan');
             $table->integer('kemudahan');
             $table->integer('hasil_infrastruktur');

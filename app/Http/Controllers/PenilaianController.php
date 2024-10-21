@@ -155,7 +155,123 @@ class PenilaianController extends Controller
                 ]);
             }
 
-            return response()->json(['message' => 'Nilai kordinator berhasil disimpan'], 200);
+            return response()->json(['message' => 'Nilai pembimbing berhasil disimpan'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function nilaiPenguji(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'pemahaman_masalah' => 'required|integer|between:1,9',
+            'deskripsi_solusi' => 'required|integer|between:1,9',
+            'percaya_diri' => 'required|integer|between:1,9',
+            'tata_tulis' => 'required|integer|between:1,9',
+            'pembuktian_produk' => 'required|integer|between:1,9',
+            'efektivitas_produk' => 'required|integer|between:1,9',
+            'kontribusi' => 'required|integer|between:1,9',
+            'originalitas' => 'required|integer|between:1,9',
+            'kemudahan_produk' => 'required|integer|between:1,9',
+            'peningkatan_kinerja' => 'required|integer|between:1,9'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('penilaian','penilaian.nilai_penguji')->findOrFail($id);
+        try {
+            $nilaiPenguji = $kp->penilaian->nilai_penguji;
+            if ($nilaiPenguji) {
+                $nilaiPenguji->update([
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'deskripsi_solusi' => $request->deskripsi_solusi,
+                    'percaya_diri' => $request->percaya_diri,
+                    'tata_tulis' => $request->tata_tulis,
+                    'pembuktian_produk' => $request->pembuktian_produk,
+                    'efektivitas_produk' => $request->efektivitas_produk,
+                    'kontribusi' => $request->kontribusi,
+                    'originalitas' => $request->originalitas,
+                    'kemudahan_produk' => $request->kemudahan_produk,
+                    'peningkatan_kinerja' => $request->peningkatan_kinerja
+                ]);
+            } else {
+                $kp->penilaian->nilai_penguji()->create([
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'deskripsi_solusi' => $request->deskripsi_solusi,
+                    'percaya_diri' => $request->percaya_diri,
+                    'tata_tulis' => $request->tata_tulis,
+                    'pembuktian_produk' => $request->pembuktian_produk,
+                    'efektivitas_produk' => $request->efektivitas_produk,
+                    'kontribusi' => $request->kontribusi,
+                    'originalitas' => $request->originalitas,
+                    'kemudahan_produk' => $request->kemudahan_produk,
+                    'peningkatan_kinerja' => $request->peningkatan_kinerja
+                ]);
+            }
+
+            return response()->json(['message' => 'Nilai penguji berhasil disimpan'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function nilaiLapangan(Request $request, string $id){
+        $validator = Validator::make($request->all(), [
+            'kunjungan_mahasiswa' => 'required|integer|between:1,10',
+            'pemahaman_masalah' => 'required|integer|between:1,5',
+            'kemampuan_penyelesaian' => 'required|integer|between:1,5',
+            'keterampilan' => 'required|integer|between:1,5',
+            'disiplin' => 'required|integer|between:1,5',
+            'teamwork' => 'required|integer|between:1,5',
+            'komunikasi' => 'required|integer|between:1,5',
+            'sikap_perilaku' => 'required|integer|between:1,5',
+            'hasil_solusi' => 'required|integer|between:1,5',
+            'kepuasan' => 'required|integer|between:1,5',
+            'manfaat' => 'required|integer|between:1,5',
+            'peluang_digunakan' => 'required|integer|between:1,5',
+            'kemudahan' => 'required|integer|between:1,5',
+            'hasil_infrastruktur' => 'required|integer|between:1,5'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $kp = KP::with('penilaian','penilaian.nilai_lapangan')->findOrFail($id);
+        try {
+            $nilaiLapangan = $kp->penilaian->nilai_lapangan;
+            if ($nilaiLapangan) {
+                $nilaiLapangan->update([
+                    'kunjungan_mahasiswa' => $request->kunjungan_mahasiswa,
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'kemampuan_penyelesaian' => $request->kemampuan_penyelesaian,
+                    'keterampilan' => $request->keterampilan,
+                    'disiplin' => $request->disiplin,
+                    'teamwork' => $request->teamwork,
+                    'komunikasi' => $request->komunikasi,
+                    'sikap_perilaku' => $request->sikap_perilaku,
+                    'hasil_solusi' => $request->hasil_solusi,
+                    'kepuasan' => $request->kepuasan,
+                    'manfaat' => $request->manfaat,
+                    'peluang_digunakan' => $request->peluang_digunakan,
+                    'kemudahan' => $request->kemudahan,
+                    'hasil_infrastruktur' => $request->hasil_infrastruktur
+                ]);
+            } else {
+                $kp->penilaian->nilai_lapangan()->create([
+                    'kunjungan_mahasiswa' => $request->kunjungan_mahasiswa,
+                    'pemahaman_masalah' => $request->pemahaman_masalah,
+                    'kemampuan_penyelesaian' => $request->kemampuan_penyelesaian,
+                    'keterampilan' => $request->keterampilan,
+                    'disiplin' => $request->disiplin,
+                    'teamwork' => $request->teamwork,
+                    'komunikasi' => $request->komunikasi,
+                    'sikap_perilaku' => $request->sikap_perilaku,
+                    'hasil_solusi' => $request->hasil_solusi,
+                    'kepuasan' => $request->kepuasan,
+                    'manfaat' => $request->manfaat,
+                    'peluang_digunakan' => $request->peluang_digunakan,
+                    'kemudahan' => $request->kemudahan,
+                    'hasil_infrastruktur' => $request->hasil_infrastruktur
+                ]);
+            }
+
+            return response()->json(['message' => 'Nilai penguji berhasil disimpan'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

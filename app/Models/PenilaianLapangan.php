@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class PenilaianLapangan extends Model
 {
     use HasFactory;
-    protected $table = "penilaian_kordinators";
+    protected $table = "penilaian_lapangans";
     protected $fillable = [
         'penilaian_id',
-        'keaktifan',
         'kunjungan_mahasiswa',
         'pemahaman_masalah',
         'kemampuan_penyelesaian',
@@ -22,6 +21,7 @@ class PenilaianLapangan extends Model
         'sikap_perilaku',
         'hasil_solusi',
         'kepuasan',
+        'manfaat',
         'peluang_digunakan',
         'kemudahan',
         'hasil_infrastruktur'
@@ -31,7 +31,7 @@ class PenilaianLapangan extends Model
     {
         // Ambil semua nilai kolom yang diperlukan
         $nilai = [
-            $this->keaktifan,
+            $this->manfaat,
             $this->kunjungan_mahasiswa,
             $this->pemahaman_masalah,
             $this->kemampuan_penyelesaian,
