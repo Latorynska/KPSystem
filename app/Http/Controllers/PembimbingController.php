@@ -13,22 +13,22 @@ use App\Models\User;
 class PembimbingController extends Controller
 {
     public function lists(){
-        $currentUserId = Auth::id();
-    
-        $kps = KP::with('mahasiswa', 'metadata','surat_bimbingan')
-                ->whereHas('proposal', function ($query) {
-                    $query->where('status', 'done');
-                })
-                ->whereHas('pembimbing', function ($query) use ($currentUserId) {
-                    $query->where('pembimbing_id', $currentUserId);
-                })
-                ->whereHas('surat_bimbingan', function ($query) {
-                    $query->where('status_pengambilan', true);
-                })
-                ->get();
-    
+        $kps = KP::with([
+            'mahasiswa',
+            'metadata',
+            'bimbingans',
+        ])
+        ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
+            $query->where('pembimbing_id', auth()->id());
+        })
+        ->get();
+
+        foreach ($kps as $kp) {
+            $kp->bimbingan_count = $kp->bimbingans->count();
+        }
+
         $data['kps'] = $kps;
-        return view('pembimbing.bimbinganList',$data);
+        return view('pembimbing.bimbinganList', $data);
     }
 
     public function lapanganLists(){

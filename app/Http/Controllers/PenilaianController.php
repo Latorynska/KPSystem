@@ -32,7 +32,13 @@ class PenilaianController extends Controller
                 $query->whereNotNull('penguji_id');
             })
             ->when(auth()->user()->hasRole('pembimbing'), function ($query) {
-                return $query->where('pembimbing_id', auth()->id());
+                $query->where(function ($q) {
+                    $q->where('pembimbing_id', auth()->id())
+                      ->orWhere('penguji_id', auth()->id());
+                });
+            })
+            ->when(auth()->user()->hasRole('pembimbing_lapangan'), function ($query) {
+                return $query->where('pembimbing_lapangan_id', auth()->id());
             })
             ->when(auth()->user()->hasRole('kordinator'), function ($query) {
                 return $query;

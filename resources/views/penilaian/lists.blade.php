@@ -4,7 +4,7 @@
         <div class="mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg px-4 py-4">
                 <div class="overflow-x-auto">
-                    <x-table :data="$kps" :filterFields="'[\'mahasiswa.nomor_induk\',\'mahasiswa.name\', \'kp.metadata.judul\']'" class="min-w-max w-full border-collapse border border-gray-300 dark:border-gray-700">
+                    <x-table :data="$kps" :filterFields="'[\'mahasiswa.nomor_induk\',\'mahasiswa.name\', \'kp.metadata.judul\']'" class="min-w-max w-full">
                         <x-slot name="newData"></x-slot>
                         <x-slot name="header">
                             <tr>
@@ -25,7 +25,7 @@
     
                         <x-slot name="body">
                             <tr x-show="paginatedData.length === 0">
-                                <td colspan="7" class="text-center py-4 text-white">No data available</td>
+                                <td colspan="11" class="text-center py-4 text-white">No data available</td>
                             </tr>
                             <template x-for="(kp, index) in paginatedData" :key="index">
                                 <tr class="even:bg-gray-100 odd:bg-white hover:bg-gray-100 dark:even:bg-gray-700 dark:odd:bg-gray-800 dark:hover:bg-gray-700">
@@ -36,8 +36,20 @@
                                     <td x-text="kp.penguji.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.pembimbing.name" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     <td x-text="kp.metadata.nama_pembimbing_lapangan" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td x-text="kp.penilaian.nilaiPenguji ? 'nilai penguji' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
-                                    <td x-text="kp.penilaian.nilaiPembimbing ? 'nilai pembimbing' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                    <td x-text="kp.penilaian.nilaiPenguji ? 'nilai penguji' : 'no data'" class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                        <p x-text="kp.penilaian.nilaiPembimbing ? 'nilai pembimbing' : 'no data'"></p>
+                                        @hasrole('pembimbing')
+                                        <x-button 
+                                            tag="button" 
+                                            color="success" 
+                                            x-on:click.prevent="$dispatch('open-modal', 'nilaiPembimbing'); selectedKp=kp;"
+                                            x-show="kp.pembimbing_id == {{auth()->user()->id}}"
+                                        >
+                                            Ubah Nilai
+                                        </x-button>
+                                        @endhasrole
+                                    </td>
                                     @if(auth()->user()->hasRole('kordinator'))
                                         <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                             <p x-show="kp.pembimbing_lapangan_id" x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'"></p>
@@ -52,15 +64,17 @@
                                             </div>
                                         </td>
                                     @else
-                                        <td  x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                        <td  x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'" class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
                                     @endif
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                        <p x-text="kp.penilaian.nilaiKordinator ? 'nilai kordinator' : 'no data'"></p>
+                                        <p 
+                                            x-text="kp.penilaian.nilai_kordinator ? (kp.penilaian.nilai_kordinator.proposal + kp.penilaian.nilai_kordinator.bimbingan + kp.penilaian.nilai_kordinator.laporan)/30*100 : 'no data'"
+                                        ></p>
                                         @hasrole('kordinator')
                                         <x-button tag="button" color="success" 
                                             x-on:click.prevent="$dispatch('open-modal', 'nilaiKordinator'); selectedKp=kp;"
                                         >
-                                            Isi Nilai
+                                            Ubah Nilai
                                         </x-button>
                                         @endhasrole
                                     </td>
@@ -84,7 +98,7 @@
                         <x-button tag="button" color="default" 
                             x-on:click.prevent="$dispatch('close');$dispatch('open-modal', 'selectPembimbing');"
                         >
-                            Pilih Data
+                            Pilih Akun Lain
                         </x-button>
                     </div>
                 </div>
@@ -119,7 +133,7 @@
                     <x-form-text
                         label="Email Pembimbing Lapangan" 
                         name="email" 
-                        x-bind:value="selectedKp.penilaian?.pembimbing_lapangan ? selectedKp.penilaian.pembimbing_lapangan.email : ''" 
+                        x-bind:value="selectedKp.pembimbing_lapangan ? selectedKp.pembimbing_lapangan.email : ''" 
                         id="email" 
                         :error="$errors->first('email')"
                         type="email"
@@ -132,7 +146,7 @@
                         <x-secondary-button x-on:click="$dispatch('close')">
                             {{ __('Cancel') }}
                         </x-secondary-button>
-                        <x-button x-show="!selectedKp.penilaian?.pembimbing_lapangan" type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                        <x-button x-show="!selectedKp.pembimbing_lapangan" type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
                             Submit
                         </x-button>
                     </div>
@@ -266,6 +280,171 @@
                     />
                     <!-- End input nilai laporan -->
 
+                    <div class="mt-6 flex justify-between">
+                        <x-secondary-button x-on:click="$dispatch('close')">
+                            {{ __('Cancel') }}
+                        </x-secondary-button>
+                        <x-button x-show="!selectedKp.penilaian?.pembimbing_lapangan" type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                            Submit
+                        </x-button>
+                    </div>
+                </form>
+                {{-- end input data pembimbing lapangan --}}
+            </div>
+        </x-modal>
+        @endhasrole
+        @hasrole('pembimbing')
+        {{-- Modal Input Nilai Pembimbing --}}
+        <x-modal name="nilaiPembimbing" focusable maxWidth="5xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    <div class="flex-col">
+                        <p>Penilaian Kp : <span x-text="selectedKp.metadata?.judul"></span></p>
+                        <p>Mahasiswa : <span x-text="selectedKp.mahasiswa?.name"></span></p>
+                    </div>
+                </div>
+                {{-- input data pembimbing lapangan --}}
+                <form 
+                    {{-- :action="`{{ route('kp.penilaian.kordinator.nilai', '') }}/${selectedKp.id}`" --}}
+                    method="POST" 
+                    @submit.prevent="submitForm"
+                >
+                    @csrf
+                    @method('POST')
+                    <div class="flex flex-row">
+                        <div class="w-1/2 p-1">
+                            <div class="text-center justify-between p-2 text-lg font-bold text-white">
+                                <p>Seminar</p>
+                            </div>
+                            <!-- input nilai pemahaman masalah-->
+                            <x-input-slider 
+                                id="pemahaman_masalah" 
+                                label="Pemahaman Terhadap Masalah" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('pemahaman_masalah') }}" 
+                                name="pemahaman_masalah"
+                            />
+                            <!-- End input nilai pemahaman masalah -->
+                            <!-- input nilai deskripsi_solusi-->
+                            <x-input-slider 
+                                id="deskripsi_solusi" 
+                                label="Mendeskripsikan Langkah yang diambil untuk dapat menghasilkan solusi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('deskripsi_solusi') }}" 
+                                name="deskripsi_solusi"
+                            />
+                            <!-- End input nilai deskripsi_solusi -->
+                            <!-- input nilai pecaya_diri-->
+                            <x-input-slider 
+                                id="pecaya_diri" 
+                                label="Percaya Diri dalam mengkomunikasikan hasil kerja praktek" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('pecaya_diri') }}" 
+                                name="pecaya_diri"
+                            />
+                            <!-- End input nilai pecaya_diri -->
+                            <!-- input nilai tata_tulis-->
+                            <x-input-slider 
+                                id="tata_tulis" 
+                                label="Tata tulils laporan" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('tata_tulis') }}" 
+                                name="tata_tulis"
+                            />
+                            <!-- End input nilai tata_tulis -->
+                            <!-- input nilai pembuktian_produk-->
+                            <x-input-slider 
+                                id="pembuktian_produk" 
+                                label="Mampu membuktikan hasil KP sebagai solusi dari masalah" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('pembuktian_produk') }}" 
+                                name="pembuktian_produk"
+                            />
+                            <!-- End input nilai pembuktian_produk -->
+                        </div>
+                        <div class="w-1/2 p-1">
+                            <div class="text-center justify-between p-2 text-lg font-bold text-white">
+                                <p>Produk yang dihasilkan</p>
+                            </div>
+                            <!-- input nilai efektivitas_produk-->
+                            <x-input-slider 
+                                id="efektivitas_produk" 
+                                label="Hasil produk menjawab permasalahan" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('efektivitas_produk') }}" 
+                                name="efektivitas_produk"
+                            />
+                            <!-- End input nilai efektivitas_produk -->
+                            <!-- input nilai kontribusi-->
+                            <x-input-slider 
+                                id="kontribusi" 
+                                label="Kontribusi nyata terhadap instansi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('kontribusi') }}" 
+                                name="kontribusi"
+                            />
+                            <!-- End input nilai kontribusi -->
+                            <!-- input nilai originalitas-->
+                            <x-input-slider 
+                                id="originalitas" 
+                                label="Originalitas produk (bukan pekerjaan oranglain)" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('originalitas') }}" 
+                                name="originalitas"
+                            />
+                            <!-- End input nilai originalitas -->
+                            <!-- input nilai kemudahan_produk-->
+                            <x-input-slider 
+                                id="kemudahan_produk" 
+                                label="Kemudahan penggunaan hasil/produk" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('kemudahan_produk') }}" 
+                                name="kemudahan_produk"
+                            />
+                            <!-- End input nilai kemudahan_produk -->
+                            <!-- input nilai peningkatan_kinerja-->
+                            <x-input-slider 
+                                id="peningkatan_kinerja" 
+                                label="Produk meningkatkan kinerja instansi" 
+                                min="2" 
+                                max="9" 
+                                step="1" 
+                                value="1" 
+                                error="{{ $errors->first('peningkatan_kinerja') }}" 
+                                name="peningkatan_kinerja"
+                            />
+                            <!-- End input nilai peningkatan_kinerja -->
+                        </div>
+                    </div>
+                    
+                    
                     <div class="mt-6 flex justify-between">
                         <x-secondary-button x-on:click="$dispatch('close')">
                             {{ __('Cancel') }}
