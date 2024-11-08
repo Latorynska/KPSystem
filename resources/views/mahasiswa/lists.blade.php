@@ -128,7 +128,7 @@
                             {{-- end display file name --}}
                         </div>
                         <div class="mt-6 flex justify-between">
-                            <x-secondary-button x-on:click="$dispatch('close')">
+                            <x-secondary-button x-on:click="$dispatch('close');dataFile=''">
                                 {{ __('Cancel') }}
                             </x-secondary-button>
                             <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="dataFile">

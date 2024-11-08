@@ -535,13 +535,16 @@ class KpController extends Controller
     }
 
     public function patchMetaData(Request $request){
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'judul' => 'required|string',
             'instansi' => 'required|string',
             'nama_pembimbing_lapangan' => 'required|string',
             'nomor_pembimbing_lapangan' => 'required|string|numeric|digits_between:10,15',
         ]);
         
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         try {
             $user_id = Auth()->id();
             $kp = KP::with('metadata')->where('mahasiswa_id', $user_id)->firstOrFail();

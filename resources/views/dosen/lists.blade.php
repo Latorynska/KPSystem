@@ -71,7 +71,7 @@
                         id="link_grup"
                         x-bind:value="selectedPembimbing.grup_bimbingan && selectedPembimbing.grup_bimbingan.link_grup ? selectedPembimbing.grup_bimbingan.link_grup : ''"
                         :error="$errors->first('link_grup')"
-                        required
+                        {{-- required --}}
                     />
                     <div class="mt-6 flex justify-between">
                     <x-secondary-button x-on:click="$dispatch('close')">

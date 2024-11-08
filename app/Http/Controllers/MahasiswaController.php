@@ -72,6 +72,15 @@ class MahasiswaController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $data = $request->data;
+        $requiredFields = ['nim', 'nama', 'email'];
+        $firstRow = reset($data);
+        $firstRowKeys = array_map('strtolower', array_keys($firstRow));
+    
+        foreach ($requiredFields as $field) {
+            if (!in_array($field, $firstRowKeys)) {
+                return response()->json(['errors' => 'File invalid: missing required columns.'], 422);
+            }
+        }
         
         try {
             foreach ($data as $row) {
