@@ -55,19 +55,19 @@ Route::group(['middleware' => ['role:admin']], function () {
 
 Route::group(['middleware' => ['role:admin|kordinator']], function () {
     Route::prefix('admin/mahasiswa')->name('admin.mahasiswa')->group(function(){
-            Route::get('/', [MahasiswaController::class, 'lists']);
-            Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
-            Route::post('/sync', [MahasiswaController::class, 'importFromExcel'])->name('.import');
-            Route::patch('/{id}/reset', [AdminController::class, 'resetMahasiswaPassword'])->name('.password.reset');
-        }
-    );
+        Route::get('/sync', [MahasiswaController::class, 'synchronizeMahasiswaData'])->name('.sync');
+        Route::post('/sync', [MahasiswaController::class, 'importFromExcel'])->name('.import');
+    });
     Route::prefix('admin/dosen')->name('admin.dosen')->group(function(){
-            Route::get('/', [DosenController::class, 'index']);
-            Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
-            Route::post('/sync', [DosenController::class, 'importFromExcel'])->name('.import');
-            Route::post('/grup/link/{id}', [DosenController::class, 'postLinkGrupBimbingan'])->name('.grup.link.post');
-        }
-    );
+        Route::get('/', [DosenController::class, 'index']);
+        Route::get('/sync', [DosenController::class, 'synchronizePembimbingData'])->name('.sync');
+        Route::post('/sync', [DosenController::class, 'importFromExcel'])->name('.import');
+        Route::post('/grup/link/{id}', [DosenController::class, 'postLinkGrupBimbingan'])->name('.grup.link.post');
+    });
+    Route::prefix('admin/user')->name('admin.user')->group(function(){
+        Route::get('/', [AdminController::class, 'userLists']);
+        Route::patch('/{id}/reset', [AdminController::class, 'resetUserPassword'])->name('.password.reset');
+    });
 });
 Route::group(['middleware' => ['role:kordinator']], function () {
     Route::prefix('kordinator/kp')->name('kordinator.kp')->group(function(){

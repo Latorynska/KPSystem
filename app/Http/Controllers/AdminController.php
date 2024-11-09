@@ -48,10 +48,7 @@ class AdminController extends Controller
         }
     }
 
-    public function resetMahasiswaPassword(Request $request, string $id){
-        if(!Auth()->user()->hasRole('admin')){
-            return response()->json(['message' => 'unaothorized'], 401);
-        }
+    public function resetUserPassword(Request $request, string $id){
         $validator = Validator::make($request->all(), [
             'admin_password' => 'required',
         ]);
@@ -70,7 +67,7 @@ class AdminController extends Controller
             $mahasiswa->update([
                 'password' => Hash::make('Password123')
             ]);
-            return response()->json(['message' => 'Password Mahasiswa Berhasil diatur ulang ke semula'], 200);
+            return response()->json(['message' => 'Password Berhasil diatur ulang ke semula'], 200);
         } catch (\Exception $e) {
             dd($e);
             return response()->json(['message' => 'Failed to update data'], 500);
@@ -112,5 +109,26 @@ class AdminController extends Controller
             // Handle exception
             return response()->json(['message' => 'Failed to update data', 'error' => $e->getMessage()], 500);
         }
-    }    
+    }
+
+    public function userLists(){
+        $mahasiswas = User::whereHas('roles', function($query){
+            $query->where('name', 'mahasiswa');
+        })->get();
+        
+        $pembimbings = User::with('grup_bimbingan')->whereHas('roles', function($query){
+            $query->where('name','pembimbing');
+        })->get();
+        
+        foreach ($pembimbings as $pembimbing) {
+            $pembimbing->kpCount = KP::where('pembimbing_id', $pembimbing->id)
+                ->whereYear('created_at', now()->year)
+                ->count();
+        }
+        
+        $data['mahasiswas'] = $mahasiswas;
+        $data['pembimbings'] = $pembimbings;
+    
+        return view('admin.userLists', $data);
+    }
 }
