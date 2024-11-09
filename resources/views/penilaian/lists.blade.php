@@ -20,6 +20,9 @@
                                 <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nilai Pembimbing Lapangan</th>
                                 <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nilai Kordinator</th>
                                 <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Tanggal Seminar</th>
+                                @hasrole('kordinator')
+                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Nilai Akhir</th>
+                                @endhasrole
                             </tr>
                         </x-slot>
     
@@ -90,53 +93,50 @@
                                         </x-button>
                                         @endhasrole
                                     </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                        <p 
+                                            x-text="kp.penilaian.nilai_lapangan ? 
+                                            Math.round(
+                                                ((kp.penilaian.nilai_lapangan.pemahaman_masalah || 0) +
+                                                    (kp.penilaian.nilai_lapangan.kemampuan_penyelesaian || 0) +
+                                                    (kp.penilaian.nilai_lapangan.keterampilan || 0) +
+                                                    (kp.penilaian.nilai_lapangan.disiplin || 0) +
+                                                    (kp.penilaian.nilai_lapangan.teamwork || 0) +
+                                                    (kp.penilaian.nilai_lapangan.komunikasi || 0) +
+                                                    (kp.penilaian.nilai_lapangan.sikap_perilaku || 0) +
+                                                    (kp.penilaian.nilai_lapangan.hasil_solusi || 0) +
+                                                    (kp.penilaian.nilai_lapangan.kepuasan || 0) +
+                                                    (kp.penilaian.nilai_lapangan.manfaat || 0) +
+                                                    (kp.penilaian.nilai_lapangan.peluang_digunakan || 0) +
+                                                    (kp.penilaian.nilai_lapangan.kemudahan || 0) +
+                                                    (kp.penilaian.nilai_lapangan.hasil_infrastruktur || 0)
+                                                ) / 65 * 100 
+                                                )
+                                            : 'no data'"
+                                        ></p>
                                     @if(auth()->user()->hasRole('kordinator'))
-                                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                            <p x-show="kp.pembimbing_lapangan_id" x-text="kp.penilaian.nilaiLapangan ? 'nilai Lapangan' : 'no data'"></p>
-                                            <div class="">
-                                                <x-button 
-                                                    tag="button" 
-                                                    color="success" 
-                                                    x-on:click.prevent="$dispatch('open-modal', 'createData'); selectedKp=kp;"
-                                                    x-text="kp.pembimbing_lapangan_id ? 'Ganti Pembimbing' : 'Pilih Pembimbing'"
-                                                >
-                                                </x-button>
-                                            </div>
-                                        </td>
-                                    @else
-                                        <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                            <p 
-                                                x-text="kp.penilaian.nilai_lapangan ? 
-                                                Math.round(
-                                                    ((kp.penilaian.nilai_lapangan.pemahaman_masalah || 0) +
-                                                        (kp.penilaian.nilai_lapangan.kemampuan_penyelesaian || 0) +
-                                                        (kp.penilaian.nilai_lapangan.keterampilan || 0) +
-                                                        (kp.penilaian.nilai_lapangan.disiplin || 0) +
-                                                        (kp.penilaian.nilai_lapangan.teamwork || 0) +
-                                                        (kp.penilaian.nilai_lapangan.komunikasi || 0) +
-                                                        (kp.penilaian.nilai_lapangan.sikap_perilaku || 0) +
-                                                        (kp.penilaian.nilai_lapangan.hasil_solusi || 0) +
-                                                        (kp.penilaian.nilai_lapangan.kepuasan || 0) +
-                                                        (kp.penilaian.nilai_lapangan.manfaat || 0) +
-                                                        (kp.penilaian.nilai_lapangan.peluang_digunakan || 0) +
-                                                        (kp.penilaian.nilai_lapangan.kemudahan || 0) +
-                                                        (kp.penilaian.nilai_lapangan.hasil_infrastruktur || 0)
-                                                    ) / 65 * 100 
-                                                    )
-                                                : 'no data'"
-                                            ></p>
-                                            @hasrole('pembimbing_lapangan')
+                                        <div class="">
                                             <x-button 
                                                 tag="button" 
                                                 color="success" 
-                                                x-on:click.prevent="$dispatch('open-modal', 'nilaiLapangan'); selectedKp=kp;"
-                                                x-show="kp.pembimbing_lapangan_id == {{auth()->user()->id}}"
+                                                x-on:click.prevent="$dispatch('open-modal', 'createData'); selectedKp=kp;"
+                                                x-text="kp.pembimbing_lapangan_id ? 'Ganti Pembimbing' : 'Pilih Pembimbing'"
                                             >
-                                                Ubah Nilai
                                             </x-button>
-                                            @endhasrole
-                                        </td>
-                                    @endif
+                                        </div>
+                                    @else
+                                        @hasrole('pembimbing_lapangan')
+                                        <x-button 
+                                            tag="button" 
+                                            color="success" 
+                                            x-on:click.prevent="$dispatch('open-modal', 'nilaiLapangan'); selectedKp=kp;"
+                                            x-show="kp.pembimbing_lapangan_id == {{auth()->user()->id}}"
+                                        >
+                                            Ubah Nilai
+                                        </x-button>
+                                        @endhasrole
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                         <p 
                                             x-text="kp.penilaian.nilai_kordinator ? (kp.penilaian.nilai_kordinator.proposal + kp.penilaian.nilai_kordinator.bimbingan + kp.penilaian.nilai_kordinator.laporan)/30*100 : 'no data'"
@@ -150,6 +150,17 @@
                                         @endhasrole
                                     </td>
                                     <td x-text="kp.syarat_seminar.tanggal" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200"></td>
+                                    @hasrole('kordinator')
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                        <x-button tag="a" 
+                                            target="_blank"
+                                            x-data="{ cetakRoute: '{{ route('kp.penilaian.kordinator.cetak', ['id' => ':id']) }}' }"
+                                            x-bind:href="cetakRoute.replace(':id', kp.id)"
+                                        >
+                                            Cetak Nilai
+                                        </x-button>
+                                    </td>
+                                    @endhasrole
                                 </tr>
                             </template>
                         </x-slot>

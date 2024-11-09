@@ -145,6 +145,7 @@ Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan|a
         Route::group(['middleware' => ['role:kordinator']], function () {
             Route::prefix('/kordinator')->name('.kordinator')->group(function () {
                 Route::post('/{id}', [PenilaianController::class, 'nilaiKordinator'])->name('.nilai');
+                Route::get('/cetak/{id}', [PenilaianController::class, 'cetakNilai'])->name('.cetak');
             });
         });
         Route::group(['middleware' => ['role:pembimbing']], function () {

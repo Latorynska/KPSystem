@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use PDF;
 use App\Models\User;
 use App\Models\KP;
 use App\Models\KPMetadata;
@@ -277,4 +278,10 @@ class PenilaianController extends Controller
         }
     }
 
+    public function cetakNilai(string $id){
+        $kp = KP::where('id', $id)->with(['mahasiswa', 'pembimbing', 'metadata'])->firstOrFail();
+        // $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
+        $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'));
+        return $pdf->stream('lembar_penilaian.pdf');
+    }
 }
