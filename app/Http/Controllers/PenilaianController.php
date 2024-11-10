@@ -279,7 +279,16 @@ class PenilaianController extends Controller
     }
 
     public function cetakNilai(string $id){
-        $kp = KP::where('id', $id)->with(['mahasiswa', 'pembimbing', 'metadata'])->firstOrFail();
+        $kp = KP::where('id', $id)->with([
+            'mahasiswa', 
+            'pembimbing', 
+            'metadata',
+            'penilaian',
+            'penilaian.nilai_kordinator',
+            'penilaian.nilai_lapangan',
+            'penilaian.nilai_penguji',
+            'penilaian.nilai_pembimbing',
+        ])->firstOrFail();
         // $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
         $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'));
         return $pdf->stream('lembar_penilaian.pdf');

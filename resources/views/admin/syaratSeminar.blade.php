@@ -217,17 +217,31 @@
                 })
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (response.ok) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: "Data berhasil disimpan",
+                        });
+                } else {
+                    return response.json();
                 }
-                return response.json();
             })
             .then(data => {
                 // console.log(data);
-                Toast.fire({
-                    icon: 'success',
-                    title: data.message,
-                });
+                if (data && data.hasOwnProperty('errors')) {
+                    let errorMessages = Object.values(data.errors).join('\n');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessages
+                    });
+                } else if(data){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Got Message From Server',
+                        text: data.message
+                    });
+                }
             })
             .catch(error => {
                 Toast.fire({

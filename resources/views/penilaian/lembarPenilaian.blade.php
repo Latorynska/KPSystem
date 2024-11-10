@@ -59,6 +59,66 @@
         <p>Lembar Penilaian</p>
         <p>Hasil Kerja Praktek</p>
         <p>{{$kp->metadata->judul}}</p>
+        <div class="keterangan">Penilaian Dosen Pembimbing: {{
+            optional($kp->penilaian)->nilai_pembimbing ? 
+                number_format(
+                    (optional($kp->penilaian->nilai_pembimbing)->pemahaman_masalah ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->deskripsi_solusi ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->percaya_diri ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->tata_tulis ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->pembuktian_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->efektivitas_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->kontribusi ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->originalitas ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->kemudahan_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_pembimbing)->peningkatan_kinerja ?? 0)
+                ,2) 
+                : 'no data'
+        }}</div>
+        <div class="keterangan">Penilaian Dosen Penguji: {{
+            optional($kp->penilaian)->nilai_penguji ? 
+                number_format(
+                    (optional($kp->penilaian->nilai_penguji)->pemahaman_masalah ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->deskripsi_solusi ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->percaya_diri ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->tata_tulis ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->pembuktian_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->efektivitas_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->kontribusi ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->originalitas ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->kemudahan_produk ?? 0) +
+                    (optional($kp->penilaian->nilai_penguji)->peningkatan_kinerja ?? 0)
+                ,2) 
+                : 'no data'
+        }}</div>       
+        <div class="keterangan">Penilaian Kordinator: {{
+            optional($kp->penilaian)->nilai_kordinator ? 
+                number_format(
+                    ((optional($kp->penilaian->nilai_kordinator)->proposal ?? 0) +
+                    (optional($kp->penilaian->nilai_kordinator)->bimbingan ?? 0) +
+                    (optional($kp->penilaian->nilai_kordinator)->proposal ?? 0)) / 30 * 100
+                ,2) 
+                : 'no data'
+        }}</div>  
+        <div class="keterangan">Penilaian Pembimbing Lapangan: {{
+            optional($kp->penilaian)->nilai_lapangan ? 
+                number_format(
+                    ((optional($kp->penilaian->nilai_lapangan)->pemahaman_masalah ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->kemampuan_penyelesaian ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->keterampilan ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->disiplin ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->teamwork ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->komunikasi ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->sikap_perilaku ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->hasil_solusi ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->kepuasan ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->manfaat ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->peluang_digunakan ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->kemudahan ?? 0) +
+                    (optional($kp->penilaian->nilai_lapangan)->hasil_infrastruktur ?? 0)) / 65 * 100
+                ,2)
+                : 'no data'
+        }}</div>            
     </div>
 </body>
 </html>
