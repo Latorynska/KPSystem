@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-5 flex items-center">
-        {{-- metadata --}}
+        {{-- list judul diterima --}}
         <div class="w-full mx-auto sm:px-6 px-8">
             <div class="bg-white dark:text-white dark:bg-gray-800 overflow-x shadow-sm sm:rounded-lg px-4 py-4">
                 <div class="text-center text-white">
@@ -33,12 +33,22 @@
                 </x-table>
             </div>
         </div>
-        {{-- end metadata --}}
-        {{-- stepper --}}
-        {{-- <div class="w-8/12 mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                
-            </div>
-        </div> --}}
+        {{-- end list judul diterima --}}
     </div>
+    @if(isset($kp->syarat_seminar))
+    <div class="py-5 flex items-center">
+        {{-- jadwal seminar --}}
+        <div class="w-full mx-auto sm:px-6 px-8">
+            <div class="bg-white dark:text-white dark:bg-gray-800 overflow-x shadow-sm sm:rounded-lg px-4 py-4">
+                <div class="text-left text-white text-xl">
+                    Jadwal Seminar
+                </div>
+                <div class="text-left text-white">
+                    {{$kp->syarat_seminar->tanggal ?? 'No Data'}}
+                </div>
+            </div>
+        </div>
+        {{-- end jadwal seminar --}}
+    </div>
+    @endif
 </x-app-layout>

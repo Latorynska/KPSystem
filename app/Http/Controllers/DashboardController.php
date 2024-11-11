@@ -29,7 +29,7 @@ class DashboardController extends Controller
     protected function mahasiswaDashboard(){
         $oneYearAgo = Carbon::now()->subYear();
 
-        $kps = KP::with('mahasiswa', 'metadata')
+        $kps = KP::with('mahasiswa', 'metadata','syarat_seminar')
             ->whereHas('metadata', function ($query) {
                 $query->where('status', 'done');
             })
@@ -41,7 +41,11 @@ class DashboardController extends Controller
             $kp->approvalDate = Carbon::parse($kp->metadata->updated_at)->translatedFormat('d F Y');
         }
 
+        $mahasiswa_id = Auth()->id();
+        $kp = KP::with('syarat_seminar')->where('mahasiswa_id',$mahasiswa_id)->firstOrFail();
+
         $data['kps'] = $kps;
+        $data['kp'] = $kp;
         return view('mahasiswa.dashboard', $data);
     }
 
