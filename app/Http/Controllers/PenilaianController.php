@@ -282,12 +282,14 @@ class PenilaianController extends Controller
         $kp = KP::where('id', $id)->with([
             'mahasiswa', 
             'pembimbing', 
+            'penguji', 
             'metadata',
             'penilaian',
             'penilaian.nilai_kordinator',
             'penilaian.nilai_lapangan',
             'penilaian.nilai_penguji',
             'penilaian.nilai_pembimbing',
+            'syarat_seminar',
         ])->firstOrFail();
         // $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
         $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'));
