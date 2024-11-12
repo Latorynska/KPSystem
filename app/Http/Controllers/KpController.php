@@ -206,9 +206,12 @@ class KpController extends Controller
         }
     }
     public function storeLaporan(Request $request){
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'laporan' => 'required|file|mimes:pdf|max:4096',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         try{
             $nim = User::findOrFail(Auth()->id())->nomor_induk;
         

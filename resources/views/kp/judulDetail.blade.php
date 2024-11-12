@@ -126,7 +126,7 @@
         <x-modal name="confirmSuratIzin" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
-                    Konfirmasi Setujui Judul KP?
+                    Konfirmasi Surat Izin KP?
                 </div>
                 <div class="mt-6 flex justify-between">
                     <x-secondary-button x-on:click="$dispatch('close')">
