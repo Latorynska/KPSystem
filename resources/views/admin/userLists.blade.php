@@ -9,7 +9,7 @@
                     <x-slot name="newData">
                         <div>
                             <x-button tag="button" color="default" 
-                                x-on:click.prevent="$dispatch('open-modal', 'uploadData')"
+                                x-on:click.prevent="$dispatch('open-modal', 'uploadDataMahasiswa')"
                             >
                                 Import from excel
                             </x-button>
@@ -151,7 +151,7 @@
                     <x-slot name="newData">
                         <div>
                             <x-button tag="button" color="default" 
-                                x-on:click.prevent="$dispatch('open-modal', 'uploadData')"
+                                x-on:click.prevent="$dispatch('open-modal', 'uploadDataDosen')"
                             >
                                 Import from excel
                             </x-button>
@@ -199,7 +199,7 @@
         {{-- modal ganti link grup bimbingan --}}
         <x-modal name="linkGrupModal" focusable maxWidth="xl">
             <div class="p-6">
-                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white dark:text-black">
                     Link Grup Bimbingan
                 </div>
                 <form 
@@ -229,14 +229,14 @@
                 </form>
             </div>
         </x-modal>
-        {{-- modal upload excel --}}
-        <x-modal name="uploadData" focusable maxWidth="xl">
+        {{-- modal upload dosen --}}
+        <x-modal name="uploadDataDosen" focusable maxWidth="xl">
             <div class="p-6">
-                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-black dark:text-white">
                     Pilih file data dosen pembimbing dengan data NIDN, Nama, Email
                 </div>
                 {{-- input data file --}}
-                <div x-data="{dataFile:''}" @dragover.prevent @dragenter.prevent @drop.prevent="dataFile = $event.dataTransfer.files[0].name">
+                <div x-data="{dataFileDosen:''}" @dragover.prevent @dragenter.prevent @drop.prevent="dataFileDosen = $event.dataTransfer.files[0].name">
                     <form 
                         action={{route('admin.dosen.import')}}
                         method="POST" 
@@ -245,9 +245,9 @@
                         @csrf
                         @method('POST') 
                         <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                            <p class="text-white pb-2">Data Dosen Pembimbing</p>
-                            <div class="flex items-center justify-center w-full" x-show="!dataFile">
-                                <label for="dataFile" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                            <p class="text-white pb-2 dark:text-black">Data Dosen Pembimbing</p>
+                            <div class="flex items-center justify-center w-full" x-show="!dataFileDosen">
+                                <label for="dataFileDosen" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                         <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
@@ -255,13 +255,13 @@
                                         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Excel File</p>
                                     </div>
-                                    <input id="dataFile" name="data_file" type="file" class="hidden" accept=".xlsx" @change="dataFile = $event.target.files[0].name" />
+                                    <input id="dataFileDosen" name="data_file" type="file" class="hidden" accept=".xlsx" @change="dataFileDosen = $event.target.files[0].name" />
                                 </label>
                             </div>
                             <!-- Display file name -->
-                            <div class="flex items-center" x-show="dataFile">
+                            <div class="flex items-center" x-show="dataFileDosen">
                                 <x-button tag="button" target="_blank">
-                                    <span x-text="dataFile"></span>
+                                    <span x-text="dataFileDosen"></span>
                                 </x-button>
                                 <div class="relative group ml-2">
                                     <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
@@ -278,7 +278,65 @@
                             <x-secondary-button x-on:click="$dispatch('close')">
                                 {{ __('Cancel') }}
                             </x-secondary-button>
-                            <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="dataFile">
+                            <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="dataFileDosen">
+                                Konfirmasi
+                            </x-button>
+                        </div>
+                    </form>
+                </div>
+                {{-- end input data file --}}
+            </div>
+        </x-modal>
+        {{-- modal upload Mahasiswa --}}
+        <x-modal name="uploadDataMahasiswa" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-black dark:text-white">
+                    Pilih file data mahasiswa dengan data NIM, Nama, Email
+                </div>
+                {{-- input data file --}}
+                <div x-data="{dataFileMahasiswa:''}" @dragover.prevent @dragenter.prevent @drop.prevent="dataFileMahasiswa = $event.dataTransfer.files[0].name">
+                    <form 
+                        action={{route('admin.mahasiswa.import')}}
+                        method="POST" 
+                        @submit.prevent="postImportMahasiswa"
+                    >
+                        @csrf
+                        @method('POST') 
+                        <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
+                            <p class="text-black pb-2 dark:text-white">Data Mahasiswa</p>
+                            <div class="flex items-center justify-center w-full" x-show="!dataFileMahasiswa">
+                                <label for="dataFileMahasiswa" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Excel File</p>
+                                    </div>
+                                    <input id="dataFileMahasiswa" name="data_file" type="file" class="hidden" accept=".xlsx" @change="dataFileMahasiswa = $event.target.files[0].name" />
+                                </label>
+                            </div>
+                            <!-- Display file name -->
+                            <div class="flex items-center" x-show="dataFileMahasiswa">
+                                <x-button tag="button" target="_blank">
+                                    <span x-text="dataFileMahasiswa"></span>
+                                </x-button>
+                                <div class="relative group ml-2">
+                                    <span class="absolute left-10 top-0 transform -translate-y-1/2 mt-1 hidden group-hover:block bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded shadow-sm dark:bg-slate-700 w-32" role="tooltip">
+                                        Pastikan format file isinya sudah sesuai sebelum anda submit
+                                    </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            {{-- end display file name --}}
+                        </div>
+                        <div class="mt-6 flex justify-between">
+                            <x-secondary-button x-on:click="$dispatch('close');dataFileMahasiswa=''">
+                                {{ __('Cancel') }}
+                            </x-secondary-button>
+                            <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')" x-show="dataFileMahasiswa">
                                 Konfirmasi
                             </x-button>
                         </div>
@@ -378,61 +436,6 @@
                 });
             });
         }
-        // function postImportMahasiswa(e) {
-        //     Swal.fire({
-        //         title: 'Permintaan sedang diproses, mohon tunggu',
-        //         allowOutsideClick: false,
-        //         showConfirmButton: false,
-        //         didOpen: () => {
-        //             Swal.showLoading();
-        //         }
-        //     });
-
-        //     let form = e.target;
-        //     let formData = new FormData(form);
-
-        //     fetch(form.action, {
-        //         method: 'POST',
-        //         body: formData
-        //     })
-        //     .then(response => {
-        //         if (response.ok) {
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Success!',
-        //                 text: 'Data Mahasiswa Berhasil Ditambahkan',
-        //                 timer: 1500,
-        //                 showConfirmButton: false
-        //             });
-        //             setTimeout(() => {
-        //                 window.location.reload();
-        //             }, 1500);
-        //         } else if (response.status === 422) {
-        //             return response.json();
-        //         } else {
-        //             throw new Error('Unexpected server response');
-        //         }
-        //     })
-        //     .then(data => {
-        //         if (data && data.hasOwnProperty('errors')) {
-        //             let errorMessages = Object.values(data.errors).join('\n');
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Validation Error',
-        //                 text: errorMessages
-        //             });
-        //         }
-        //     })
-        //     .catch(error => {
-        //         Swal.close();
-        //         console.error(error);
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Oops...',
-        //             text: 'An error occurred!',
-        //         });
-        //     });
-        // }
         function postImportMahasiswa(e) {
             Swal.fire({
                 title: 'Permintaan sedang diproses, mohon tunggu',
@@ -483,6 +486,91 @@
                             icon: 'success',
                             title: 'Success!',
                             text: 'Data Mahasiswa Berhasil Ditambahkan',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else if (response.status === 422) {
+                        return response.json();
+                    } else {
+                        throw new Error('Unexpected server response');
+                    }
+                })
+                .then(data => {
+                    if (data && data.hasOwnProperty('errors')) {
+                        let errorMessages = Object.values(data.errors).join('\n');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            text: errorMessages
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'An error occurred!',
+                    });
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+        function postImportDosen(e) {
+            Swal.fire({
+                title: 'Permintaan sedang diproses, mohon tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let form = e.target;
+            let formData = new FormData(form);
+            let fileInput = form.querySelector('input[type="file"]');
+            
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                let data = new Uint8Array(e.target.result);
+                let workbook = XLSX.read(data, { type: 'array' });
+                let sheetName = workbook.SheetNames[0];
+                let worksheet = workbook.Sheets[sheetName];
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                let headerRow = jsonData.shift();
+                let formattedData = jsonData.map(row => {
+                    let obj = {};
+                    headerRow.forEach((header, index) => {
+                        if (header.toLowerCase() === 'nidn' || header.toLowerCase() === 'nama' || header.toLowerCase() === 'email') {
+                            obj[header] = row[index];
+                        }
+                    });
+                    return obj;
+                });
+
+                const csrfToken = '{{ csrf_token() }}';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ data: formattedData }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Data Dosen Pembimbing Berhasil Ditambahkan',
                             timer: 1500,
                             showConfirmButton: false
                         });
