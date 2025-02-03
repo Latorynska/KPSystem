@@ -292,7 +292,7 @@ class PenilaianController extends Controller
             'syarat_seminar',
         ])->firstOrFail();
         // $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
-        $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'));
+        $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'))->setPaper('a4','potrait');
         return $pdf->stream('lembar_penilaian.pdf');
     }
 }
