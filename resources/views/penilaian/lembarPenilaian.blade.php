@@ -499,124 +499,119 @@
                     <td colspan="10"><center>Seminar</center></td>
                 </tr>
                 <tr>
-                    <td style="vertical-align: middle;text-align: center;">1.</td>
-                    <td style="vertical-align: top;">Pemahaman Terhadap Masalah</td>
+                    <td style="vertical-align: middle; text-align: center;">1.</td>
+                    <td style="vertical-align: middle;">Pemahaman Terhadap Masalah</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->pemahaman_masalah)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
-                                <p>{{ $i }}</p>
+                                {{ $i }}
                             @endif
                         </td>
                     @endfor
                 </tr>
                 <tr>
-                    <td style="vertical-align: middle;text-align: center;">2.</td>
-                    <td style="vertical-align: top;">Mendeskripsikan Langkah yang diambil untuk dapat menghasilkan solusi</td>
+                    <td style="vertical-align: middle; text-align: center;">2.</td>
+                    <td style="vertical-align: middle;">Mendeskripsikan langkah yang diambil untuk dapat menghasilkan solusi</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->deskripsi_solusi)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
-                                <p>{{ $i }}</p>
+                                {{ $i }}
                             @endif
                         </td>
                     @endfor
                 </tr>
                 <tr>
-                    <td style="vertical-align: middle;text-align: center;">3.</td>
-                    <td style="vertical-align: top;">Percaya Diri dalam mengkomunikasikan hasil kerja praktek</td>
+                    <td style="vertical-align: middle; text-align: center;">3.</td>
+                    <td style="vertical-align: middle;">Percaya Diri dalam mengkomunikasikan hasil kerja praktek</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->percaya_diri)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
-                                <p>{{ $i }}</p>
+                                {{ $i }}
                             @endif
                         </td>
                     @endfor
                 </tr>
                 <tr>
-                    <td style="vertical-align: middle;text-align: center;">4.</td>
-                    <td style="vertical-align: top;">Tata tulis laporan</td>
+                    <td style="vertical-align: middle; text-align: center;">4.</td>
+                    <td style="vertical-align: middle;">Tata tulis laporan</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->tata_tulis)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
-                                <p>{{ $i }}</p>
+                                {{ $i }}
                             @endif
                         </td>
                     @endfor
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">5.</td>
-                    <td style="vertical-align: top;">Mampu membuktikan hasil KP sebagai solusi dari masalah</td>
+                    <td style="vertical-align: middle;">Mampu membuktikan hasil KP sebagai solusi dari masalah</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->pembuktian_produk)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -628,23 +623,22 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">6.</td>
-                    <td style="vertical-align: top;">Hasil produk menjawab permasalahan</td>
+                    <td style="vertical-align: middle;">Hasil produk menjawab permasalahan</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->efektivitas_produk)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -653,23 +647,22 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">7.</td>
-                    <td style="vertical-align: top;">Kontribusi nyata terhadap instansi</td>
+                    <td style="vertical-align: middle;">Kontribusi nyata terhadap instansi</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->kontribusi)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -678,23 +671,22 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">8.</td>
-                    <td style="vertical-align: top;">Originalitas produk (bukan pekerjaan oranglain)</td>
+                    <td style="vertical-align: middle;">Originalitas produk (bukan pekerjaan oranglain)</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->originalitas)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -703,23 +695,22 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">9.</td>
-                    <td style="vertical-align: top;">Kemudahan penggunaan hasil/produk</td>
+                    <td style="vertical-align: middle;">Kemudahan penggunaan hasil/produk</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->kemudahan_produk)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -728,23 +719,22 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;text-align: center;">10.</td>
-                    <td style="vertical-align: top;">Produk meningkatkan kinerja instansi</td>
+                    <td style="vertical-align: middle;">Produk meningkatkan kinerja instansi</td>
                     @for ($i = 2; $i <= 9; $i++)
                         <td style="vertical-align: middle; text-align: center;">
                             @if ($i == $kp->penilaian->nilai_penguji->peningkatan_kinerja)
-                                <p style="
-                                    border: 1px solid black; 
-                                    border-radius: 50%; 
-                                    width: 30px; 
-                                    height: 30px; 
-                                    display: flex; 
-                                    align-items: center; 
+                                <span style="
+                                    display: inline-flex;
+                                    width: 20px;
+                                    height: 20px;
+                                    border: 1px solid black;
+                                    border-radius: 50%;
+                                    align-items: center;
                                     justify-content: center;
-                                    text-align: center; 
-                                    line-height: 25px;
-                                    margin: auto;">
+                                    text-align: center;
+                                    font-size: 14px;">
                                     {{ $i }}
-                                </p>
+                                </span>
                             @else
                                 <p>{{ $i }}</p>
                             @endif
@@ -758,6 +748,14 @@
                     <td colspan="8"><center>{{ $kp->penilaian->nilai_penguji->total_nilai()}}</center></td>
                 </tr>
             </tfoot>
+        </table>
+    </div>
+    <div style="margin-top:20px; margin-left:5px;">
+        <table border="1">
+            <tr>
+                <td style="width: 60%"><center>Nilai Akhir Penguji = (total/10)*3</center></td>
+                <td><center>{{ $kp->penilaian->nilai_penguji->total_nilai() / 10 * 3}}</center></td>
+            </tr>
         </table>
     </div>
 </body>
