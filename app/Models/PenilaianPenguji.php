@@ -40,7 +40,7 @@ class PenilaianPenguji extends Model
         $nilaiValid = array_filter($nilai, fn($value) => !is_null($value));
 
         return count($nilaiValid) > 0 
-            ? array_sum($nilaiValid) / count($nilaiValid) 
+            ? array_sum($nilaiValid) / count($nilaiValid) * 10
             : 0;
     }
     
