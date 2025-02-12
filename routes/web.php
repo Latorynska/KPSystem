@@ -146,7 +146,9 @@ Route::group(['middleware' => ['role:kordinator|pembimbing|pembimbing_lapangan|a
             Route::prefix('/kordinator')->name('.kordinator')->group(function () {
                 Route::post('/{id}', [PenilaianController::class, 'nilaiKordinator'])->name('.nilai');
                 Route::get('/cetak/{id}', [PenilaianController::class, 'cetakNilai'])->name('.cetak');
-                Route::get('/download/final', [PenilaianController::class, 'cetakFinal'])->name('.download');
+                Route::get('/download/final', [PenilaianController::class, 'downloadFinal'])->name('.download');
+                Route::get('/download/all', [PenilaianController::class, 'downloadAll'])->name('.download.all');
+                Route::post('/nilai/delete', [PenilaianController::class, 'deleteFinalKp'])->name('.delete.final');
             });
         });
         Route::group(['middleware' => ['role:pembimbing']], function () {

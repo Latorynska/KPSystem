@@ -56,7 +56,7 @@
         <x-modal name="resetPassword" focusable maxWidth="xl">
             <div class="p-6">
                 <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
-                    Reset password akun mahasiswa?
+                    Reset password akun?
                 </div>
                 <form 
                     {{-- x-bind:action="{{ route('admin.mahasiswa.password.reset',['id' => "selectedMahasiswa.id"]) }}"  --}}
@@ -245,7 +245,7 @@
                         @csrf
                         @method('POST') 
                         <div class="bg-white my-3 dark:text-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-4 py-4">
-                            <p class="text-white pb-2 dark:text-black">Data Dosen Pembimbing</p>
+                            <p class="text-white pb-2">Data Dosen Pembimbing</p>
                             <div class="flex items-center justify-center w-full" x-show="!dataFileDosen">
                                 <label for="dataFileDosen" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">

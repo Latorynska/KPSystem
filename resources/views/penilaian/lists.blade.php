@@ -6,7 +6,9 @@
                 <div class="overflow-x-auto">
                     <x-table :data="$kps" :filterFields="'[\'mahasiswa.nomor_induk\',\'mahasiswa.name\', \'kp.metadata.judul\']'" class="min-w-max w-full">
                         <x-slot name="newData">
+                            @hasrole('kordinator')
                             <div>
+                                {{-- btn choose download type --}}
                                 <div class="hs-dropdown relative inline-flex">
                                     <button id="hs-dropdown-default" type="button" class="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                                       Download Data
@@ -24,17 +26,44 @@
                                         </div> --}}
                                         <div class="py-2 first:pt-0 last:pb-0">
                                             <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
-                                                href="{{ route('kp.penilaian.kordinator.download') }}"
+                                                href="{{ route('kp.penilaian.kordinator.download.all') }}"
                                             >
                                                 Seluruh Data KP
                                             </a>
                                         </div>
-                                        <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" href="#">
+                                        <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
+                                            href="{{ route('kp.penilaian.kordinator.download') }}"
+                                        >
                                             Data KP Selesai
                                         </a>
                                     </div>
                                 </div>
+                                {{-- end btn choose download type --}}
+                                {{-- btn choose delete type --}}
+                                <div class="hs-dropdown relative inline-flex">
+                                    <button id="hs-dropdown-default" type="button" class="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                                      Hapus Data
+                                      <svg class="hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    </button>
+                                    <div class="hs-dropdown-menu hidden transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700" aria-labelledby="hs-dropdown-with-dividers">
+                                        <div class="py-2 first:pt-0 last:pb-0">
+                                            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
+                                                href="#"
+                                            >
+                                                Seluruh Data Mahasiswa
+                                            </a>
+                                        </div>
+                                        <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700" 
+                                            href="#"
+                                            x-on:click.prevent="$dispatch('open-modal', 'deleteFinal');"
+                                        >
+                                            Data KP Selesai
+                                        </a>
+                                    </div>
+                                </div>
+                                {{-- end btn choose delete type --}}
                             </div>
+                            @endhasrole
                         </x-slot>
                         <x-slot name="header">
                             <tr>
@@ -401,6 +430,37 @@
                     </div>
                 </form>
                 {{-- end input data pembimbing lapangan --}}
+            </div>
+        </x-modal>
+        {{-- modal konfirmasi hapus data final (kp selesai) --}}
+        <x-modal name="deleteFinal" focusable maxWidth="xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between p-2 text-lg font-bold text-white">
+                    Hapus data dan file kp yang sudah selesai?
+                </div>
+                <form 
+                    action="{{ route('kp.penilaian.kordinator.delete.final') }}"
+                    method="POST" 
+                    @submit.prevent="submitForm"
+                >
+                    @csrf
+                    @method('POST') 
+                    <x-form-text
+                        label="Masukkan Password Anda Sebagai Admin" 
+                        name="admin_password" 
+                        id="admin_password" 
+                        type="password"
+                        :error="$errors->first('admin_password')"
+                    />
+                    <div class="mt-6 flex justify-between">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+                        <x-button type="submit" tag="button" color="success" x-on:click="$dispatch('close')">
+                            Konfirmasi
+                        </x-button>
+                    </div>
+                </form>
             </div>
         </x-modal>
         @endhasrole

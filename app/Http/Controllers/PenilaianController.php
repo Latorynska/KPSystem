@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use ZipArchive;
 
 use PDF;
@@ -297,8 +299,7 @@ class PenilaianController extends Controller
         $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'))->setPaper('a4','potrait');
         return $pdf->stream('lembar_penilaian.pdf');
     }
-    public function cetakFinal()
-    {
+    public function downloadFinal(){
         $kp = KP::with([
                 'mahasiswa',
                 'pembimbing',
@@ -351,6 +352,125 @@ class PenilaianController extends Controller
             return response()->download($zipFilePath)->deleteFileAfterSend(true);
         } else {
             abort(500, 'Failed to create zip file');
+        }
+    }
+    public function downloadAll(){
+        $kp = KP::with([
+                'mahasiswa',
+                'pembimbing',
+                'penguji',
+                'metadata',
+                'surat_izin',
+                'proposal',
+                'laporan',
+                'penilaian',
+                'penilaian.nilai_kordinator',
+                'penilaian.nilai_lapangan',
+                'penilaian.nilai_penguji',
+                'penilaian.nilai_pembimbing',
+                'syarat_seminar',
+            ])
+            ->get();
+    
+        $zip = new ZipArchive;
+        $zipFileName = 'cetak_final_files.zip';
+        $zipFilePath = storage_path('app/public/' . $zipFileName);
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            foreach ($kp as $item) {
+                $kpFolder = $item->mahasiswa->nomor_induk . '_' . $item->mahasiswa->name;
+                if ($item->surat_izin && Storage::exists('SuratIzin/' . $item->surat_izin->file_name)) {
+                    $filePath = 'SuratIzin/' . $item->surat_izin->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->surat_izin->file_name);
+                }
+                if ($item->proposal && Storage::exists('Proposal/' . $item->proposal->file_name)) {
+                    $filePath = 'Proposal/' . $item->proposal->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->proposal->file_name);
+                }
+                if ($item->laporan && Storage::exists('Laporan/' . $item->laporan->file_name)) {
+                    $filePath = 'Laporan/' . $item->laporan->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->laporan->file_name);
+                }
+                $pdf = PDF::loadview('penilaian.lembarPenilaian', ['kp' => $item])->setPaper('a4', 'portrait');
+                $pdfOutput = $pdf->output();
+                $pdfFileName = $kpFolder . '/lembar_penilaian_' . $item->mahasiswa->nomor_induk . '_' . $item->mahasiswa->name . '.pdf';
+                
+                $zip->addFromString($pdfFileName, $pdfOutput);
+            }
+            $zip->close();
+            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        } else {
+            abort(500, 'Failed to create zip file');
+        }
+    }
+    public function deleteFinalKp(Request $request){
+        $validator = Validator::make($request->all(), [
+            'admin_password' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        
+        $adminPassword = $request->input('admin_password');
+        $currentUser = auth()->user();
+        if (!Hash::check($adminPassword, $currentUser->password)) {
+            return response()->json(['message' => 'Admin password is incorrect'], 422);
+        }
+        $kpRecords = KP::with([
+            'mahasiswa',
+            'pembimbing',
+            'penguji',
+            'metadata',
+            'surat_izin',
+            'proposal',
+            'laporan',
+            'penilaian',
+            'penilaian.nilai_kordinator',
+            'penilaian.nilai_lapangan',
+            'penilaian.nilai_penguji',
+            'penilaian.nilai_pembimbing',
+            'syarat_seminar',
+        ])
+        ->get()
+        ->filter(function ($kp) {
+            return $kp->penilaian
+                && optional($kp->penilaian->nilai_kordinator)->total_nilai() !== null
+                && optional($kp->penilaian->nilai_lapangan)->total_nilai() !== null
+                && optional($kp->penilaian->nilai_penguji)->total_nilai() !== null
+                && optional($kp->penilaian->nilai_pembimbing)->total_nilai() !== null;
+        });
+        // Start database transaction
+        DB::beginTransaction();
+        try {
+            foreach ($kpRecords as $kp) {
+                // Delete files (if exist)
+                if ($kp->surat_izin && Storage::exists('SuratIzin/' . $kp->surat_izin->file_name)) {
+                    Storage::delete('SuratIzin/' . $kp->surat_izin->file_name);
+                }
+                if ($kp->proposal && Storage::exists('Proposal/' . $kp->proposal->file_name)) {
+                    Storage::delete('Proposal/' . $kp->proposal->file_name);
+                }
+                if ($kp->laporan && Storage::exists('Laporan/' . $kp->laporan->file_name)) {
+                    Storage::delete('Laporan/' . $kp->laporan->file_name);
+                }
+
+                // Delete related database records
+                $kp->metadata()->delete();
+                $kp->surat_izin()->delete();
+                $kp->proposal()->delete();
+                $kp->laporan()->delete();
+                $kp->penilaian()->delete();
+                $kp->syarat_seminar()->delete();
+                $kp->mahasiswa()->delete();
+                // Delete KP itself
+                $kp->delete();
+            }
+
+            // Commit transaction
+            DB::commit();
+            return response()->json(['message' => 'Final KP data deleted successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
