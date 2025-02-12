@@ -27,7 +27,7 @@ class PenilaianLapangan extends Model
         'hasil_infrastruktur'
     ];
     
-    public function nilaiAkhir(): float
+    public function total_nilai(): float
     {
         // Ambil semua nilai kolom yang diperlukan
         $nilai = [

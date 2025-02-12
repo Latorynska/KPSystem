@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 use PDF;
 use App\Models\User;
@@ -294,5 +296,61 @@ class PenilaianController extends Controller
         // $approvalDate = Carbon::parse($proposal->updated_at)->translatedFormat('d F Y');
         $pdf = PDF::loadview('penilaian.lembarPenilaian', compact('kp'))->setPaper('a4','potrait');
         return $pdf->stream('lembar_penilaian.pdf');
+    }
+    public function cetakFinal()
+    {
+        $kp = KP::with([
+                'mahasiswa',
+                'pembimbing',
+                'penguji',
+                'metadata',
+                'surat_izin',
+                'proposal',
+                'laporan',
+                'penilaian',
+                'penilaian.nilai_kordinator',
+                'penilaian.nilai_lapangan',
+                'penilaian.nilai_penguji',
+                'penilaian.nilai_pembimbing',
+                'syarat_seminar',
+            ])
+            ->get()
+            ->filter(function ($kp) {
+                return $kp->penilaian
+                    && optional($kp->penilaian->nilai_kordinator)->total_nilai() !== null
+                    && optional($kp->penilaian->nilai_lapangan)->total_nilai() !== null
+                    && optional($kp->penilaian->nilai_penguji)->total_nilai() !== null
+                    && optional($kp->penilaian->nilai_pembimbing)->total_nilai() !== null;
+            });
+    
+        $zip = new ZipArchive;
+        $zipFileName = 'cetak_final_files.zip';
+        $zipFilePath = storage_path('app/public/' . $zipFileName);
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            foreach ($kp as $item) {
+                $kpFolder = $item->mahasiswa->nomor_induk . '_' . $item->mahasiswa->name;
+                if ($item->surat_izin && Storage::exists('SuratIzin/' . $item->surat_izin->file_name)) {
+                    $filePath = 'SuratIzin/' . $item->surat_izin->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->surat_izin->file_name);
+                }
+                if ($item->proposal && Storage::exists('Proposal/' . $item->proposal->file_name)) {
+                    $filePath = 'Proposal/' . $item->proposal->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->proposal->file_name);
+                }
+                if ($item->laporan && Storage::exists('Laporan/' . $item->laporan->file_name)) {
+                    $filePath = 'Laporan/' . $item->laporan->file_name;
+                    $zip->addFile(storage_path('app/' . $filePath), $kpFolder . '/' . $item->laporan->file_name);
+                }
+                $pdf = PDF::loadview('penilaian.lembarPenilaian', ['kp' => $item])->setPaper('a4', 'portrait');
+                $pdfOutput = $pdf->output();
+                $pdfFileName = $kpFolder . '/lembar_penilaian_' . $item->mahasiswa->nomor_induk . '_' . $item->mahasiswa->name . '.pdf';
+                
+                $zip->addFromString($pdfFileName, $pdfOutput);
+            }
+            $zip->close();
+            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        } else {
+            abort(500, 'Failed to create zip file');
+        }
     }
 }
